@@ -1,0 +1,14 @@
+package app.controllers;
+
+import io.javelin.core.Request;
+import io.javelin.core.Response;
+
+public final class HomeController {
+    public Response index(Request request) {
+        return Response.text("Javelin is running");
+    }
+
+    public Response health(Request request) {
+        return Response.text("ok");
+    }
+}

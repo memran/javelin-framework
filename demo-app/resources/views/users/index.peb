@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ name }} Framework</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-zinc-950 text-zinc-100 antialiased">
+    <main class="min-h-screen">
+        <section class="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 py-8 sm:px-8 lg:px-10">
+            <header class="flex items-center justify-between border-b border-white/10 pb-5">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-400 text-lg font-black text-zinc-950">J</div>
+                    <div>
+                        <p class="text-sm font-semibold uppercase tracking-widest text-emerald-300">{{ name }}</p>
+                        <p class="text-sm text-zinc-400">Framework demo app</p>
+                    </div>
+                </div>
+                <a class="rounded-md border border-white/10 px-3 py-2 text-sm font-medium text-zinc-200 transition hover:border-emerald-300 hover:text-emerald-200" href="/health">
+                    Health
+                </a>
+            </header>
+
+            <div class="grid flex-1 items-center gap-10 py-12 lg:grid-cols-[1.05fr_0.95fr]">
+                <section>
+                    <div class="mb-6 inline-flex rounded-full border border-emerald-300/20 bg-emerald-300/10 px-4 py-2 text-sm font-medium text-emerald-200">
+                        Service-provider architecture for fast Java apps
+                    </div>
+                    <h1 class="max-w-3xl text-5xl font-bold leading-tight text-white sm:text-6xl">
+                        Build explicit, modular web applications with {{ name }}.
+                    </h1>
+                    <p class="mt-6 max-w-2xl text-lg leading-8 text-zinc-300">
+                        Laravel-inspired developer experience, Java runtime performance, and a startup path designed for clarity instead of hidden scanning.
+                    </p>
+                    <div class="mt-8 flex flex-wrap gap-3">
+                        <a class="rounded-md bg-emerald-400 px-5 py-3 text-sm font-bold text-zinc-950 transition hover:bg-emerald-300" href="/users/1">
+                            View sample route
+                        </a>
+                        <a class="rounded-md border border-white/10 px-5 py-3 text-sm font-bold text-zinc-100 transition hover:border-zinc-400" href="/health">
+                            Check health
+                        </a>
+                    </div>
+                </section>
+
+                <section class="rounded-lg border border-white/10 bg-white/[0.03] p-5 shadow-2xl shadow-emerald-950/30">
+                    <div class="mb-4 flex items-center gap-2 border-b border-white/10 pb-4">
+                        <span class="h-3 w-3 rounded-full bg-red-400"></span>
+                        <span class="h-3 w-3 rounded-full bg-yellow-300"></span>
+                        <span class="h-3 w-3 rounded-full bg-emerald-400"></span>
+                        <span class="ml-3 text-sm text-zinc-400">routes/web.java</span>
+                    </div>
+                    <pre class="overflow-x-auto text-sm leading-7 text-zinc-200"><code>app.router()
+    .get("/", home::index)
+    .get("/health", home::health)
+    .get("/users/{id}", users::show);</code></pre>
+                </section>
+            </div>
+
+            <section class="grid gap-4 pb-8 md:grid-cols-3">
+                <article class="rounded-lg border border-white/10 bg-white/[0.03] p-5">
+                    <h2 class="text-base font-semibold text-white">Explicit boot flow</h2>
+                    <p class="mt-2 text-sm leading-6 text-zinc-400">Providers register contracts and boot routes without annotation scanning or broad reflection.</p>
+                </article>
+                <article class="rounded-lg border border-white/10 bg-white/[0.03] p-5">
+                    <h2 class="text-base font-semibold text-white">Productive CLI</h2>
+                    <p class="mt-2 text-sm leading-6 text-zinc-400">Generate controllers, services, modules, migrations, and starter apps with a fast command surface.</p>
+                </article>
+                <article class="rounded-lg border border-white/10 bg-white/[0.03] p-5">
+                    <h2 class="text-base font-semibold text-white">JDK-first runtime</h2>
+                    <p class="mt-2 text-sm leading-6 text-zinc-400">Built on direct Java features with a path toward GraalVM-friendly deployment.</p>
+                </article>
+            </section>
+        </section>
+    </main>
+</body>
+</html>

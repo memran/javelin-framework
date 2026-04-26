@@ -1,0 +1,10 @@
+package {{ package }};
+
+import io.javelin.core.Request;
+import io.javelin.core.Response;
+
+public final class {{ class }} {
+    public Response index(Request request) {
+        return Response.text("{{ class }} ready");
+    }
+}

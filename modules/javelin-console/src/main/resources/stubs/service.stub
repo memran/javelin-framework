@@ -1,0 +1,7 @@
+package {{ package }};
+
+public final class {{ class }} {
+    public String name() {
+        return "{{ class }}";
+    }
+}

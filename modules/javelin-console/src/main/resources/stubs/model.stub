@@ -1,0 +1,13 @@
+package {{ package }};
+
+public final class {{ class }} {
+    private final long id;
+
+    public {{ class }}(long id) {
+        this.id = id;
+    }
+
+    public long id() {
+        return id;
+    }
+}

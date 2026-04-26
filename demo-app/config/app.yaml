@@ -1,0 +1,29 @@
+app:
+  name: Javelin App
+  env: local
+
+server:
+  host: 127.0.0.1
+  port: 8080
+  driver: jdk
+
+database:
+  driver: postgresql
+  host: localhost
+  port: 5432
+  database: app
+  username: postgres
+  password: secret
+
+log:
+  channel: console
+  path: storage/logs/app.log
+
+view:
+  prefix: resources/views
+
+security:
+  max_request_bytes: 1048576
+
+providers:
+  - app.providers.AppServiceProvider

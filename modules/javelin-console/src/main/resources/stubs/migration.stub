@@ -1,0 +1,6 @@
+-- Migration: {{ name }}
+
+-- migrate:up
+
+-- migrate:down
+

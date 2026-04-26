@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+set -eu
+JAVELIN_HOME=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+exec java -jar "$JAVELIN_HOME/modules/javelin-console/target/javelin-console-0.1.0-SNAPSHOT-all.jar" "$@"

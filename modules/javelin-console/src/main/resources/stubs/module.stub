@@ -1,0 +1,14 @@
+package {{ package }};
+
+import io.javelin.core.Application;
+import io.javelin.core.ServiceProvider;
+
+public final class {{ class }} implements ServiceProvider {
+    @Override
+    public void register(Application app) {
+    }
+
+    @Override
+    public void boot(Application app) {
+    }
+}
