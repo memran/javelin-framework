@@ -24,7 +24,7 @@ public final class Javelin {
 
     public static Application create(Path root) {
         var env = DotenvEnv.load(root.resolve(".env"));
-        var config = YamlConfig.load(root.resolve("config/app.yaml"), env);
+        var config = YamlConfig.loadDirectory(root.resolve("config"), env);
         Application app = new Application(config, env);
         app.instance(Path.class, root);
         app.register(new Slf4jLogServiceProvider());

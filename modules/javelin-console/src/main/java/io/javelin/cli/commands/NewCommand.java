@@ -46,6 +46,7 @@ public final class NewCommand extends AbstractCommand {
         files.write(root.resolve(".env"), "env.stub", values, force);
         files.write(root.resolve("Main.java"), "main.stub", values, force);
         files.write(root.resolve("config/app.yaml"), "app-yaml.stub", values, force);
+        files.write(root.resolve("config/view.yml"), "view-yml.stub", values, force);
         files.write(root.resolve("app/controllers/HomeController.java"), "home-controller.stub", values, force);
         files.write(root.resolve("app/providers/AppServiceProvider.java"), "app-provider.stub", values, force);
         files.write(root.resolve("routes/web.java"), "routes.stub", values, force);

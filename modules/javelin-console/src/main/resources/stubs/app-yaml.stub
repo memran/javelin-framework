@@ -19,9 +19,6 @@ log:
   channel: console
   path: storage/logs/app.log
 
-view:
-  prefix: resources/views
-
 security:
   max_request_bytes: 1048576
 

@@ -11,9 +11,11 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public final class YamlConfig implements Config {
     private static final ObjectMapper YAML = new ObjectMapper(new YAMLFactory());
@@ -50,6 +52,33 @@ public final class YamlConfig implements Config {
             return new YamlConfig(values == null ? Collections.emptyMap() : values, env);
         } catch (IOException exception) {
             throw new IllegalStateException("Unable to load YAML config from " + path, exception);
+        }
+    }
+
+    public static YamlConfig loadDirectory(Path directory, Env env) {
+        Map<String, Object> values = new LinkedHashMap<>();
+        Path app = directory.resolve("app.yaml");
+        merge(values, load(app, env).values);
+
+        if (!Files.isDirectory(directory)) {
+            return new YamlConfig(values, env);
+        }
+
+        try (Stream<Path> files = Files.list(directory)) {
+            files
+                    .filter(Files::isRegularFile)
+                    .filter(YamlConfig::isYaml)
+                    .filter(path -> !path.getFileName().toString().equals("app.yaml"))
+                    .sorted()
+                    .forEach(path -> {
+                        String namespace = namespace(path);
+                        Map<String, Object> namespaced = new LinkedHashMap<>();
+                        namespaced.put(namespace, load(path, env).values);
+                        merge(values, namespaced);
+                    });
+            return new YamlConfig(values, env);
+        } catch (IOException exception) {
+            throw new IllegalStateException("Unable to load YAML config directory " + directory, exception);
         }
     }
 
@@ -97,5 +126,29 @@ public final class YamlConfig implements Config {
             return env.get(parts[0], parts.length == 2 ? parts[1] : "");
         }
         return value;
+    }
+
+    private static boolean isYaml(Path path) {
+        String name = path.getFileName().toString();
+        return name.endsWith(".yaml") || name.endsWith(".yml");
+    }
+
+    private static String namespace(Path path) {
+        String name = path.getFileName().toString();
+        int dot = name.lastIndexOf('.');
+        return dot > 0 ? name.substring(0, dot) : name;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void merge(Map<String, Object> target, Map<String, Object> source) {
+        for (Map.Entry<String, Object> entry : source.entrySet()) {
+            Object current = target.get(entry.getKey());
+            Object incoming = entry.getValue();
+            if (current instanceof Map<?, ?> currentMap && incoming instanceof Map<?, ?> incomingMap) {
+                merge((Map<String, Object>) currentMap, (Map<String, Object>) incomingMap);
+            } else {
+                target.put(entry.getKey(), incoming);
+            }
+        }
     }
 }

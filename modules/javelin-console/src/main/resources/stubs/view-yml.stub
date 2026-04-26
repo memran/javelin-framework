@@ -1,0 +1,16 @@
+driver: pebble
+prefix: resources/views
+suffix: .peb
+
+pebble:
+  cache: false
+  auto_escaping: true
+  strict_variables: false
+  new_line_trimming: false
+  default_locale: en-US
+  max_rendered_size: 0
+  allow_override_core_operators: false
+  default_escaping_strategy: html
+  literal_decimal_treated_as_integer: false
+  literal_numbers_as_big_decimals: false
+  greedy_match_method: false

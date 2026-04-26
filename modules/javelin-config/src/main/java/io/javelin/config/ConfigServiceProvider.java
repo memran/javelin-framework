@@ -11,6 +11,6 @@ public final class ConfigServiceProvider implements ServiceProvider {
         Path root = Path.of(System.getProperty("user.dir"));
         DotenvEnv env = DotenvEnv.load(root.resolve(".env"));
         app.instance(io.javelin.core.Env.class, env);
-        app.instance(io.javelin.core.Config.class, YamlConfig.load(root.resolve("config/app.yaml"), env));
+        app.instance(io.javelin.core.Config.class, YamlConfig.loadDirectory(root.resolve("config"), env));
     }
 }
