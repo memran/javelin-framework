@@ -40,8 +40,10 @@ final class CommandGenerationTest {
         assertTrue(Files.exists(project.resolve(".env")));
         assertTrue(Files.exists(project.resolve("Main.java")));
         assertTrue(Files.exists(project.resolve("app/controllers/HomeController.java")));
+        assertTrue(Files.exists(project.resolve("app/views")));
         assertTrue(Files.exists(project.resolve("config/app.yaml")));
         assertTrue(Files.exists(project.resolve("config/view.yml")));
+        assertTrue(Files.exists(project.resolve("routes/web.java")));
         assertTrue(Files.exists(project.resolve("database/migrations")));
         assertTrue(Files.exists(project.resolve("modules")));
     }

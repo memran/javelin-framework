@@ -33,6 +33,7 @@ public final class NewCommand extends AbstractCommand {
         FileGenerator files = new FileGenerator(new TemplateEngine());
         files.directory(root.resolve("app/controllers"));
         files.directory(root.resolve("app/providers"));
+        files.directory(root.resolve("app/views"));
         files.directory(root.resolve("config"));
         files.directory(root.resolve("routes"));
         files.directory(root.resolve("resources/views"));

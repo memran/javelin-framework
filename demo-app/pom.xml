@@ -39,6 +39,7 @@
                 <configuration>
                     <includes>
                         <include>Main.java</include>
+                        <include>routes/**/*.java</include>
                         <include>app/**/*.java</include>
                     </includes>
                 </configuration>

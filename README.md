@@ -82,6 +82,16 @@ return Json.ok(Map.of("status", "ok"));
 return View.render("users/index", Map.of("name", "Javelin"));
 ```
 
+Pebble settings live in `config/view.yml`. Applications can register custom Pebble filters, functions, tests, globals, or full extensions from a service provider:
+
+```java
+app.make(PebbleViewExtensions.class)
+    .extension(new JavelinViewExtension())
+    .global("javelinRuntime", "JDK 25");
+```
+
+See `demo-app/app/views/JavelinViewExtension.java` for a custom filter and function example.
+
 ## Database
 
 ```java

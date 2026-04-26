@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 final class RouterTest {
     @Test
@@ -40,5 +41,19 @@ final class RouterTest {
 
         assertEquals("abc", calls.toString());
         assertEquals(List.of("/"), router.routes().stream().map(Route::path).toList());
+    }
+
+    @Test
+    void routeFacadeCreatesBuilders() {
+        assertNotNull(Routes.get("/", request -> Response.text("ok")).build());
+        assertNotNull(Routes.post("/", request -> Response.text("ok")).build());
+    }
+
+    @Test
+    void routeFacadeCanGroupRoutes() {
+        Router router = new Router();
+        Routes.group(router, "/admin", admin -> Routes.add(admin, Routes.get("/", request -> Response.text("ok"))));
+
+        assertEquals(List.of("/admin"), router.routes().stream().map(Route::path).toList());
     }
 }

@@ -1,20 +1,16 @@
 package app.providers;
 
-import app.controllers.HomeController;
 import io.javelin.core.Application;
 import io.javelin.core.ServiceProvider;
+import routes.web;
 
 public final class AppServiceProvider implements ServiceProvider {
     @Override
     public void register(Application app) {
-        app.singleton(HomeController.class, HomeController::new);
     }
 
     @Override
     public void boot(Application app) {
-        HomeController home = app.make(HomeController.class);
-        app.router()
-                .get("/", home::index)
-                .get("/health", home::health);
+        web.register(app);
     }
 }

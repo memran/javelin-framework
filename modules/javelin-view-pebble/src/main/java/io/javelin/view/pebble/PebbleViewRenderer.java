@@ -1,6 +1,7 @@
 package io.javelin.view.pebble;
 
 import io.pebbletemplates.pebble.PebbleEngine;
+import io.pebbletemplates.pebble.extension.Extension;
 import io.pebbletemplates.pebble.loader.ClasspathLoader;
 import io.pebbletemplates.pebble.loader.FileLoader;
 import io.javelin.core.HtmlResponse;
@@ -10,6 +11,7 @@ import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
@@ -23,10 +25,14 @@ public final class PebbleViewRenderer implements ViewRenderer {
     }
 
     public PebbleViewRenderer(String prefix, Options options) {
+        this(prefix, options, List.of());
+    }
+
+    public PebbleViewRenderer(String prefix, Options options, List<Extension> extensions) {
         ClasspathLoader loader = new ClasspathLoader();
         loader.setPrefix(prefix);
         loader.setSuffix(options.suffix());
-        this.engine = builder(loader, options).build();
+        this.engine = builder(loader, options, extensions).build();
     }
 
     public PebbleViewRenderer(Path root, String prefix) {
@@ -34,19 +40,23 @@ public final class PebbleViewRenderer implements ViewRenderer {
     }
 
     public PebbleViewRenderer(Path root, String prefix, Options options) {
+        this(root, prefix, options, List.of());
+    }
+
+    public PebbleViewRenderer(Path root, String prefix, Options options, List<Extension> extensions) {
         Path views = root.resolve(prefix).toAbsolutePath().normalize();
         if (Files.isDirectory(views)) {
             FileLoader loader = new FileLoader();
             loader.setPrefix(views.toString());
             loader.setSuffix(options.suffix());
-            this.engine = builder(loader, options).build();
+            this.engine = builder(loader, options, extensions).build();
             return;
         }
 
         ClasspathLoader loader = new ClasspathLoader();
         loader.setPrefix(prefix);
         loader.setSuffix(options.suffix());
-        this.engine = builder(loader, options).build();
+        this.engine = builder(loader, options, extensions).build();
     }
 
     public void share(String key, Object value) {
@@ -66,7 +76,11 @@ public final class PebbleViewRenderer implements ViewRenderer {
         }
     }
 
-    private static PebbleEngine.Builder builder(io.pebbletemplates.pebble.loader.Loader<?> loader, Options options) {
+    private static PebbleEngine.Builder builder(
+            io.pebbletemplates.pebble.loader.Loader<?> loader,
+            Options options,
+            List<Extension> extensions
+    ) {
         PebbleEngine.Builder builder = new PebbleEngine.Builder()
                 .loader(loader)
                 .cacheActive(options.cache())
@@ -81,6 +95,7 @@ public final class PebbleViewRenderer implements ViewRenderer {
         options.defaultLocale().ifPresent(builder::defaultLocale);
         options.defaultEscapingStrategy().ifPresent(builder::defaultEscapingStrategy);
         options.maxRenderedSize().ifPresent(builder::maxRenderedSize);
+        extensions.forEach(builder::extension);
         return builder;
     }
 

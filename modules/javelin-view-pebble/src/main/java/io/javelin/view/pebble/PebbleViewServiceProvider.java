@@ -12,13 +12,15 @@ import java.util.Optional;
 public final class PebbleViewServiceProvider implements ServiceProvider {
     @Override
     public void register(Application app) {
+        app.instance(PebbleViewExtensions.class, new PebbleViewExtensions());
         app.singleton(ViewRenderer.class, () -> {
             String prefix = app.config().getString("view.prefix", "resources/views");
             PebbleViewRenderer.Options options = options(app);
+            PebbleViewExtensions extensions = app.make(PebbleViewExtensions.class);
             if (app.has(Path.class)) {
-                return new PebbleViewRenderer(app.make(Path.class), prefix, options);
+                return new PebbleViewRenderer(app.make(Path.class), prefix, options, extensions.extensions());
             }
-            return new PebbleViewRenderer(prefix, options);
+            return new PebbleViewRenderer(prefix, options, extensions.extensions());
         });
     }
 
