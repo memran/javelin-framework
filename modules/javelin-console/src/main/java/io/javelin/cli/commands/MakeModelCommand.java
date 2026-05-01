@@ -19,7 +19,7 @@ public final class MakeModelCommand extends GenerateCommandSupport {
     @Override
     public void run() {
         this.force = overwrite;
-        Path path = generate(name, "Model", "app.models", context.workingDirectory().resolve("app"), "model.stub");
+        Path path = generate(name, "", "app.models", context.workingDirectory().resolve("app"), "model.stub");
         context.output().success("Model created: " + context.workingDirectory().relativize(path));
     }
 }

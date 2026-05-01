@@ -18,6 +18,7 @@
         <module>modules/javelin-view-pebble</module>
         <module>modules/javelin-console</module>
         <module>modules/javelin-security</module>
+        <module>modules/javelin-support</module>
         <module>modules/javelin-cache</module>
         <module>modules/javelin-starter</module>
         <module>demo-app</module>

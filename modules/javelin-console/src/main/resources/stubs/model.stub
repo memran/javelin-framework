@@ -1,13 +1,18 @@
 package {{ package }};
 
-public final class {{ class }} {
-    private final long id;
+import io.javelin.core.Database;
+import io.javelin.core.Model;
 
-    public {{ class }}(long id) {
-        this.id = id;
+public final class {{ class }} extends Model {
+    public {{ class }}(Database database) {
+        super(database);
     }
 
-    public long id() {
-        return id;
+    public {{ class }}(Database database, Long id) {
+        super(database, id);
     }
+
+    // Use fill(...) or forceFill(...) with fillable()/guarded() for mass assignment.
+    // Override casts() when you want date, enum, or scalar fields to hydrate from strings.
+    // Override attributes() only when you want to expose a custom computed map.
 }

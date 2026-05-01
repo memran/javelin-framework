@@ -1,6 +1,12 @@
 # Javelin CLI
 
-Javelin CLI provides the `javelin` executable for project scaffolding, local development, code generation, build tasks, queues, scheduler hooks, migrations, diagnostics, and AI-assisted workflows.
+Javelin CLI provides the `javelin` executable for the developer workspace. It is the toolchain for project scaffolding, local development, code generation, build tasks, queues, scheduler hooks, migrations, diagnostics, and AI-assisted workflows.
+
+Use it alongside a normal Maven application project:
+
+- the workspace depends on `javelin-starter`
+- the workspace can still add any other Maven libraries it needs
+- the CLI handles scaffolding, serving, and developer tasks for that workspace
 
 ## Build
 
@@ -21,6 +27,13 @@ java -jar modules/javelin-console/target/javelin-console-0.1.0-SNAPSHOT-all.jar 
 ```
 
 Install a global launcher by adding a small shell script or `.cmd` file named `javelin` that runs the jar.
+
+When you run `javelin new <name>`, the generated workspace is intentionally lightweight: it consumes the framework through Maven, but remains your application project and can bring in additional libraries without involving the framework modules directly.
+The generated workspace includes its own `install.ps1` and `install.sh` so the developer can bootstrap that app separately from the CLI installation.
+It also includes a workspace `README.md` that explains the app-level Maven dependency and the usual developer commands.
+You can also customize the starter validation example with `javelin new <name> --validation-rule TeenAge`, which generates `app/validation/TeenAgeRule.java`.
+`javelin make:model User` now generates a workspace model that extends the framework `Model` base class.
+Workspace models can override `casts()` to hydrate dates, enums, and common scalar fields from strings explicitly.
 
 ## Core Commands
 

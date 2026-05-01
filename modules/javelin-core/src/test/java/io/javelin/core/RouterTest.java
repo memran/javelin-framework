@@ -2,11 +2,13 @@ package io.javelin.core;
 
 import org.junit.jupiter.api.Test;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class RouterTest {
     @Test
@@ -55,5 +57,26 @@ final class RouterTest {
         Routes.group(router, "/admin", admin -> Routes.add(admin, Routes.get("/", request -> Response.text("ok"))));
 
         assertEquals(List.of("/admin"), router.routes().stream().map(Route::path).toList());
+    }
+
+    @Test
+    void returnsHtmlErrorPageForMissingRoutesWhenBrowserRequestsHtml() {
+        Router router = new Router();
+        HttpKernel kernel = new HttpKernel(router, new DefaultExceptionHandler());
+        Request request = new Request(
+                HttpMethod.GET,
+                "/missing",
+                Map.of("Accept", List.of("text/html")),
+                Map.of(),
+                Map.of(),
+                new byte[0],
+                "127.0.0.1"
+        );
+
+        Response response = kernel.handle(request);
+
+        assertEquals(404, response.status());
+        assertEquals("text/html; charset=utf-8", response.headers().get("Content-Type"));
+        assertTrue(new String(response.body(), StandardCharsets.UTF_8).contains("Not Found"));
     }
 }

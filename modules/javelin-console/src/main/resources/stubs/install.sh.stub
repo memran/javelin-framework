@@ -1,0 +1,26 @@
+#!/usr/bin/env sh
+set -eu
+
+ROOT=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+SKIP_BUILD=0
+if [ "${1:-}" = "--skip-build" ]; then
+  SKIP_BUILD=1
+fi
+
+need_command() {
+  if ! command -v "$1" >/dev/null 2>&1; then
+    echo "$1 is required. $2" >&2
+    exit 1
+  fi
+}
+
+need_command java "Install Java 25+ and make sure java is available on PATH."
+need_command mvn "Install Maven 3.9+ and make sure mvn is available on PATH."
+
+if [ "$SKIP_BUILD" -eq 0 ]; then
+  (cd "$ROOT" && mvn test)
+fi
+
+echo "Workspace ready."
+echo "If the Javelin CLI is installed, run: javelin serve"
+echo "Otherwise, use Maven directly from this workspace."

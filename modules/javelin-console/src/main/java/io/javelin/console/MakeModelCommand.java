@@ -14,8 +14,18 @@ public final class MakeModelCommand implements Runnable {
         GeneratorSupport.write(Path.of("app/models/" + name + ".java"), """
                 package app.models;
 
-                public record %s(Long id) {
+                import io.javelin.core.Database;
+                import io.javelin.core.Model;
+
+                public final class %s extends Model {
+                    public %s(Database database) {
+                        super(database);
+                    }
+
+                    public %s(Database database, Long id) {
+                        super(database, id);
+                    }
                 }
-                """.formatted(name));
+                """.formatted(name, name, name));
     }
 }

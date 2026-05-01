@@ -13,7 +13,9 @@ public final class ProviderLoader {
             if (!ServiceProvider.class.isAssignableFrom(providerClass)) {
                 throw new IllegalStateException(className + " does not implement ServiceProvider");
             }
-            return (ServiceProvider) providerClass.getDeclaredConstructor().newInstance();
+            var constructor = providerClass.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            return (ServiceProvider) constructor.newInstance();
         } catch (ReflectiveOperationException exception) {
             throw new IllegalStateException("Unable to load provider " + className, exception);
         }

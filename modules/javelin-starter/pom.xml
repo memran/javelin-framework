@@ -52,8 +52,18 @@
         </dependency>
         <dependency>
             <groupId>io.javelin</groupId>
+            <artifactId>javelin-support</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.javelin</groupId>
             <artifactId>javelin-cache</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

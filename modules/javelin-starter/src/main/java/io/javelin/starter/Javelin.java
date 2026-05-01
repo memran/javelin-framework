@@ -34,6 +34,7 @@ public final class Javelin {
         app.register(new SecurityServiceProvider());
         app.register(new CacheServiceProvider());
         app.register(new ConsoleServiceProvider());
+        new ValidationRuleLoader().load(app);
         new ProviderLoader().load(app);
         return app;
     }

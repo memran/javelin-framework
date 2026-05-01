@@ -14,11 +14,13 @@
     </properties>
 
     <dependencies>
+        <!-- Application code consumes the framework as a normal Maven dependency. -->
         <dependency>
             <groupId>io.javelin</groupId>
             <artifactId>javelin-starter</artifactId>
             <version>${javelin.version}</version>
         </dependency>
+        <!-- Add workspace-specific application libraries below this line. -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>

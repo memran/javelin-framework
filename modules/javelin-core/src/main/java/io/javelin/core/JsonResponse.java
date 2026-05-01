@@ -16,6 +16,10 @@ public final class JsonResponse extends Response {
         return new JsonResponse(200, data);
     }
 
+    public static JsonResponse of(int status, Object data) {
+        return new JsonResponse(status, data);
+    }
+
     public static JsonResponse error(String message, int status) {
         return new JsonResponse(status, Map.of("error", message, "status", status));
     }

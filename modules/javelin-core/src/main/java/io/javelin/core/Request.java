@@ -1,12 +1,13 @@
 package io.javelin.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.javelin.support.Input;
 
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashMap;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,9 +27,9 @@ public final class Request {
                    Map<String, String> params, byte[] body, String remoteAddress) {
         this.method = method;
         this.path = path;
-        this.headers = Map.copyOf(headers);
-        this.query = Map.copyOf(query);
-        this.params = Map.copyOf(params);
+        this.headers = new LinkedHashMap<>(headers);
+        this.query = new LinkedHashMap<>(query);
+        this.params = new LinkedHashMap<>(params);
         this.body = body == null ? new byte[0] : body.clone();
         this.remoteAddress = remoteAddress;
     }
@@ -37,7 +38,7 @@ public final class Request {
         if (rawQuery == null || rawQuery.isBlank()) {
             return Collections.emptyMap();
         }
-        Map<String, String> values = new HashMap<>();
+        Map<String, String> values = new LinkedHashMap<>();
         for (String pair : rawQuery.split("&")) {
             String[] parts = pair.split("=", 2);
             String key = URLDecoder.decode(parts[0], StandardCharsets.UTF_8);
@@ -78,6 +79,14 @@ public final class Request {
         return new String(body, StandardCharsets.UTF_8);
     }
 
+    public Input input() {
+        Map<String, String> values = new LinkedHashMap<>(query);
+        if (isFormUrlEncoded()) {
+            values.putAll(parseQuery(bodyAsString()));
+        }
+        return Input.from(values);
+    }
+
     public <T> T json(Class<T> type) {
         try {
             return JSON.readValue(body, type);
@@ -90,7 +99,17 @@ public final class Request {
         return remoteAddress;
     }
 
+    public Map<String, String> queryParameters() {
+        return Map.copyOf(query);
+    }
+
     Request withParams(Map<String, String> routeParams) {
         return new Request(method, path, headers, query, routeParams, body, remoteAddress);
+    }
+
+    private boolean isFormUrlEncoded() {
+        return header("Content-Type")
+                .map(value -> value.toLowerCase().contains("application/x-www-form-urlencoded"))
+                .orElse(false);
     }
 }

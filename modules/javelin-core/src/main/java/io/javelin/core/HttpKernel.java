@@ -17,7 +17,9 @@ public final class HttpKernel {
             Router.ResolvedRoute resolved = router.resolve(request.method(), request.path())
                     .orElse(null);
             if (resolved == null) {
-                return JsonResponse.error("Not Found", 404);
+                return wantsJson(request)
+                        ? JsonResponse.error("Not Found", 404)
+                        : Response.errorPage(404, "Not Found", "The requested resource could not be found.");
             }
             Request routedRequest = request.withParams(resolved.params());
             List<Middleware> pipeline = new ArrayList<>(router.globalMiddleware());
@@ -33,5 +35,11 @@ public final class HttpKernel {
             return handler.handle(request);
         }
         return middleware.get(index).handle(request, next -> dispatch(middleware, index + 1, next, handler));
+    }
+
+    private static boolean wantsJson(Request request) {
+        return request.header("Accept")
+                .map(value -> value.toLowerCase().contains("application/json"))
+                .orElse(false);
     }
 }

@@ -20,6 +20,13 @@ Javelin is not Spring Boot. Keep behavior explicit, modular, and cheap to start.
 - Keep security defaults on in starter wiring.
 - Add tests when touching shared contracts or request flow.
 
+## Graphify Workflow
+
+- When a question is about this repository, query `graphify` first before answering.
+- Prefer `graphify query`, `graphify explain`, or `graphify path` to inspect the existing graph instead of guessing from memory.
+- After finishing changes that affect source, docs, or repo structure, refresh the graph with `python -m graphify update .` from the repo root.
+- If the change only affects generated graph outputs, do not hand-edit them; regenerate through `graphify`.
+
 ## Next Useful Work
 
 - Add migration runner and migration file generator.

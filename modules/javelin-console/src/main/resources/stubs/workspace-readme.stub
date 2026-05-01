@@ -1,0 +1,48 @@
+# {{ project }}
+
+This is a Javelin workspace application.
+
+## What lives here
+
+- Application code and routes
+- Workspace-specific Maven dependencies
+- App config in `config/`
+- Generated and runtime files under `storage/`
+
+## Bootstrap
+
+From this directory:
+
+```bash
+./install.sh
+```
+
+On Windows:
+
+```powershell
+.\install.ps1
+```
+
+The installer checks Java and Maven, then runs `mvn test` inside the workspace.
+
+## Framework dependency
+
+This workspace consumes Javelin through Maven:
+
+```xml
+<dependency>
+    <groupId>io.javelin</groupId>
+    <artifactId>javelin-starter</artifactId>
+    <version>${javelin.version}</version>
+</dependency>
+```
+
+Add any other application libraries you need in this POM. The workspace is a normal Maven project.
+
+## Developer commands
+
+- `javelin serve`
+- `javelin build`
+- `javelin routes:list`
+- `javelin make:controller UserController`
+

@@ -1,0 +1,26 @@
+package app.validation;
+
+import io.javelin.support.Input;
+import io.javelin.support.ValidationRule;
+
+public final class AdultAgeRule extends ValidationRule {
+    @Override
+    public String name() {
+        return "adult-age";
+    }
+
+    @Override
+    public String key() {
+        return "age";
+    }
+
+    @Override
+    protected boolean passes(Input input) {
+        return input.integer("age").orElse(0) >= 18;
+    }
+
+    @Override
+    protected String message() {
+        return "must be at least 18";
+    }
+}

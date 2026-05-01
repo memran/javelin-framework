@@ -14,9 +14,38 @@ This repository is the first production-oriented MVP phase. It includes the boot
 - `modules/javelin-view-pebble` - Pebble template renderer
 - `modules/javelin-console` - Picocli command kernel and generators
 - `modules/javelin-security` - secure headers, request limits, rate limiting, password hashing
+- `modules/javelin-support` - short Laravel-style helper facades for strings, dates, arrays, files, objects, validation, HTML, and security
 - `modules/javelin-cache` - simple in-memory cache contract and implementation
 - `modules/javelin-starter` - batteries-included bootstrap
 - `demo-app` - runnable demo application
+
+## Documentation
+
+Module-by-module API and usage examples live under [`docs/`](docs/README.md).
+
+## Maven Split
+
+Javelin is designed as two cooperating pieces:
+
+- `javelin-core` and its adapter modules are the reusable framework library.
+- `javelin-starter` is the default runtime composition for application code.
+- `javelin-console` is the developer workspace toolchain that provides the `javelin` command.
+
+For a library or application that wants to consume Javelin from Maven, depend on the framework artifacts directly:
+
+```xml
+<dependency>
+    <groupId>io.javelin</groupId>
+    <artifactId>javelin-starter</artifactId>
+    <version>${javelin.version}</version>
+</dependency>
+```
+
+Then keep your actual workspace as a normal Maven application project. That workspace can add Javelin plus any other libraries it needs, and the `javelin` command can be used for scaffolding, serving, code generation, migrations, diagnostics, and AI-assisted workflows.
+
+The generated workspace template already follows that shape: the project POM depends on `javelin-starter`, while the workspace remains free to add its own application dependencies.
+It also includes a workspace-local `README.md`, `install.ps1`, and `install.sh` that explain the app setup, verify Java and Maven, then run `mvn test` from inside the generated app.
+The starter validation example is customizable too: `javelin new crm-app --validation-rule TeenAge` will generate `app/validation/TeenAgeRule.java`.
 
 ## Requirements
 
@@ -51,6 +80,20 @@ After changing CLI source, rebuild the CLI jar:
 
 ```bash
 mvn -pl :javelin-console -am package -DskipTests
+```
+
+When you generate a new workspace with `javelin new <name>`, use the workspace-local installer inside that app directory:
+
+```bash
+cd <name>
+./install.sh
+```
+
+On Windows:
+
+```powershell
+cd <name>
+.\install.ps1
 ```
 
 ## Boot Flow
@@ -91,6 +134,42 @@ app.make(PebbleViewExtensions.class)
 ```
 
 See `demo-app/app/views/JavelinViewExtension.java` for a custom filter and function example.
+
+## Support Utilities
+
+The `javelin-support` module provides small, stateless helper facades for common library and application tasks:
+
+```java
+import java.nio.file.Path;
+import java.util.List;
+
+import io.javelin.support.Arr;
+import io.javelin.support.Date;
+import io.javelin.support.File;
+import io.javelin.support.Html;
+import io.javelin.support.Obj;
+import io.javelin.support.Security;
+import io.javelin.support.Str;
+import io.javelin.support.Validator;
+
+String slug = Str.toSlug("Javelin Framework");
+List<String> tags = Arr.compact(new String[] {"core", null, "support"});
+Path path = File.safeResolve(Path.of("storage"), "logs", "app.log");
+String today = Date.format(Date.today());
+String escaped = Html.escape("<strong>safe</strong>");
+String fallback = Obj.coalesce(null, "default");
+String name = Validator.requireNonBlank("User", "name is required");
+String token = Security.randomToken(16);
+```
+
+These helpers are intentionally strict and predictable:
+
+- no hidden global state
+- no annotation scanning
+- no framework magic
+- JDK-only behavior where practical
+
+Use them when you want concise utility methods without pulling in a heavy framework abstraction.
 
 ## Database
 

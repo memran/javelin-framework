@@ -28,6 +28,22 @@ final class CommandGenerationTest {
     }
 
     @Test
+    void createsModelFromTemplate() throws Exception {
+        Path root = Files.createTempDirectory("javelin-model");
+        StringWriter output = new StringWriter();
+        CommandContext context = new CommandContext(null, root, new ConsoleOutput(new PrintWriter(output, true), false));
+
+        int exit = new ConsoleKernel(context).run(new String[]{"make:model", "User"});
+
+        assertEquals(0, exit);
+        Path model = root.resolve("app/models/User.java");
+        assertTrue(Files.exists(model));
+        assertTrue(Files.readString(model).contains("extends Model"));
+        assertTrue(Files.readString(model).contains("public User(Database database)"));
+        assertTrue(output.toString().contains("Model created"));
+    }
+
+    @Test
     void createsProjectSkeleton() throws Exception {
         Path root = Files.createTempDirectory("javelin-new");
         CommandContext context = new CommandContext(null, root, new ConsoleOutput(new PrintWriter(new StringWriter(), true), false));
@@ -37,15 +53,34 @@ final class CommandGenerationTest {
         assertEquals(0, exit);
         Path project = root.resolve("crm-app");
         assertTrue(Files.exists(project.resolve("pom.xml")));
+        assertTrue(Files.exists(project.resolve("README.md")));
         assertTrue(Files.exists(project.resolve(".env")));
         assertTrue(Files.exists(project.resolve("Main.java")));
+        assertTrue(Files.exists(project.resolve("install.sh")));
+        assertTrue(Files.exists(project.resolve("install.ps1")));
         assertTrue(Files.exists(project.resolve("app/controllers/HomeController.java")));
+        assertTrue(Files.exists(project.resolve("app/validation/AdultAgeRule.java")));
         assertTrue(Files.exists(project.resolve("app/views")));
         assertTrue(Files.exists(project.resolve("config/app.yaml")));
         assertTrue(Files.exists(project.resolve("config/view.yml")));
         assertTrue(Files.exists(project.resolve("routes/web.java")));
         assertTrue(Files.exists(project.resolve("database/migrations")));
         assertTrue(Files.exists(project.resolve("modules")));
+    }
+
+    @Test
+    void createsProjectSkeletonWithCustomValidationRule() throws Exception {
+        Path root = Files.createTempDirectory("javelin-new-custom-rule");
+        CommandContext context = new CommandContext(null, root, new ConsoleOutput(new PrintWriter(new StringWriter(), true), false));
+
+        int exit = new ConsoleKernel(context).run(new String[]{"new", "--validation-rule", "TeenAge", "crm-app"});
+
+        assertEquals(0, exit);
+        Path project = root.resolve("crm-app");
+        Path rule = project.resolve("app/validation/TeenAgeRule.java");
+        assertTrue(Files.exists(rule));
+        assertTrue(Files.readString(rule).contains("class TeenAgeRule"));
+        assertTrue(Files.readString(rule).contains("return \"teen-age\";"));
     }
 
     @Test

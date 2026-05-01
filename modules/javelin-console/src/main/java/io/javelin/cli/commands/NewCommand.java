@@ -18,6 +18,8 @@ public final class NewCommand extends AbstractCommand {
     String name;
     @CommandLine.Option(names = "--force", description = "Allow writing into an existing empty directory")
     boolean force;
+    @CommandLine.Option(names = "--validation-rule", description = "Starter validation rule class name", defaultValue = "AdultAgeRule")
+    String validationRule;
 
     public NewCommand(CommandContext context) {
         super(context);
@@ -33,6 +35,7 @@ public final class NewCommand extends AbstractCommand {
         FileGenerator files = new FileGenerator(new TemplateEngine());
         files.directory(root.resolve("app/controllers"));
         files.directory(root.resolve("app/providers"));
+        files.directory(root.resolve("app/validation"));
         files.directory(root.resolve("app/views"));
         files.directory(root.resolve("config"));
         files.directory(root.resolve("routes"));
@@ -42,16 +45,33 @@ public final class NewCommand extends AbstractCommand {
         files.directory(root.resolve("database/seeders"));
         files.directory(root.resolve("tests"));
         files.directory(root.resolve("modules"));
-        Map<String, String> values = Map.of("project", name, "class", Names.className(name, ""));
+        String validationClass = Names.className(validationRule, "Rule");
+        Map<String, String> values = Map.of(
+                "project", name,
+                "class", Names.className(name, ""),
+                "validationRuleClass", validationClass,
+                "validationRuleName", validationRuleName(validationClass)
+        );
         files.write(root.resolve("pom.xml"), "project-pom.stub", values, force);
+        files.write(root.resolve("README.md"), "workspace-readme.stub", values, force);
         files.write(root.resolve(".env"), "env.stub", values, force);
         files.write(root.resolve("Main.java"), "main.stub", values, force);
         files.write(root.resolve("config/app.yaml"), "app-yaml.stub", values, force);
         files.write(root.resolve("config/view.yml"), "view-yml.stub", values, force);
+        files.write(root.resolve("install.ps1"), "install.ps1.stub", values, force);
+        files.write(root.resolve("install.sh"), "install.sh.stub", values, force);
         files.write(root.resolve("app/controllers/HomeController.java"), "home-controller.stub", values, force);
         files.write(root.resolve("app/providers/AppServiceProvider.java"), "app-provider.stub", values, force);
+        files.write(root.resolve("app/validation/" + validationClass + ".java"), "validation-rule.stub", values, force);
         files.write(root.resolve("routes/web.java"), "routes.stub", values, force);
         context.output().success("Project created: " + context.workingDirectory().relativize(root));
-        context.output().info("Next: cd " + name + " && mvn test");
+        context.output().info("Next: cd " + name + " && ./install.sh");
+    }
+
+    private String validationRuleName(String validationClass) {
+        String base = validationClass.endsWith("Rule")
+                ? validationClass.substring(0, validationClass.length() - 4)
+                : validationClass;
+        return Names.snake(base).replace('_', '-');
     }
 }

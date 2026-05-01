@@ -1,0 +1,29 @@
+param(
+    [switch] $SkipBuild
+)
+
+$ErrorActionPreference = "Stop"
+
+$Root = Split-Path -Parent $MyInvocation.MyCommand.Path
+
+function Require-Command($Name, $Fix) {
+    if (-not (Get-Command $Name -ErrorAction SilentlyContinue)) {
+        Write-Error "$Name is required. $Fix"
+    }
+}
+
+Require-Command "java" "Install Java 25+ and make sure java is available on PATH."
+Require-Command "mvn" "Install Maven 3.9+ and make sure mvn is available on PATH."
+
+if (-not $SkipBuild) {
+    Push-Location $Root
+    try {
+        mvn test
+    } finally {
+        Pop-Location
+    }
+}
+
+Write-Host "Workspace ready." -ForegroundColor Green
+Write-Host "If the Javelin CLI is installed, run: javelin serve"
+Write-Host "Otherwise, use Maven directly from this workspace."
