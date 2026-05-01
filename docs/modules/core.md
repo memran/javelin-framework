@@ -37,6 +37,30 @@ user.save();
 Model.find(db, User.class, 1L).ifPresent(found -> System.out.println(found.table()));
 ```
 
+Enum-backed fields are also supported through `casts()`:
+
+```java
+enum Status {
+    DRAFT,
+    PUBLISHED
+}
+
+final class Post extends Model {
+    Post(Database database) {
+        super(database);
+    }
+
+    @Override
+    protected Map<String, Class<?>> casts() {
+        return Map.of("status", Status.class);
+    }
+}
+
+Post post = new Post(db);
+post.forceFill(Map.of("status", "published"));
+Status status = post.attribute("status").map(Status.class::cast).orElseThrow();
+```
+
 ## Function Usage
 
 - `Application(Config, Env)` creates the container and registers core singletons.

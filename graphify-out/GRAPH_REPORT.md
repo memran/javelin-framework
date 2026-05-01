@@ -1,7 +1,7 @@
 # Graph Report - javelin-framework  (2026-05-01)
 
 ## Corpus Check
-- 137 files · ~24,717 words
+- 137 files · ~24,765 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
