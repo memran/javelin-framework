@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -41,6 +42,69 @@ final class CommandGenerationTest {
         assertTrue(Files.readString(model).contains("extends Model"));
         assertTrue(Files.readString(model).contains("public User(Database database)"));
         assertTrue(output.toString().contains("Model created"));
+    }
+
+    @Test
+    void createsCreateTableYamlMigrationFromTemplate() throws Exception {
+        Path root = Files.createTempDirectory("javelin-migration");
+        StringWriter output = new StringWriter();
+        CommandContext context = new CommandContext(null, root, new ConsoleOutput(new PrintWriter(output, true), false));
+
+        int exit = new ConsoleKernel(context).run(new String[]{"make:migration", "create_users_table", "--table", "users"});
+
+        assertEquals(0, exit);
+        Path migrations = root.resolve("database/migrations");
+        try (Stream<Path> files = Files.list(migrations)) {
+            Path migration = files.findFirst().orElseThrow();
+            assertTrue(migration.getFileName().toString().endsWith(".yml"));
+            String contents = Files.readString(migration);
+            assertTrue(contents.contains("name: create_users_table"));
+            assertTrue(contents.contains("type: create-table"));
+            assertTrue(contents.contains("table: users"));
+            assertTrue(contents.contains("create table users"));
+            assertTrue(contents.contains("up:"));
+            assertTrue(contents.contains("down:"));
+        }
+        assertTrue(output.toString().contains("Migration created"));
+    }
+
+    @Test
+    void createsAddColumnYamlMigrationFromTemplate() throws Exception {
+        Path root = Files.createTempDirectory("javelin-migration-add-column");
+        StringWriter output = new StringWriter();
+        CommandContext context = new CommandContext(null, root, new ConsoleOutput(new PrintWriter(output, true), false));
+
+        int exit = new ConsoleKernel(context).run(new String[]{"make:migration", "add_avatar_to_users", "--type", "add-column", "--table", "users", "--column", "avatar_path", "--datatype", "varchar(512)"});
+
+        assertEquals(0, exit);
+        try (Stream<Path> files = Files.list(root.resolve("database/migrations"))) {
+            Path migration = files.findFirst().orElseThrow();
+            String contents = Files.readString(migration);
+            assertTrue(contents.contains("type: add-column"));
+            assertTrue(contents.contains("table: users"));
+            assertTrue(contents.contains("column: avatar_path"));
+            assertTrue(contents.contains("alter table users add column avatar_path varchar(512)"));
+            assertTrue(contents.contains("alter table users drop column avatar_path"));
+        }
+    }
+
+    @Test
+    void createsSeedYamlMigrationFromTemplate() throws Exception {
+        Path root = Files.createTempDirectory("javelin-migration-seed");
+        StringWriter output = new StringWriter();
+        CommandContext context = new CommandContext(null, root, new ConsoleOutput(new PrintWriter(output, true), false));
+
+        int exit = new ConsoleKernel(context).run(new String[]{"make:migration", "seed_users", "--type", "seed", "--table", "users"});
+
+        assertEquals(0, exit);
+        try (Stream<Path> files = Files.list(root.resolve("database/migrations"))) {
+            Path migration = files.findFirst().orElseThrow();
+            String contents = Files.readString(migration);
+            assertTrue(contents.contains("type: seed"));
+            assertTrue(contents.contains("table: users"));
+            assertTrue(contents.contains("insert into users (name)"));
+            assertTrue(contents.contains("delete from users where name = 'Example row'"));
+        }
     }
 
     @Test

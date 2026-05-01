@@ -2,7 +2,7 @@
 
 Artifact: `io.javelin:javelin-support`
 
-`javelin-support` provides small, strict helper facades for common string, array, file, object, collection, validation, HTML, and security tasks.
+`javelin-support` provides small, strict helper facades for common string, array, file, image, HTTP client, AI client, object, collection, validation, HTML, and security tasks.
 
 ## Public API
 
@@ -11,6 +11,9 @@ Artifact: `io.javelin:javelin-support`
 - `Str`
 - `Arr`
 - `File`
+- `Image`
+- `Http`
+- `Ai`
 - `Date`
 - `Obj`
 - `Validator`
@@ -68,15 +71,35 @@ Validation validation = Validation.of(input)
 - `Input.validate(registry)` starts a fluent validation chain with custom app rules loaded into a registry.
 - `Validation.of(input)` starts a fluent validation chain.
 - `Validation.required`, `requiredIf`, `minLength`, `maxLength`, `length`, `integer`, `between`, `matches`, `email`, and `oneOf` collect rule failures before `validate()` throws once.
+- `Validation.pathExists`, `fileExists`, `directoryExists`, `readableFile`, `writableFile`, `hasExtension`, and `maxBytes` cover file and path validation on explicit filesystem values.
 - `Validation.custom(rule)` applies a developer-defined rule object.
+- `Validation.rule(rule, rule, ...)` chains multiple reusable rules in one call.
 - `Validation.rule(name)` applies a registry-loaded custom rule by name.
 - `ValidationRule` is the abstract base for app-defined rules.
+- `ValidationRule.of(...)` creates reusable ad-hoc rules without a dedicated subclass.
+- `ValidationRule.and(...)`, `or(...)`, `negate(...)`, `named(...)`, and `onKey(...)` let you compose and adapt rules explicitly.
 - `ValidationRuleRegistry` stores rules loaded from the app folder or added explicitly by the app.
 - `Str.isBlank`, `trimToNull`, and `defaultIfBlank` handle null-safe string cleanup.
 - `Str.toSlug`, `toSnakeCase`, `toCamelCase`, `capitalize`, `repeat`, and `mask` transform strings in common app tasks.
 - `Arr.isEmpty`, `first`, `last`, `contains`, `toList`, `compact`, and `chunk` provide small array/list helpers.
 - `File.ensureDirectory`, `ensureParentDirectory`, `readString`, and `writeString` cover JDK file operations with explicit errors.
 - `File.extension`, `baseName`, `hasExtension`, and `safeResolve` are useful for file-name and path handling.
+- `Image.isImage`, `info`, `dimensions`, and `read` inspect image files without introducing a larger media stack.
+- `Image.Info` and `Image.Dimensions` expose image metadata in small value objects.
+- `Image.of(path)` returns a fluent handle when you want `path()`, `width()`, `height()`, `format()`, `dimensions()`, or `read()` in a chain-friendly form.
+- Use `Image.info(...)` when a file upload or asset needs a quick dimension and format check before processing.
+- `Http.of(baseUrl)` returns a fluent client handle for JDK `HttpClient` requests.
+- `Http.client()` starts an unbound client when you want to set the base URL later.
+- `Http.Handle` lets you set headers, timeouts, and conditional configuration with `when(...)` and `unless(...)`.
+- `Http.Handle.get`, `getJson`, `head`, `delete`, `postJson`, `putJson`, `patchJson`, `postText`, and `postForm` cover the common request types.
+- `Http.Handle.download(path, target)` writes a remote response body to disk with explicit file handling.
+- `Http.Response` exposes status, headers, body text, and success checks without introducing a larger response abstraction.
+- `Ai.from(configFile)` loads an OpenAI-compatible AI client from `.javelin/ai.properties`.
+- `Ai.of(baseUrl)` and `Ai.client()` create fluent chat clients.
+- `Ai.Handle.chat(...)` sends a non-streaming chat request and returns the assembled reply text.
+- `Ai.Handle.stream(...)` streams OpenAI-compatible SSE chunks and invokes a token callback as content arrives.
+- `Ai.Message.system`, `user`, and `assistant` help build explicit chat histories.
+- `Ai.Reply` exposes the provider, model, response text, raw payload, and whether the reply was streamed.
 - `Date.today()` and `Date.now()` use UTC so values stay predictable across environments.
 - `Date.parseDate(...)` and `parseDateTime(...)` read ISO-8601 input.
 - `Date.format(...)`, `addDays(...)`, `subtractDays(...)`, `isPast(...)`, and `isFuture(...)` cover the common date tasks.
@@ -84,6 +107,8 @@ Validation validation = Validation.of(input)
 - `Validator.require*` methods enforce preconditions and return the validated value when appropriate.
 - `Html.escape` and `stripTags` handle HTML string safety.
 - `Security.constantTimeEquals`, `sha256Hex`, `randomToken`, and `sanitizeFilename` cover security-oriented utility work.
+- Use the file/path validation helpers when a form field stores a filesystem path, a saved upload path, or a directory chosen by the user.
+- Compose rules with `ValidationRule.of(...)` when you want one-off behavior, or subclass `ValidationRule` when the rule belongs in the app registry.
 
 ## Notes
 

@@ -6,14 +6,19 @@ server:
   host: 127.0.0.1
   port: ${SERVER_PORT:8080}
   driver: jdk
+  static_dir: public
 
 database:
   driver: postgresql
   host: localhost
   port: 5432
   database: {{ project }}
+  migrations_dir: database/migrations
   username: postgres
   password: secret
+
+storage:
+  upload_dir: storage/uploads
 
 log:
   channel: console
@@ -21,6 +26,8 @@ log:
 
 security:
   max_request_bytes: 1048576
+  trusted_proxies:
+    - 127.0.0.1
 
 providers:
   - app.providers.AppServiceProvider

@@ -74,12 +74,20 @@ Status status = post.attribute("status").map(Status.class::cast).orElseThrow();
 - `Request.bodyAsString()` returns the request body as UTF-8 text.
 - `Request.json(type)` parses the body into a typed object.
 - `Request.input()` merges query and HTML form values into a fluent `Input` wrapper.
+- `Request.file(name)` returns the first uploaded file for a multipart field.
+- `Request.upload(name)` is an alias for `file(name)`.
+- `Request.files(name)` returns all uploaded files for a multipart field.
+- `Request.uploads()` returns every uploaded file across the request as a flat list.
+- `Request.saveFile(name, directory)` stores the first uploaded file in a directory and returns the saved path.
+- `Request.saveFiles(name, directory)` stores all uploaded files for a multipart field and returns their saved paths.
+- `UploadedFile.saveTo(path)` and `UploadedFile.saveToDirectory(directory)` persist multipart uploads explicitly.
 - `Response.json/html/text/xml` build content-type-aware responses.
 - `Response.redirect(download/noContent/errorPage)` covers redirects, attachments, empty responses, and HTML error pages.
 - `View.use(renderer)` swaps the active template renderer.
 - `View.render(template, data)` renders a template to an `HtmlResponse`.
 - `View.view(template, data)` is the fluent alias for rendering a template with a `Map<String, Object>`.
 - `View.view(template, "name", value, ...)` accepts alternating variable names and values for simple template calls.
+- `Database.execute(sql)` runs framework-managed raw SQL, which is used by the migration runner for table creation and schema statements.
 - `Database.transaction(callback)` wraps a unit of work in a transaction and returns the callback result.
 - `Model.find(database, type, id)` loads a single row into a concrete workspace model.
 - `Model.findOrFail(database, type, id)` fails fast when the row is missing.

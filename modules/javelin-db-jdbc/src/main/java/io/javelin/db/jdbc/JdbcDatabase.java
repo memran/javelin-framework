@@ -36,6 +36,21 @@ public final class JdbcDatabase implements Database {
     }
 
     @Override
+    public int execute(String sql) {
+        Connection connection = null;
+        try {
+            connection = connection();
+            try (java.sql.Statement statement = connection.createStatement()) {
+                return statement.executeUpdate(sql);
+            }
+        } catch (java.sql.SQLException exception) {
+            throw new IllegalStateException("Unable to execute SQL", exception);
+        } finally {
+            closeIfNeeded(connection);
+        }
+    }
+
+    @Override
     public <T> T transaction(TransactionCallback<T> callback) {
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(false);
@@ -59,5 +74,15 @@ public final class JdbcDatabase implements Database {
     @Override
     public void close() {
         dataSource.close();
+    }
+
+    private void closeIfNeeded(Connection connection) {
+        if (connection != null && !inTransaction()) {
+            try {
+                connection.close();
+            } catch (java.sql.SQLException exception) {
+                throw new IllegalStateException("Unable to close connection", exception);
+            }
+        }
     }
 }

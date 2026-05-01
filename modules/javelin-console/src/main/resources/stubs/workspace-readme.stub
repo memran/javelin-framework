@@ -7,7 +7,9 @@ This is a Javelin workspace application.
 - Application code and routes
 - Workspace-specific Maven dependencies
 - App config in `config/`
+- Static assets in `public/`
 - Generated and runtime files under `storage/`
+- Explicit migration and upload locations live in `config/app.yaml`
 
 ## Bootstrap
 
@@ -45,4 +47,3 @@ Add any other application libraries you need in this POM. The workspace is a nor
 - `javelin build`
 - `javelin routes:list`
 - `javelin make:controller UserController`
-

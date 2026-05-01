@@ -9,12 +9,12 @@ This repository is the first production-oriented MVP phase. It includes the boot
 - `modules/javelin-core` - application, container, providers, router, request/response, facades, kernel contracts
 - `modules/javelin-config` - `.env` and YAML config loading
 - `modules/javelin-http-jdk` - JDK `HttpServer` adapter using virtual threads
-- `modules/javelin-db-jdbc` - HikariCP-backed JDBC database and query builder
+- `modules/javelin-db-jdbc` - HikariCP-backed JDBC database, query builder, and YAML migration runner
 - `modules/javelin-log-slf4j` - SLF4J/Logback logger adapter
 - `modules/javelin-view-pebble` - Pebble template renderer
 - `modules/javelin-console` - Picocli command kernel and generators
 - `modules/javelin-security` - secure headers, request limits, rate limiting, password hashing
-- `modules/javelin-support` - short Laravel-style helper facades for strings, dates, arrays, files, objects, validation, HTML, and security
+- `modules/javelin-support` - short Laravel-style helper facades for strings, dates, arrays, files, images, HTTP client, AI client, objects, validation, HTML, and security
 - `modules/javelin-cache` - simple in-memory cache contract and implementation
 - `modules/javelin-starter` - batteries-included bootstrap
 - `demo-app` - runnable demo application
@@ -179,6 +179,7 @@ db.table("users").where("id", 1).first();
 ```
 
 The query builder uses prepared statements for values. Keep table and column names framework-controlled or validated before passing dynamic identifiers.
+YAML migration files live under `database/migrations`, and `javelin migrate` / `javelin migrate:rollback` execute them through the JDBC migration runner.
 
 ## CLI
 
@@ -252,6 +253,9 @@ javelin --project demo-app migrate
 
 `javelin build` is explicit. Other project commands, including `serve`, do not rebuild automatically; they run the existing application jar from `target/`.
 
+`javelin make:migration` now generates YAML files under `database/migrations`, and `javelin migrate` / `javelin migrate:rollback` execute those files through the JDBC migration runner.
+Use `--type create-table`, `--type add-column`, or `--type seed` to scaffold the common migration shapes quickly.
+
 If the jar does not exist yet, run:
 
 ```bash
@@ -280,4 +284,4 @@ mvn -pl demo-app -am package -DskipTests
 
 ## Roadmap
 
-Next phases should add migrations, validation, file uploads, trusted proxy parsing, static assets, CSRF/session support, Redis, queues, scheduler, WebSocket, OAuth, metrics, and deploy tooling.
+Next phases should add validation, file uploads, trusted proxy parsing, static assets, CSRF/session support, Redis, queues, scheduler, WebSocket, OAuth, metrics, and deploy tooling.

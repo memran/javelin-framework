@@ -1,0 +1,9 @@
+name: {{ name }}
+type: {{ type }}
+table: {{ table }}
+column: {{ column }}
+datatype: {{ datatype }}
+up:
+  - sql: alter table {{ table }} add column {{ column }} {{ datatype }}
+down:
+  - sql: alter table {{ table }} drop column {{ column }}

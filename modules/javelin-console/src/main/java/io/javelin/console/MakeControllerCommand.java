@@ -16,9 +16,12 @@ public final class MakeControllerCommand implements Runnable {
 
                 import io.javelin.core.Request;
                 import io.javelin.core.Response;
+                import java.nio.file.Path;
 
                 public final class %s {
                     public Response index(Request request) {
+                        Path saved = request.saveFile("file", Path.of("storage/uploads")).orElseThrow();
+                        // Example: user.fill(Map.of("avatar_path", saved.toString())); user.save();
                         return Response.text("Hello from %s");
                     }
                 }

@@ -1,10 +1,20 @@
 package io.javelin.support;
 
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpServer;
 import org.junit.jupiter.api.Test;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,6 +69,171 @@ final class SupportUtilitiesTest {
         assertEquals("note", File.baseName(nested));
         assertTrue(File.hasExtension(nested, ".txt"));
         assertThrows(IllegalArgumentException.class, () -> File.safeResolve(root, "..", "escape.txt"));
+    }
+
+    @Test
+    void imageSupportDetectsAndReadsImageMetadata() throws Exception {
+        Path root = Files.createTempDirectory("javelin-support-image");
+        Path imageFile = root.resolve("logo.png");
+        BufferedImage image = new BufferedImage(2, 3, BufferedImage.TYPE_INT_RGB);
+        ImageIO.write(image, "png", imageFile.toFile());
+
+        assertTrue(Image.isImage(imageFile));
+        assertTrue(Image.of(imageFile).isImage());
+        assertTrue(Image.of(imageFile).exists());
+        assertEquals(imageFile, Image.of(imageFile).path());
+        assertEquals(new Image.Dimensions(2, 3), Image.dimensions(imageFile));
+        assertEquals(new Image.Dimensions(2, 3), Image.of(imageFile).dimensions());
+        assertEquals(2, Image.info(imageFile).orElseThrow().width());
+        assertEquals(3, Image.info(imageFile).orElseThrow().height());
+        assertEquals("png", Image.info(imageFile).orElseThrow().format());
+        assertEquals(2, Image.of(imageFile).width());
+        assertEquals(3, Image.of(imageFile).height());
+        assertEquals("png", Image.of(imageFile).format());
+        assertEquals(2, Image.read(imageFile).getWidth());
+        assertEquals(3, Image.read(imageFile).getHeight());
+        assertEquals(2, Image.of(imageFile).read().getWidth());
+    }
+
+    @Test
+    void httpSupportPerformsFluentRequests() throws Exception {
+        HttpServer server = HttpServer.create(new InetSocketAddress(0), 0);
+        server.createContext("/ping", exchange -> respond(exchange, 200, "pong", "text/plain; charset=utf-8"));
+        server.createContext("/json", exchange -> {
+            String accept = exchange.getRequestHeaders().getFirst("Accept");
+            respond(exchange, 200, accept == null ? "{}" : "{\"accept\":\"" + accept + "\"}", "application/json");
+        });
+        server.createContext("/echo", exchange -> {
+            String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+            respond(exchange, 200, exchange.getRequestMethod() + ":" + body, "text/plain; charset=utf-8");
+        });
+        server.createContext("/form", exchange -> {
+            String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+            respond(exchange, 200, decodeForm(body), "text/plain; charset=utf-8");
+        });
+        server.createContext("/header", exchange -> {
+            String value = exchange.getRequestHeaders().getFirst("X-Test");
+            respond(exchange, 200, value == null ? "missing" : value, "text/plain; charset=utf-8");
+        });
+        server.createContext("/download", exchange -> respond(exchange, 200, "downloaded", "application/octet-stream"));
+        server.start();
+
+        try {
+            String baseUrl = "http://127.0.0.1:" + server.getAddress().getPort();
+            Http.Response ping = Http.of(baseUrl)
+                    .timeout(Duration.ofSeconds(5))
+                    .get("/ping");
+            Http.Response json = Http.of(baseUrl).getJson("/json");
+            Http.Response echo = Http.of(baseUrl)
+                    .withHeader("X-Test", "alpha")
+                    .postText("/echo", "hello");
+            Http.Response form = Http.of(baseUrl)
+                    .postForm("/form", Map.of("name", "Alice", "role", "admin"));
+            Http.Response header = Http.of(baseUrl)
+                    .withHeaders(Map.of("X-Test", "bravo"))
+                    .get("/header");
+            Path downloadTarget = Files.createTempDirectory("javelin-http").resolve("download.bin");
+            Path downloaded = Http.of(baseUrl).download("/download", downloadTarget);
+
+            assertEquals(200, ping.status());
+            assertTrue(ping.successful());
+            assertEquals("pong", ping.bodyText());
+            assertEquals("text/plain; charset=utf-8", ping.contentType().orElseThrow());
+
+            assertEquals(200, json.status());
+            assertEquals("{\"accept\":\"application/json\"}", json.bodyText());
+
+            assertEquals(200, echo.status());
+            assertEquals("POST:hello", echo.bodyText());
+
+            assertEquals(200, form.status());
+            assertTrue(form.bodyText().contains("name=Alice"));
+            assertTrue(form.bodyText().contains("role=admin"));
+
+            assertEquals(200, header.status());
+            assertEquals("bravo", header.bodyText());
+            assertEquals("alpha", Http.of(baseUrl).withHeader("X-Test", "alpha").get("/header").bodyText());
+
+            assertEquals(downloadTarget, downloaded);
+            assertEquals("downloaded", Files.readString(downloaded));
+        } finally {
+            server.stop(0);
+        }
+    }
+
+    @Test
+    void aiSupportChatsAndStreamsAgainstAnOpenaiCompatibleEndpoint() throws Exception {
+        HttpServer server = HttpServer.create(new InetSocketAddress(0), 0);
+        server.createContext("/v1/chat/completions", exchange -> {
+            String request = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+            String response;
+            if (request.contains("\"stream\":true")) {
+                response = """
+                        data: {"choices":[{"delta":{"content":"hel"}}]}
+
+                        data: {"choices":[{"delta":{"content":"lo"}}]}
+
+                        data: [DONE]
+                        """;
+                respond(exchange, 200, response, "text/event-stream; charset=utf-8");
+            } else {
+                response = """
+                        {"choices":[{"message":{"content":"hello"}}]}
+                        """;
+                respond(exchange, 200, response, "application/json");
+            }
+        });
+        server.start();
+
+        try {
+            Path configDir = Files.createTempDirectory("javelin-ai");
+            Path config = configDir.resolve("ai.properties");
+            Files.writeString(config, """
+                    provider=openai-compatible
+                    base_url=http://127.0.0.1:%d/v1
+                    chat_path=/chat/completions
+                    model=test-model
+                    api_key=secret
+                    system=Be helpful
+                    timeout_seconds=5
+                    """.formatted(server.getAddress().getPort()));
+
+            Ai.Handle ai = Ai.from(config);
+            Ai.Reply reply = ai.chat("hello");
+            List<String> chunks = new ArrayList<>();
+            Ai.Reply streamed = ai.stream("hello", chunks::add);
+
+            assertEquals("hello", reply.text());
+            assertFalse(reply.streamed());
+            assertEquals("hello", streamed.text());
+            assertTrue(streamed.streamed());
+            assertEquals(List.of("hel", "lo"), chunks);
+        } finally {
+            server.stop(0);
+        }
+    }
+
+    private static String decodeForm(String body) {
+        return java.util.Arrays.stream(body.split("&"))
+                .map(part -> part.split("=", 2))
+                .map(pair -> pair.length == 2
+                        ? URLDecoder.decode(pair[0], StandardCharsets.UTF_8) + "=" + URLDecoder.decode(pair[1], StandardCharsets.UTF_8)
+                        : "")
+                .filter(value -> !value.isBlank())
+                .sorted()
+                .reduce((left, right) -> left + "," + right)
+                .orElse("");
+    }
+
+    private static void respond(HttpExchange exchange, int status, String body, String contentType) throws IOException {
+        byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
+        exchange.getResponseHeaders().set("Content-Type", contentType);
+        exchange.sendResponseHeaders(status, bytes.length);
+        try (OutputStream output = exchange.getResponseBody()) {
+            output.write(bytes);
+        } finally {
+            exchange.close();
+        }
     }
 
     @Test
@@ -179,6 +354,71 @@ final class SupportUtilitiesTest {
         assertEquals(input, Validation.of(input, registry).rule("adult-age").validate());
         assertTrue(registry.find("adult-age").isPresent());
         assertEquals(1, registry.all().size());
+    }
+
+    @Test
+    void validationSupportComposesRules() {
+        ValidationRule adult = ValidationRule.of(
+                "adult-age",
+                "age",
+                input -> input.integer("age").orElse(0) >= 18,
+                "must be 18 or older"
+        );
+        ValidationRule requiredAdult = ValidationRule.of(
+                "required-age",
+                "age",
+                input -> input.integer("age").isPresent(),
+                "is required"
+        );
+
+        Input valid = Input.from(Map.of("age", "21"));
+        Input invalid = Input.from(Map.of("age", "16"));
+
+        assertTrue(adult.and(requiredAdult).validate(valid).isEmpty());
+        assertTrue(adult.and(requiredAdult).validate(invalid).isPresent());
+        assertTrue(adult.negate("must not be adult").validate(invalid).isEmpty());
+        assertTrue(adult.named("age-adult").validate(valid).isEmpty());
+        assertTrue(adult.onKey("years").validate(valid).isEmpty());
+    }
+
+    @Test
+    void validationSupportChecksFilePathsAndExtensions() throws Exception {
+        Path root = Files.createTempDirectory("javelin-validation-files");
+        Path file = root.resolve("avatar.png");
+        Path directory = root.resolve("uploads");
+        Files.writeString(file, "png");
+        Files.createDirectories(directory);
+
+        Input input = Input.from(Map.of(
+                "file", file.toString(),
+                "directory", directory.toString(),
+                "missing", root.resolve("missing.txt").toString(),
+                "wrong", root.resolve("wrong.exe").toString()
+        ));
+
+        Validation valid = Validation.of(input)
+                .fileExists("file")
+                .readableFile("file")
+                .writableFile("file")
+                .directoryExists("directory")
+                .pathExists("file")
+                .hasExtension("file", "png", "jpg")
+                .maxBytes("file", 1024);
+
+        assertEquals(input, valid.validate());
+        assertTrue(valid.errors().isEmpty());
+
+        IllegalArgumentException failure = assertThrows(IllegalArgumentException.class, () ->
+                Validation.of(input)
+                        .fileExists("missing")
+                        .directoryExists("file")
+                        .hasExtension("wrong", "png")
+                        .maxBytes("file", 1)
+                        .validate()
+        );
+
+        assertTrue(failure.getMessage().contains("missing"));
+        assertTrue(failure.getMessage().contains("file"));
     }
 
     @Test

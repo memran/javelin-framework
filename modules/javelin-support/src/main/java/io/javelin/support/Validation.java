@@ -6,6 +6,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 public final class Validation {
@@ -135,6 +138,65 @@ public final class Validation {
         return this;
     }
 
+    public Validation pathExists(String key) {
+        return path(key, path -> true, "must be a valid path");
+    }
+
+    public Validation fileExists(String key) {
+        return path(key, Files::isRegularFile, "must be an existing file");
+    }
+
+    public Validation directoryExists(String key) {
+        return path(key, Files::isDirectory, "must be an existing directory");
+    }
+
+    public Validation readableFile(String key) {
+        return path(key, path -> Files.isRegularFile(path) && Files.isReadable(path), "must be a readable file");
+    }
+
+    public Validation writableFile(String key) {
+        return path(key, path -> Files.exists(path) && Files.isWritable(path), "must be a writable file");
+    }
+
+    public Validation hasExtension(String key, String... allowedExtensions) {
+        Objects.requireNonNull(allowedExtensions, "allowedExtensions");
+        String value = input.text(key).orElse(null);
+        if (value == null) {
+            addError(key, "is required");
+            return this;
+        }
+        List<String> normalized = Arrays.stream(allowedExtensions)
+                .filter(Objects::nonNull)
+                .map(extension -> extension.startsWith(".") ? extension.substring(1) : extension)
+                .map(extension -> extension.toLowerCase(java.util.Locale.ROOT))
+                .toList();
+        String actual = value.toLowerCase(java.util.Locale.ROOT);
+        int dot = actual.lastIndexOf('.');
+        String extension = dot >= 0 ? actual.substring(dot + 1) : "";
+        if (!normalized.contains(extension)) {
+            addError(key, "must have one of the allowed extensions: " + String.join(", ", normalized));
+        }
+        return this;
+    }
+
+    public Validation maxBytes(String key, long maxBytes) {
+        return path(key, path -> {
+            try {
+                return Files.exists(path) && Files.size(path) <= maxBytes;
+            } catch (Exception exception) {
+                return false;
+            }
+        }, "must be at most " + maxBytes + " bytes");
+    }
+
+    public Validation rule(ValidationRule... rules) {
+        Objects.requireNonNull(rules, "rules");
+        for (ValidationRule rule : rules) {
+            custom(rule);
+        }
+        return this;
+    }
+
     public Validation custom(ValidationRule rule) {
         Objects.requireNonNull(rule, "rule");
         rule.validate(input).ifPresent(message -> addError(rule.key(), message));
@@ -165,6 +227,23 @@ public final class Validation {
 
     private void addError(String key, String message) {
         errors.computeIfAbsent(key, ignored -> new ArrayList<>()).add(message);
+    }
+
+    private Validation path(String key, java.util.function.Predicate<Path> predicate, String message) {
+        String value = input.text(key).orElse(null);
+        if (value == null) {
+            addError(key, "is required");
+            return this;
+        }
+        try {
+            Path path = Path.of(value).toAbsolutePath().normalize();
+            if (!predicate.test(path)) {
+                addError(key, message);
+            }
+        } catch (RuntimeException exception) {
+            addError(key, message);
+        }
+        return this;
     }
 
     private String formatErrors() {

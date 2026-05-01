@@ -21,7 +21,15 @@ public final class AiInstallCommand extends AbstractCommand {
         try {
             Files.createDirectories(config.getParent());
             if (!Files.exists(config)) {
-                Files.writeString(config, "provider=openai%nmodel=%n".formatted());
+                Files.writeString(config, """
+                        provider=openai-compatible
+                        base_url=http://127.0.0.1:11434/v1
+                        chat_path=/chat/completions
+                        model=
+                        api_key=
+                        system=
+                        timeout_seconds=60
+                        """);
             }
             context.output().success("AI tooling installed: " + context.workingDirectory().relativize(config));
         } catch (IOException exception) {

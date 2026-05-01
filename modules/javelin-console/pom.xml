@@ -16,6 +16,16 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-db-jdbc</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-support</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>info.picocli</groupId>
             <artifactId>picocli</artifactId>
             <version>4.7.6</version>

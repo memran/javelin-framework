@@ -3,8 +3,12 @@ package {{ package }};
 import io.javelin.core.Request;
 import io.javelin.core.Response;
 
+import java.nio.file.Path;
+
 public final class {{ class }} {
     public Response index(Request request) {
+        Path saved = request.saveFile("file", Path.of("storage/uploads")).orElseThrow();
+        // Example: user.fill(Map.of("avatar_path", saved.toString())); user.save();
         return Response.text("{{ class }} ready");
     }
 }

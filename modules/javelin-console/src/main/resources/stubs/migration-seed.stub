@@ -1,0 +1,9 @@
+name: {{ name }}
+type: {{ type }}
+table: {{ table }}
+up:
+  - sql: |
+      insert into {{ table }} (name)
+      values ('Example row')
+down:
+  - sql: delete from {{ table }} where name = 'Example row'

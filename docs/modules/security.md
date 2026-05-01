@@ -28,6 +28,7 @@ boolean ok = hasher.verify("secret", hash);
 - `RequestSizeLimitMiddleware` rejects oversized requests before they reach handlers.
 - `RateLimitMiddleware` limits repeated requests from the same client.
 - `SecurityServiceProvider` wires the security middleware into starter defaults.
+- Configure `security.trusted_proxies` to let the HTTP adapter resolve `Request.remoteAddress()` from `X-Forwarded-For` or `Forwarded` headers only when the immediate peer is trusted.
 
 ## Notes
 

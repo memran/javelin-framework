@@ -41,6 +41,7 @@ public final class NewCommand extends AbstractCommand {
         files.directory(root.resolve("routes"));
         files.directory(root.resolve("resources/views"));
         files.directory(root.resolve("storage/logs"));
+        files.directory(root.resolve("public"));
         files.directory(root.resolve("database/migrations"));
         files.directory(root.resolve("database/seeders"));
         files.directory(root.resolve("tests"));

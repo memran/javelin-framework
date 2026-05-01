@@ -1,6 +1,8 @@
--- Migration: {{ name }}
-
--- migrate:up
-
--- migrate:down
-
+name: {{ name }}
+type: {{ type }}
+up:
+  - sql: |
+      -- write the SQL for migrating up
+down:
+  - sql: |
+      -- write the SQL for migrating down

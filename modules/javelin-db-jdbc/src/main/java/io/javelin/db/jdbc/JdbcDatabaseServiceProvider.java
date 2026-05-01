@@ -5,10 +5,13 @@ import io.javelin.core.Application;
 import io.javelin.core.Database;
 import io.javelin.core.ServiceProvider;
 
+import java.nio.file.Path;
+
 public final class JdbcDatabaseServiceProvider implements ServiceProvider {
     @Override
     public void register(Application app) {
         app.singleton(Database.class, () -> new JdbcDatabase(config(app)));
+        app.singleton(MigrationRunner.class, () -> new MigrationRunner(app.make(Database.class), migrationsDirectory(app)));
     }
 
     private HikariConfig config(Application app) {
@@ -22,5 +25,12 @@ public final class JdbcDatabaseServiceProvider implements ServiceProvider {
         config.setPassword(app.config().getString("database.password", ""));
         config.setMaximumPoolSize(app.config().getInt("database.pool.max", 10));
         return config;
+    }
+
+    private Path migrationsDirectory(Application app) {
+        Path root = app.has(Path.class)
+                ? app.make(Path.class)
+                : Path.of(System.getProperty("user.dir"));
+        return root.toAbsolutePath().normalize().resolve(app.config().getString("database.migrations_dir", "database/migrations"));
     }
 }

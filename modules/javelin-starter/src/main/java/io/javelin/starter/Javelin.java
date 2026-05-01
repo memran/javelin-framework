@@ -34,13 +34,14 @@ public final class Javelin {
         app.register(new SecurityServiceProvider());
         app.register(new CacheServiceProvider());
         app.register(new ConsoleServiceProvider());
-        new ValidationRuleLoader().load(app);
+        app.register(new JavelinStarterServiceProvider());
         new ProviderLoader().load(app);
         return app;
     }
 
     public static int run(Class<?> mainClass, String[] args) {
         Application app = create(resolveRoot(mainClass));
+        app.boot();
         return app.make(ConsoleKernel.class).run(args);
     }
 
