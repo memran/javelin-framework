@@ -40,6 +40,8 @@ public final class NewCommand extends AbstractCommand {
         files.directory(root.resolve("config"));
         files.directory(root.resolve("routes"));
         files.directory(root.resolve("resources/views"));
+        files.directory(root.resolve("resources/assets"));
+        files.directory(root.resolve("scripts"));
         files.directory(root.resolve("storage/logs"));
         files.directory(root.resolve("public"));
         files.directory(root.resolve("database/migrations"));
@@ -59,14 +61,27 @@ public final class NewCommand extends AbstractCommand {
         files.write(root.resolve("Main.java"), "main.stub", values, force);
         files.write(root.resolve("config/app.yaml"), "app-yaml.stub", values, force);
         files.write(root.resolve("config/view.yml"), "view-yml.stub", values, force);
+        files.write(root.resolve("logback.xml"), "logback-xml.stub", values, force);
         files.write(root.resolve("install.ps1"), "install.ps1.stub", values, force);
         files.write(root.resolve("install.sh"), "install.sh.stub", values, force);
+        files.write(root.resolve("build.sh"), "build-sh.stub", values, force);
+        files.write(root.resolve("build.ps1"), "build-ps1.stub", values, force);
+        files.write(root.resolve("docker-compose.yml"), "docker-compose.yml.stub", values, force);
+        files.write(root.resolve("Dockerfile"), "dockerfile.stub", values, force);
+        files.write(root.resolve(".dockerignore"), "dockerignore.stub", values, force);
+        files.write(root.resolve("package.json"), "package-json.stub", values, force);
+        files.write(root.resolve("resources/views/welcome.peb"), "welcome-peb.stub", values, force);
+        files.write(root.resolve("resources/assets/app.css"), "tailwind-css.stub", values, force);
+        files.write(root.resolve("resources/assets/app.js"), "alpine-js.stub", values, force);
+        files.write(root.resolve("scripts/dev.mjs"), "dev-assets-js.stub", values, force);
         files.write(root.resolve("app/controllers/HomeController.java"), "home-controller.stub", values, force);
         files.write(root.resolve("app/providers/AppServiceProvider.java"), "app-provider.stub", values, force);
         files.write(root.resolve("app/validation/" + validationClass + ".java"), "validation-rule.stub", values, force);
         files.write(root.resolve("routes/web.java"), "routes.stub", values, force);
         context.output().success("Project created: " + context.workingDirectory().relativize(root));
-        context.output().info("Next: cd " + name + " && ./install.sh");
+        context.output().info("Next: cd " + name + " && npm install && npm run build");
+        context.output().info("Or with bun: bun install && bun run build");
+        context.output().info("Then: ./install.sh, javelin serve, or docker compose up --build");
     }
 
     private String validationRuleName(String validationClass) {

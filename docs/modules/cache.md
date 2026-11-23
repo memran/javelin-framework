@@ -98,4 +98,4 @@ cache.put("started_at", Instant.now().toString(), Duration.ofHours(1));
 - Use it for cheap, explicit application caching (database query results, API responses, computed values).
 - Swap implementations through the container and service providers — implement `Cache` and bind it.
 - The in-memory implementation is suitable for single-instance applications.
-- For distributed caching, implement `Cache` with Redis or another backend.
+- For distributed caching, implement `Cache` with Valkey/Redis or another backend. Generated projects already start Valkey in `docker-compose.yml` and expose `cache.driver` / `cache.url` config keys, but no Valkey adapter is bundled — bind your own implementation through a service provider.

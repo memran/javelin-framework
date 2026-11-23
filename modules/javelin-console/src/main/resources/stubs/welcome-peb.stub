@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ name }} Framework</title>
+    <link rel="stylesheet" href="/css/app.css">
+    <script defer src="/js/app.js"></script>
+</head>
+<body class="min-h-screen bg-zinc-950 text-zinc-100 antialiased">
+    <main class="mx-auto flex min-h-screen w-full max-w-4xl flex-col px-6 py-10">
+        <header class="flex items-center justify-between border-b border-white/10 pb-6">
+            <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-400 text-lg font-black text-zinc-950">J</div>
+                <div>
+                    <p class="text-sm font-semibold uppercase tracking-widest text-emerald-300">{{ name }}</p>
+                    <p class="text-sm text-zinc-400">Javelin application</p>
+                </div>
+            </div>
+            <a class="rounded-md border border-white/10 px-3 py-2 text-sm font-medium text-zinc-200 transition hover:border-emerald-300" href="/health">
+                Health
+            </a>
+        </header>
+
+        <section class="flex flex-1 flex-col justify-center py-12">
+            <p class="mb-4 inline-flex w-fit rounded-full border border-emerald-300/20 bg-emerald-300/10 px-4 py-2 text-sm text-emerald-200">
+                Built with local Tailwind CSS and Alpine.js
+            </p>
+            <h1 class="text-4xl font-bold leading-tight text-white sm:text-5xl">
+                Welcome to {{ name }}.
+            </h1>
+            <p class="mt-5 max-w-2xl text-lg leading-8 text-zinc-300">
+                Static assets are compiled into <code class="text-emerald-300">public/</code> by npm or bun and served by Javelin — no CDN required.
+            </p>
+
+            <div class="mt-8 rounded-lg border border-white/10 bg-white/[0.03] p-6" x-data="{ count: 0, open: false }">
+                <div class="flex flex-wrap items-center gap-3">
+                    <span class="rounded-md border border-white/10 px-3 py-1.5 text-sm text-zinc-200"
+                          x-text="'Alpine clicks: ' + count">Alpine clicks: 0</span>
+                    <button class="rounded-md bg-emerald-400 px-4 py-2 text-sm font-bold text-zinc-950 transition hover:bg-emerald-300"
+                            @click="count++">
+                        Click me
+                    </button>
+                    <button class="rounded-md border border-white/10 px-4 py-2 text-sm font-medium text-zinc-200 transition hover:border-emerald-300"
+                            @click="open = !open" x-text="open ? 'Hide details' : 'Show details'">
+                        Show details
+                    </button>
+                </div>
+                <p class="mt-4 text-sm text-zinc-300" x-show="open" x-cloak>
+                    Alpine.js comes from <code>/js/app.js</code>; Tailwind utilities come from <code>/css/app.css</code>.
+                </p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

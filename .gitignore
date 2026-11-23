@@ -14,3 +14,9 @@ Thumbs.db
 # Local tool caches
 .m2repo/
 .opencode/
+
+# Frontend build artifacts
+node_modules/
+bun.lock
+demo-app/public/css/
+demo-app/public/js/

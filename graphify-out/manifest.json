@@ -264,9 +264,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-console/src/main/java/io/javelin/cli/commands/MakeModuleCommand.java": {
-    "mtime": 1777240099.5309415,
-    "seen": 1795452651.0134213,
-    "ast_hash": "e13eb0400a0e0680eee7ad5f5cfd5951",
+    "mtime": 1795463566.598423,
+    "seen": 1795463715.9407396,
+    "ast_hash": "c0f1e1b5dada0cbee7fbd419ab79235b",
     "semantic_hash": ""
   },
   "modules/javelin-console/src/main/java/io/javelin/cli/commands/MakeServiceCommand.java": {
@@ -294,9 +294,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-console/src/main/java/io/javelin/cli/commands/NewCommand.java": {
-    "mtime": 1777639289.145342,
-    "seen": 1795452651.0134254,
-    "ast_hash": "206280d929ff6889e04040bd897b3e78",
+    "mtime": 1795465941.2920194,
+    "seen": 1795466090.9194272,
+    "ast_hash": "62ab5ff6e774769cefb9b126a1eee292",
     "semantic_hash": ""
   },
   "modules/javelin-console/src/main/java/io/javelin/cli/commands/QueueStatusCommand.java": {
@@ -432,9 +432,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-console/src/test/java/io/javelin/cli/CommandGenerationTest.java": {
-    "mtime": 1777642036.7665436,
-    "seen": 1795452651.0134442,
-    "ast_hash": "91be33aad2806db9c2e199ab386cd264",
+    "mtime": 1795466322.1327782,
+    "seen": 1795466395.05778,
+    "ast_hash": "01f7121116e121d3fa706bc09e3bc7c7",
     "semantic_hash": ""
   },
   "modules/javelin-console/src/test/java/io/javelin/cli/commands/MigrationCommandTest.java": {
@@ -1038,15 +1038,15 @@
     "semantic_hash": ""
   },
   "docs/cli-reference.md": {
-    "mtime": 1778403261.0937376,
-    "seen": 1795452651.0135348,
-    "ast_hash": "cc91cb31db2c474c8b5d89e0e0e21458",
+    "mtime": 1795465960.2647822,
+    "seen": 1795466090.9196246,
+    "ast_hash": "5630d5e639cf9c8341a605fe0f4e5f44",
     "semantic_hash": ""
   },
   "docs/deployment.md": {
-    "mtime": 1795459100.0128465,
-    "seen": 1795459243.8922932,
-    "ast_hash": "656f03e5594d0474c40aa33d4701c3ef",
+    "mtime": 1795466351.098263,
+    "seen": 1795466395.0579467,
+    "ast_hash": "95e3e6bda2cd131a088e1a62c5bfb13b",
     "semantic_hash": ""
   },
   "docs/module-authoring.md": {
@@ -1056,9 +1056,9 @@
     "semantic_hash": ""
   },
   "docs/modules/cache.md": {
-    "mtime": 1778399217.7458103,
-    "seen": 1795452651.013537,
-    "ast_hash": "ddb43f6ba61b163cbc1b0fe2eaa6d247",
+    "mtime": 1795464061.707124,
+    "seen": 1795464119.195649,
+    "ast_hash": "dfe3c4a7d51ccd3ab320b48ee6328531",
     "semantic_hash": ""
   },
   "docs/modules/config.md": {
@@ -1068,9 +1068,9 @@
     "semantic_hash": ""
   },
   "docs/modules/console.md": {
-    "mtime": 1778399185.795,
-    "seen": 1795452651.0135386,
-    "ast_hash": "c8a0b6b172addcc92d10067369afd39d",
+    "mtime": 1795462851.554291,
+    "seen": 1795463407.296784,
+    "ast_hash": "1216015603921994a9042c7fca1cb07f",
     "semantic_hash": ""
   },
   "docs/modules/core.md": {
@@ -1359,6 +1359,48 @@
     "mtime": 1795461245.1897166,
     "seen": 1795461699.7439718,
     "ast_hash": "b29d80e160f2c69209fb0ce6dcf67297",
+    "semantic_hash": ""
+  },
+  "demo-app/docker-app.yaml": {
+    "mtime": 1795464934.4462078,
+    "seen": 1795465171.3771536,
+    "ast_hash": "7f0da5680d733414e473d0385cd8be99",
+    "semantic_hash": ""
+  },
+  "demo-app/docker-compose.yml": {
+    "mtime": 1795464917.7671106,
+    "seen": 1795465171.3771558,
+    "ast_hash": "e1c6e1d0a5139cf110a5298dd0300005",
+    "semantic_hash": ""
+  },
+  "demo-app/package.json": {
+    "mtime": 1795464942.821082,
+    "seen": 1795465171.377158,
+    "ast_hash": "d59f28794a3bbb5c87d03d1730fd2720",
+    "semantic_hash": ""
+  },
+  "demo-app/resources/assets/app.js": {
+    "mtime": 1795464959.3402698,
+    "seen": 1795465171.3771617,
+    "ast_hash": "e61683b717d176d046a2899c92472625",
+    "semantic_hash": ""
+  },
+  "demo-app/scripts/dev.mjs": {
+    "mtime": 1795464968.094928,
+    "seen": 1795465171.3771648,
+    "ast_hash": "d66cf92e6ea34ed33a0e57a2ebe106b6",
+    "semantic_hash": ""
+  },
+  "demo-app/build.ps1": {
+    "mtime": 1795465515.192041,
+    "seen": 1795465761.009091,
+    "ast_hash": "2280586dc7546a322d4211399c8616c5",
+    "semantic_hash": ""
+  },
+  "demo-app/build.sh": {
+    "mtime": 1795465505.976683,
+    "seen": 1795465761.0090942,
+    "ast_hash": "214c9d45afd21c1ee17ab1fc9402ff11",
     "semantic_hash": ""
   }
 }

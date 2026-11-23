@@ -131,6 +131,27 @@ java \
 
 ## Docker Compose
 
+`javelin new` generates a ready-to-use `docker-compose.yml` and multi-stage `Dockerfile`: the first stage builds Tailwind CSS and Alpine.js assets with npm, the second packages the Java jar, and the runtime stage serves the jar with PostgreSQL. Compose also starts **Valkey** (Redis-compatible cache) and **NATS with JetStream** (durable queue), each with a health check, persistent volume and loopback-only host ports. Run it with `docker compose up --build` and override `DB_PASSWORD` in `.env` if needed.
+
+The generated `config/app.yaml` carries `cache` and `queue` settings (`CACHE_DRIVER`, `VALKEY_URL`, `QUEUE_DRIVER`, `NATS_URL`, `NATS_JETSTREAM`, `NATS_STREAM`) so an application can bind matching adapters. The framework currently ships only `InMemoryCache` and placeholder queue commands — no Valkey or NATS adapter is bundled yet, so the services are provisioned but not consumed until you bind your own implementations.
+
+The `demo-app` in this repository mirrors that stack for local testing. It has its own `docker-compose.yml`, `Dockerfile`, `package.json` (Tailwind + Alpine), `resources/assets/`, and a non-filtered `docker-app.yaml` for container config. Because `demo-app` is a Maven module, the Compose build context is the repository root:
+
+```bash
+docker compose -f demo-app/docker-compose.yml up --build
+```
+
+Both Dockerfiles call `build.sh` during image build: the asset stage runs `sh build.sh assets`, and the jar stage runs `sh build.sh java`. The asset stage copies `resources/views` and `app/views` as well as `resources/assets` — Tailwind's `@source` rules scan those templates, so omitting them produces a stylesheet with base styles but no utility classes. The same script is used locally, so container and local builds take the same path:
+
+```bash
+cd demo-app
+./build.sh            # assets + jar (auto-detects bun, else npm)
+./build.sh assets     # frontend only
+./build.sh java       # Maven package only
+```
+
+On Windows use `.\build.ps1` with the same modes. Watch mode is `npm run dev` / `bun run dev:bun`.
+
 ### Minimal setup
 
 Suitable for single-host deployments with PostgreSQL:

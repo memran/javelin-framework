@@ -1,0 +1,19 @@
+{
+  "name": "{{ project }}",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tailwindcss -i resources/assets/app.css -o public/css/app.css --minify && esbuild resources/assets/app.js --bundle --minify --outfile=public/js/app.js",
+    "watch:css": "tailwindcss -i resources/assets/app.css -o public/css/app.css --watch",
+    "watch:js": "esbuild resources/assets/app.js --bundle --outfile=public/js/app.js --watch",
+    "dev": "node scripts/dev.mjs",
+    "dev:bun": "bun scripts/dev.mjs"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.0.0",
+    "alpinejs": "^3.13.0",
+    "esbuild": "^0.24.0",
+    "tailwindcss": "^4.0.0"
+  }
+}

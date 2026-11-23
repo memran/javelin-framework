@@ -7,7 +7,8 @@ This is a Javelin workspace application.
 - Application code and routes
 - Workspace-specific Maven dependencies
 - App config in `config/`
-- Static assets in `public/`
+- Static asset sources in `resources/assets/` and built assets in `public/`
+- Docker Compose, Dockerfile and npm/bun scripts for the frontend build
 - Generated and runtime files under `storage/`
 - Explicit migration and upload locations live in `config/app.yaml`
 
@@ -26,6 +27,26 @@ On Windows:
 ```
 
 The installer checks Java and Maven, then runs `mvn test` inside the workspace.
+
+## Frontend assets
+
+Tailwind CSS and Alpine.js sources live in `resources/assets/`. Install dependencies and build into `public/`:
+
+```bash
+npm install && npm run build
+# or
+bun install && bun run build
+```
+
+For watch mode use `npm run dev` (or `bun run dev:bun` with bun). The build emits `public/css/app.css` and `public/js/app.js`.
+
+## Docker
+
+```bash
+docker compose up --build
+```
+
+Compose builds the frontend assets, packages the Java jar, and runs the app with PostgreSQL. Set `DB_PASSWORD` in `.env` to change the default database password.
 
 ## Framework dependency
 

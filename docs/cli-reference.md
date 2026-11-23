@@ -28,38 +28,36 @@ javelin new my-blog
 ```
 
 ```
-Creating Javelin application in ./my-blog...
-  ✓ config/app.yaml
-  ✓ config/database.yaml
-  ✓ config/view.yaml
-  ✓ .env
-  ✓ app/controllers/HomeController.java
-  ✓ app/models/User.java
-  ✓ app/providers/AppServiceProvider.java
-  ✓ app/validation/
-  ✓ database/migrations/
-  ✓ public/index.html
-  ✓ storage/uploads/
-  ✓ pom.xml
-  ✓ install.ps1
-  ✓ install.sh
-Javelin application created successfully.
-Run:
-  cd my-blog
-  javelin serve
+Project created: my-blog
+Next: cd my-blog && npm install && npm run build
+Or with bun: bun install && bun run build
+Then: ./install.sh, javelin serve, or docker compose up --build
 ```
+
+Every new project includes:
+
+- Java skeleton: `pom.xml`, `Main.java`, `app/`, `routes/`, `config/`, `tests/`, `logback.xml`
+- HTTP driver: Netty adapter dependency with `javelin.starter.http-driver: netty` in config
+- Welcome page: `resources/views/welcome.peb` rendered by `HomeController`, using the local `/css/app.css` and `/js/app.js` with an Alpine.js interaction
+- Frontend sources: `resources/assets/app.css` (Tailwind v4) and `resources/assets/app.js` (Alpine.js)
+- Frontend build: `package.json`, `scripts/dev.mjs`, output into `public/css` and `public/js`
+- Docker: `docker-compose.yml` (app + PostgreSQL + Valkey cache + NATS/JetStream), `Dockerfile` (asset build → jar → runtime), `.dockerignore`
+- Install scripts: `install.sh`, `install.ps1`
+- Build scripts: `build.sh`, `build.ps1` with `assets`, `java`, `all` modes; the Dockerfile calls these during `docker compose build`
 
 ### Options
 
 | Flag | Description |
 |---|---|
-| `--project <dir>` | Create project in an existing directory |
+| `--force` | Allow writing into an existing directory and overwrite generated files |
 | `--validation-rule <Name>` | Generate a specific starter validation rule (default: `AdultAgeRule`) |
 
 ```bash
-javelin new --project .  # scaffold in current directory
+javelin new --force my-blog
 javelin new --validation-rule TeenAgeRule teen-app
 ```
+
+The `package.json` scripts run with either `npm` or `bun`. For watch mode use `npm run dev`, or `bun run dev:bun` when only bun is installed. The Dockerfile builds assets with npm for reproducible images; locally either runtime works.
 
 ---
 
@@ -266,20 +264,17 @@ providers:
 
 ## make:module — Generate a module
 
-Scaffolds a complete Javelin module directory structure with pom.xml, service provider, and interface.
+Creates a service-provider stub for a feature module. Workspace projects use a flat layout, so no `src/` tree is generated.
 
 ```bash
-javelin make:module PaymentModule
+javelin make:module Payment
 ```
 
 ```
-Created: modules/javelin-payment-module/
-  pom.xml
-  src/main/java/io/javelin/payment/module/
-    PaymentService.java
-    PaymentServiceImpl.java
-    PaymentModuleServiceProvider.java
+Created: modules/PaymentModule
 ```
+
+The generated `modules/PaymentModule/PaymentModule.java` declares package `modules.paymentmodule`. Add that class name to `providers:` in `config/app.yaml` to activate it; generated POMs compile `modules/**/*.java`.
 
 ---
 

@@ -1,14 +1,18 @@
 package app.controllers;
 
+import io.javelin.core.Json;
 import io.javelin.core.Request;
 import io.javelin.core.Response;
+import io.javelin.core.View;
+
+import java.util.Map;
 
 public final class HomeController {
     public Response index(Request request) {
-        return Response.text("Javelin is running");
+        return View.render("welcome", Map.of("name", "Javelin"));
     }
 
     public Response health(Request request) {
-        return Response.text("ok");
+        return Json.ok(Map.of("status", "ok"));
     }
 }

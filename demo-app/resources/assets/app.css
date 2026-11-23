@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+@source "../views/**/*.{peb,html}";
+@source "../../app/views/**/*.{peb,html}";
+
+/* Hide Alpine elements until Alpine initializes. */
+[x-cloak] { display: none !important; }
+
+/* Demo-specific styles go below. */

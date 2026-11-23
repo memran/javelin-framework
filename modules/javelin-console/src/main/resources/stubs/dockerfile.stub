@@ -1,0 +1,35 @@
+# syntax=docker/dockerfile:1
+
+# Stage 1: build static assets through the same build.sh used locally.
+# The node image provides npm; build.sh also detects bun when present.
+FROM node:22-alpine AS assets
+WORKDIR /assets
+COPY build.sh package.json ./
+COPY resources/assets ./resources/assets
+# Tailwind's @source rules scan these templates for utility classes.
+COPY resources/views ./resources/views
+COPY app/views ./app/views
+COPY scripts ./scripts
+RUN sh build.sh assets
+
+# Stage 2: build the runnable application jar through build.sh.
+FROM maven:3.9-eclipse-temurin-25 AS app-build
+WORKDIR /workspace
+COPY build.sh pom.xml ./
+COPY Main.java ./
+COPY app ./app
+COPY config ./config
+COPY routes ./routes
+COPY resources ./resources
+COPY tests ./tests
+RUN sh build.sh java
+
+# Stage 3: minimal runtime with built assets and config.
+FROM eclipse-temurin:25-jre AS runtime
+WORKDIR /app
+COPY --from=app-build /workspace/target/{{ project }}-*.jar app.jar
+COPY --from=app-build /workspace/config ./config
+COPY --from=assets /assets/public ./public
+ENV APP_ENV=prod SERVER_HOST=0.0.0.0 SERVER_PORT=8080
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/app/app.jar", "serve"]

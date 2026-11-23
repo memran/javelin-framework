@@ -1,0 +1,24 @@
+import { spawn } from 'node:child_process';
+import path from 'node:path';
+import process from 'node:process';
+
+// Runs both watchers with binaries from node_modules/.bin.
+const bin = path.join(process.cwd(), 'node_modules', '.bin');
+const env = { ...process.env, PATH: `${bin}${path.delimiter}${process.env.PATH ?? ''}` };
+const shell = process.platform === 'win32';
+
+const watchers = [
+  spawn('tailwindcss', ['-i', 'resources/assets/app.css', '-o', 'public/css/app.css', '--watch'], { env, stdio: 'inherit', shell }),
+  spawn('esbuild', ['resources/assets/app.js', '--bundle', '--outfile=public/js/app.js', '--watch'], { env, stdio: 'inherit', shell })
+];
+
+let stopping = false;
+function stop(code) {
+  if (stopping) return;
+  stopping = true;
+  watchers.forEach(child => child.kill());
+  process.exit(code);
+}
+process.on('SIGINT', () => stop(0));
+process.on('SIGTERM', () => stop(0));
+watchers.forEach(child => child.on('exit', code => { if (code) stop(code); }));

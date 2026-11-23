@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class CommandGenerationTest {
@@ -133,6 +134,78 @@ final class CommandGenerationTest {
     }
 
     @Test
+    void createsDockerAndFrontendScaffoldForEveryNewProject() throws Exception {
+        Path root = Files.createTempDirectory("javelin-new-frontend");
+        CommandContext context = new CommandContext(null, root, new ConsoleOutput(new PrintWriter(new StringWriter(), true), false));
+
+        int exit = new ConsoleKernel(context).run(new String[]{"new", "crm-app"});
+
+        assertEquals(0, exit);
+        Path project = root.resolve("crm-app");
+
+        String compose = Files.readString(project.resolve("docker-compose.yml"));
+        assertTrue(compose.contains("services:"));
+        assertTrue(compose.contains("postgres:16-alpine"));
+        assertTrue(compose.contains("DATABASE_NAME: crm-app"));
+        assertTrue(compose.contains("depends_on:"));
+        assertTrue(compose.contains("valkey/valkey:8-alpine"));
+        assertTrue(compose.contains("VALKEY_URL: redis://valkey:6379"));
+        assertTrue(compose.contains("image: nats:2-alpine"));
+        assertTrue(compose.contains("NATS_URL: nats://nats:4222"));
+        assertTrue(compose.contains("\"-js\""));
+        assertTrue(compose.contains("NATS_STREAM: JAVELIN"));
+
+        String dockerfile = Files.readString(project.resolve("Dockerfile"));
+        assertTrue(dockerfile.contains("FROM node:22-alpine AS assets"));
+        assertTrue(dockerfile.contains("RUN sh build.sh assets"));
+        assertTrue(dockerfile.contains("RUN sh build.sh java"));
+        assertTrue(dockerfile.contains("COPY resources/views ./resources/views"));
+        assertTrue(dockerfile.contains("COPY app/views ./app/views"));
+        assertTrue(dockerfile.contains("maven:3.9-eclipse-temurin-25"));
+        assertTrue(dockerfile.contains("eclipse-temurin:25-jre"));
+        assertTrue(dockerfile.contains("crm-app-*.jar"));
+        assertTrue(Files.exists(project.resolve(".dockerignore")));
+
+        String packageJson = Files.readString(project.resolve("package.json"));
+        assertTrue(packageJson.contains("\"tailwindcss\""));
+        assertTrue(packageJson.contains("\"alpinejs\""));
+        assertTrue(packageJson.contains("\"esbuild\""));
+        assertTrue(packageJson.contains("\"dev\": \"node scripts/dev.mjs\""));
+        assertTrue(packageJson.contains("\"dev:bun\": \"bun scripts/dev.mjs\""));
+
+        String welcome = Files.readString(project.resolve("resources/views/welcome.peb"));
+        assertTrue(welcome.contains("href=\"/css/app.css\""));
+        assertTrue(welcome.contains("src=\"/js/app.js\""));
+        assertTrue(welcome.contains("x-data"));
+        assertFalse(welcome.contains("cdn.tailwindcss.com"));
+        assertTrue(Files.readString(project.resolve("app/controllers/HomeController.java"))
+                .contains("View.render(\"welcome\""));
+
+        assertTrue(Files.readString(project.resolve("resources/assets/app.css")).contains("@import \"tailwindcss\";"));
+        assertTrue(Files.readString(project.resolve("resources/assets/app.js")).contains("Alpine.start()"));
+        assertTrue(Files.readString(project.resolve("scripts/dev.mjs")).contains("--watch"));
+
+        String appYaml = Files.readString(project.resolve("config/app.yaml"));
+        assertTrue(appYaml.contains("host: ${DATABASE_HOST:localhost}"));
+        assertTrue(appYaml.contains("database: ${DATABASE_NAME:crm-app}"));
+        assertTrue(appYaml.contains("static_cache_seconds: 3600"));
+        assertTrue(appYaml.contains("http-driver: netty"));
+        assertTrue(appYaml.contains("driver: ${CACHE_DRIVER:memory}"));
+        assertTrue(appYaml.contains("url: ${VALKEY_URL:}"));
+        assertTrue(appYaml.contains("jetstream: ${NATS_JETSTREAM:false}"));
+
+        String generatedPom = Files.readString(project.resolve("pom.xml"));
+        assertTrue(generatedPom.contains("maven-shade-plugin"));
+        assertTrue(generatedPom.contains("javelin-http-netty"));
+        assertTrue(Files.exists(project.resolve("logback.xml")));
+        String buildScript = Files.readString(project.resolve("build.sh"));
+        assertTrue(buildScript.contains("command -v bun"));
+        assertTrue(buildScript.contains("mvn -B -q -DskipTests package"));
+        assertTrue(Files.exists(project.resolve("build.ps1")));
+        assertTrue(Files.readString(project.resolve("README.md")).contains("docker compose up --build"));
+    }
+
+    @Test
     void createsProjectSkeletonWithCustomValidationRule() throws Exception {
         Path root = Files.createTempDirectory("javelin-new-custom-rule");
         CommandContext context = new CommandContext(null, root, new ConsoleOutput(new PrintWriter(new StringWriter(), true), false));
@@ -145,6 +218,23 @@ final class CommandGenerationTest {
         assertTrue(Files.exists(rule));
         assertTrue(Files.readString(rule).contains("class TeenAgeRule"));
         assertTrue(Files.readString(rule).contains("return \"teen-age\";"));
+    }
+
+    @Test
+    void createsModulesInFlatLayoutWithoutSrcDirectory() throws Exception {
+        Path root = Files.createTempDirectory("javelin-module");
+        CommandContext context = new CommandContext(null, root, new ConsoleOutput(new PrintWriter(new StringWriter(), true), false));
+
+        int exit = new ConsoleKernel(context).run(new String[]{"make:module", "Payment"});
+
+        assertEquals(0, exit);
+        Path moduleDir = root.resolve("modules/PaymentModule");
+        Path provider = moduleDir.resolve("PaymentModule.java");
+        assertTrue(Files.exists(provider));
+        assertFalse(Files.exists(moduleDir.resolve("src")));
+        String contents = Files.readString(provider);
+        assertTrue(contents.contains("package modules.paymentmodule;"));
+        assertTrue(contents.contains("class PaymentModule implements ServiceProvider"));
     }
 
     @Test

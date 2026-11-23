@@ -1,0 +1,45 @@
+# Container config for demo-app. Copied over config/app.yaml in the runtime image.
+# Unlike config/app.yaml this file is not Maven-filtered, so placeholders stay
+# available for environment substitution at runtime.
+app:
+  name: Javelin Demo App
+  env: ${APP_ENV:prod}
+
+server:
+  host: ${SERVER_HOST:0.0.0.0}
+  port: ${SERVER_PORT:8080}
+  static_dir: public
+  static_cache_seconds: 3600
+  static_cache_immutable: false
+
+database:
+  driver: postgresql
+  host: ${DATABASE_HOST:db}
+  port: ${DATABASE_PORT:5432}
+  database: ${DATABASE_NAME:app}
+  migrations_dir: database/migrations
+  username: ${DATABASE_USERNAME:postgres}
+  password: ${DATABASE_PASSWORD:secret}
+
+cache:
+  driver: ${CACHE_DRIVER:valkey}
+  url: ${VALKEY_URL:redis://valkey:6379}
+
+queue:
+  driver: ${QUEUE_DRIVER:nats}
+  url: ${NATS_URL:nats://nats:4222}
+  jetstream: ${NATS_JETSTREAM:true}
+  stream: ${NATS_STREAM:JAVELIN}
+
+log:
+  channel: console
+
+security:
+  max_request_bytes: 1048576
+
+providers:
+  - app.providers.AppServiceProvider
+
+javelin:
+  starter:
+    http-driver: netty

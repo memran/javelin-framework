@@ -1,0 +1,10 @@
+**/target/
+**/node_modules/
+.git/
+.graphify-out/
+graphify-out/
+.m2repo/
+.opencode/
+*.log
+.env
+.env.local

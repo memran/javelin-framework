@@ -3,19 +3,30 @@ app:
   env: ${APP_ENV:local}
 
 server:
-  host: 127.0.0.1
+  host: ${SERVER_HOST:127.0.0.1}
   port: ${SERVER_PORT:8080}
-  driver: jdk
   static_dir: public
+  static_cache_seconds: 3600
+  static_cache_immutable: false
 
 database:
   driver: postgresql
-  host: localhost
-  port: 5432
-  database: {{ project }}
+  host: ${DATABASE_HOST:localhost}
+  port: ${DATABASE_PORT:5432}
+  database: ${DATABASE_NAME:{{ project }}}
   migrations_dir: database/migrations
-  username: postgres
-  password: secret
+  username: ${DATABASE_USERNAME:postgres}
+  password: ${DATABASE_PASSWORD:secret}
+
+cache:
+  driver: ${CACHE_DRIVER:memory}
+  url: ${VALKEY_URL:}
+
+queue:
+  driver: ${QUEUE_DRIVER:none}
+  url: ${NATS_URL:}
+  jetstream: ${NATS_JETSTREAM:false}
+  stream: ${NATS_STREAM:JAVELIN}
 
 storage:
   upload_dir: storage/uploads
@@ -31,3 +42,7 @@ security:
 
 providers:
   - app.providers.AppServiceProvider
+
+javelin:
+  starter:
+    http-driver: netty

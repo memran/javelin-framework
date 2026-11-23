@@ -4,7 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ name }} Framework</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/app.css">
+    <script defer src="/js/app.js"></script>
 </head>
 <body class="min-h-screen bg-zinc-950 text-zinc-100 antialiased">
     <main class="min-h-screen">
@@ -74,6 +75,35 @@ group(app.router(), "/users",
                     <h2 class="text-base font-semibold text-white">JDK-first runtime</h2>
                     <p class="mt-2 text-sm leading-6 text-zinc-400">Built on direct Java features with a path toward GraalVM-friendly deployment.</p>
                 </article>
+            </section>
+
+            <section class="pb-10" x-data="{ count: 0, open: false }">
+                <div class="rounded-lg border border-emerald-300/20 bg-emerald-300/5 p-5">
+                    <div class="flex flex-wrap items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-base font-semibold text-emerald-200">Local assets are live</h2>
+                            <p class="mt-1 text-sm text-zinc-400">
+                                Tailwind CSS from <code class="text-emerald-300">/css/app.css</code>
+                                and Alpine.js from <code class="text-emerald-300">/js/app.js</code> — no CDN.
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="rounded-md border border-white/10 px-3 py-1.5 text-sm text-zinc-200"
+                                  x-text="'Alpine clicks: ' + count">Alpine clicks: 0</span>
+                            <button class="rounded-md bg-emerald-400 px-4 py-2 text-sm font-bold text-zinc-950 transition hover:bg-emerald-300"
+                                    @click="count++">
+                                Click me
+                            </button>
+                            <button class="rounded-md border border-white/10 px-4 py-2 text-sm font-medium text-zinc-200 transition hover:border-emerald-300"
+                                    @click="open = !open" x-text="open ? 'Hide details' : 'Show details'">
+                                Show details
+                            </button>
+                        </div>
+                    </div>
+                    <p class="mt-4 text-sm text-zinc-300" x-show="open" x-cloak>
+                        Alpine.js is bundled locally by esbuild. Tailwind scans this template through <code>@source</code> and emits the utility classes into the built stylesheet.
+                    </p>
+                </div>
             </section>
         </section>
     </main>
