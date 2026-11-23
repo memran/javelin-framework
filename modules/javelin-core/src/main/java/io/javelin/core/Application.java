@@ -7,11 +7,14 @@ import java.util.Objects;
 public final class Application {
     private final Container container;
     private final List<ServiceProvider> providers = new ArrayList<>();
+    private final AppProfile profile;
     private boolean booted;
 
     public Application(Config config, Env env) {
         this.container = new Container();
+        this.profile = AppProfile.from(env, config);
         instance(Application.class, this);
+        instance(AppProfile.class, profile);
         instance(Container.class, container);
         instance(Config.class, config);
         instance(Env.class, env);
@@ -45,6 +48,10 @@ public final class Application {
 
     public Router router() {
         return make(Router.class);
+    }
+
+    public AppProfile profile() {
+        return profile;
     }
 
     public Config config() {

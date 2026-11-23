@@ -10,3 +10,7 @@ target/
 Thumbs.db
 
 .env.local
+
+# Local tool caches
+.m2repo/
+.opencode/

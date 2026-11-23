@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 public final class Route {
     private final HttpMethod method;
@@ -67,6 +68,10 @@ public final class Route {
         return Optional.ofNullable(name);
     }
 
+    boolean hasParameters() {
+        return !parameterNames.isEmpty();
+    }
+
     Optional<Map<String, String>> matches(HttpMethod requestMethod, String requestPath) {
         if (method != requestMethod) {
             return Optional.empty();
@@ -82,7 +87,7 @@ public final class Route {
         return Optional.of(params);
     }
 
-    private static String normalize(String path) {
+    static String normalize(String path) {
         if (path == null || path.isBlank() || "/".equals(path)) {
             return "/";
         }
@@ -99,8 +104,25 @@ public final class Route {
             }
             regex.append("/");
             if (segment.startsWith("{") && segment.endsWith("}")) {
-                names.add(segment.substring(1, segment.length() - 1));
-                regex.append("([^/]+)");
+                String definition = segment.substring(1, segment.length() - 1);
+                int colon = definition.indexOf(':');
+                String name = colon < 0 ? definition : definition.substring(0, colon);
+                if (name.isBlank()) {
+                    throw new IllegalArgumentException("Route parameter name must not be blank: " + routePath);
+                }
+                String constraint = colon < 0 ? "[^/]+" : definition.substring(colon + 1);
+                if (constraint.isBlank()) {
+                    throw new IllegalArgumentException("Route parameter constraint must not be blank: " + routePath);
+                }
+                try {
+                    Pattern.compile(constraint);
+                } catch (PatternSyntaxException exception) {
+                    throw new IllegalArgumentException("Invalid route parameter constraint: " + constraint, exception);
+                }
+                names.add(name);
+                // Exactly one capturing group per parameter; the inner group keeps
+                // alternation and any groups in the constraint from shifting indices.
+                regex.append("((?:").append(constraint).append("))");
             } else {
                 regex.append(Pattern.quote(segment));
             }

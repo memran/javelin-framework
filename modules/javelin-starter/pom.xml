@@ -24,6 +24,24 @@
             <groupId>io.javelin</groupId>
             <artifactId>javelin-http-jdk</artifactId>
             <version>${project.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-http-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-http-netty</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-http-undertow</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.javelin</groupId>

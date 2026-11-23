@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Objects;
@@ -28,19 +29,44 @@ public final class Request {
     private final String remoteAddress;
     private final Map<String, String> multipartFields;
     private final Map<String, List<UploadedFile>> uploads;
+    private final Map<String, String> headerLookup;
+    private final Map<String, Object> attributes;
 
     public Request(HttpMethod method, String path, Map<String, List<String>> headers, Map<String, String> query,
                    Map<String, String> params, byte[] body, String remoteAddress) {
+        this(method, path, headers, query, params,
+                body == null ? new byte[0] : body.clone(),
+                remoteAddress,
+                Map.of(),
+                buildHeaderLookup(headers),
+                parseMultipart(headers, body == null ? new byte[0] : body));
+    }
+
+    private Request(HttpMethod method, String path, Map<String, List<String>> headers, Map<String, String> query,
+                    Map<String, String> params, byte[] body, String remoteAddress,
+                    Map<String, Object> attributes, Map<String, String> headerLookup, MultipartData multipart) {
         this.method = method;
         this.path = path;
         this.headers = new LinkedHashMap<>(headers);
         this.query = new LinkedHashMap<>(query);
         this.params = new LinkedHashMap<>(params);
-        this.body = body == null ? new byte[0] : body.clone();
+        this.body = body;
         this.remoteAddress = remoteAddress;
-        MultipartData multipart = parseMultipart(this.headers, this.body);
+        this.attributes = attributes;
+        this.headerLookup = headerLookup;
         this.multipartFields = multipart.fields();
         this.uploads = multipart.uploads();
+    }
+
+    private static Map<String, String> buildHeaderLookup(Map<String, List<String>> headers) {
+        Map<String, String> lookup = new HashMap<>();
+        for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
+            List<String> values = entry.getValue();
+            if (values != null && !values.isEmpty()) {
+                lookup.putIfAbsent(entry.getKey().toLowerCase(Locale.ROOT), values.get(0));
+            }
+        }
+        return Map.copyOf(lookup);
     }
 
     public static Map<String, String> parseQuery(String rawQuery) {
@@ -66,10 +92,7 @@ public final class Request {
     }
 
     public Optional<String> header(String name) {
-        return headers.entrySet().stream()
-                .filter(entry -> entry.getKey().equalsIgnoreCase(name))
-                .flatMap(entry -> entry.getValue().stream())
-                .findFirst();
+        return Optional.ofNullable(headerLookup.get(name.toLowerCase(Locale.ROOT)));
     }
 
     public Optional<String> query(String name) {
@@ -82,6 +105,10 @@ public final class Request {
 
     public byte[] body() {
         return body.clone();
+    }
+
+    public int bodyLength() {
+        return body.length;
     }
 
     public String bodyAsString() {
@@ -154,12 +181,27 @@ public final class Request {
         return remoteAddress;
     }
 
+    public Optional<Object> attribute(String name) {
+        Objects.requireNonNull(name, "name");
+        return Optional.ofNullable(attributes.get(name));
+    }
+
+    public Request withAttribute(String name, Object value) {
+        Objects.requireNonNull(name, "name");
+        Objects.requireNonNull(value, "value");
+        Map<String, Object> updated = new LinkedHashMap<>(attributes);
+        updated.put(name, value);
+        return new Request(method, path, headers, query, params, body, remoteAddress,
+                Map.copyOf(updated), headerLookup, new MultipartData(multipartFields, uploads));
+    }
+
     public Map<String, String> queryParameters() {
         return Map.copyOf(query);
     }
 
     Request withParams(Map<String, String> routeParams) {
-        return new Request(method, path, headers, query, routeParams, body, remoteAddress);
+        return new Request(method, path, headers, query, routeParams, body, remoteAddress,
+                attributes, headerLookup, new MultipartData(multipartFields, uploads));
     }
 
     private boolean isFormUrlEncoded() {

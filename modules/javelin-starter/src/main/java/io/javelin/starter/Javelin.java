@@ -8,7 +8,7 @@ import io.javelin.core.Application;
 import io.javelin.core.ConsoleKernel;
 import io.javelin.core.ProviderLoader;
 import io.javelin.db.jdbc.JdbcDatabaseServiceProvider;
-import io.javelin.http.jdk.JdkHttpServiceProvider;
+
 import io.javelin.log.slf4j.Slf4jLogServiceProvider;
 import io.javelin.security.SecurityServiceProvider;
 import io.javelin.view.pebble.PebbleViewServiceProvider;
@@ -28,7 +28,7 @@ public final class Javelin {
         Application app = new Application(config, env);
         app.instance(Path.class, root);
         app.register(new Slf4jLogServiceProvider());
-        app.register(new JdkHttpServiceProvider());
+        app.register(new HttpServerDriverProvider());
         app.register(new PebbleViewServiceProvider());
         app.register(new JdbcDatabaseServiceProvider());
         app.register(new SecurityServiceProvider());

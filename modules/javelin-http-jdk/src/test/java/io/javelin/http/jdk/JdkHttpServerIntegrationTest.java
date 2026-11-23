@@ -3,7 +3,11 @@ package io.javelin.http.jdk;
 import io.javelin.core.DefaultExceptionHandler;
 import io.javelin.core.HttpKernel;
 import io.javelin.core.Response;
+import io.javelin.core.Route;
 import io.javelin.core.Router;
+import io.javelin.core.security.Authenticated;
+import io.javelin.core.security.BearerAuthMiddleware;
+import io.javelin.core.security.RequiresPermissionMiddleware;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -19,6 +23,8 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -129,6 +135,149 @@ final class JdkHttpServerIntegrationTest {
         }
     }
 
+    @Test
+    void returnsAResponseForUnsupportedHttpMethods() throws Exception {
+        HttpKernel kernel = new HttpKernel(new Router(), new DefaultExceptionHandler());
+
+        try (RunningServer server = startServer(kernel, List.of(), Files.createTempDirectory("javelin-http-method"))) {
+            HttpRequest request = HttpRequest.newBuilder(uri(server, "/dynamic"))
+                    .method("TRACE", HttpRequest.BodyPublishers.noBody())
+                    .timeout(Duration.ofSeconds(5))
+                    .build();
+            HttpResponse<String> response = CLIENT.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+
+            assertEquals(405, response.statusCode());
+            assertEquals("Method Not Allowed", response.body());
+        }
+    }
+
+    @Test
+    void returns405WithAllowHeaderWhenThePathExistsForAnotherMethod() throws Exception {
+        Router router = new Router();
+        router.post("/only-post", request -> Response.text("posted"));
+        HttpKernel kernel = new HttpKernel(router, new DefaultExceptionHandler());
+
+        try (RunningServer server = startServer(kernel, List.of(), Files.createTempDirectory("javelin-http-allow"))) {
+            HttpResponse<String> response = get(server, "/only-post");
+
+            assertEquals(405, response.statusCode());
+            assertEquals("POST", header(response, "Allow"));
+        }
+    }
+
+    @Test
+    void enforcesBearerAuthenticationAndPermissionsOnARealServer() throws Exception {
+        Router router = new Router();
+        router.add(Route.get("/secure",
+                        request -> Response.text("secret:" + ((Authenticated) request
+                                .attribute(BearerAuthMiddleware.PRINCIPAL_ATTRIBUTE).orElseThrow()).subject()))
+                .middleware(new BearerAuthMiddleware(token -> "good".equals(token)
+                        ? Optional.of(new Authenticated("alice", Set.of("secure.read")))
+                        : Optional.empty()))
+                .middleware(new RequiresPermissionMiddleware("secure.read")));
+        HttpKernel kernel = new HttpKernel(router, new DefaultExceptionHandler());
+
+        try (RunningServer server = startServer(kernel, List.of(), Files.createTempDirectory("javelin-http-auth"))) {
+            HttpResponse<String> missing = get(server, "/secure");
+            HttpResponse<String> invalid = get(server, "/secure", Map.of("Authorization", "Bearer bad"));
+            HttpResponse<String> valid = get(server, "/secure", Map.of("Authorization", "Bearer good"));
+
+            assertEquals(401, missing.statusCode());
+            assertEquals("Bearer", header(missing, "WWW-Authenticate"));
+            assertEquals(401, invalid.statusCode());
+            assertEquals(200, valid.statusCode());
+            assertEquals("secret:alice", valid.body());
+        }
+    }
+
+    @Test
+    void headRequestsFallBackToGetRoutesOnARealServer() throws Exception {
+        Router router = new Router();
+        router.get("/dynamic", request -> Response.text("hello"));
+        HttpKernel kernel = new HttpKernel(router, new DefaultExceptionHandler());
+
+        try (RunningServer server = startServer(kernel, List.of(), Files.createTempDirectory("javelin-http-head"))) {
+            HttpResponse<String> response = head(server, "/dynamic");
+
+            assertEquals(200, response.statusCode());
+            assertEquals("", response.body());
+        }
+    }
+
+    @Test
+    void staticAssetsPassThroughGlobalMiddleware() throws Exception {
+        Path root = Files.createTempDirectory("javelin-http-static-middleware");
+        Files.writeString(root.resolve("asset.txt"), "asset", StandardCharsets.UTF_8);
+        Router router = new Router();
+        router.middleware((request, next) -> {
+            Response response = next.handle(request);
+            return new Response(response.status(), Map.of("X-Middleware", "yes"), response.body());
+        });
+        HttpKernel kernel = new HttpKernel(router, new DefaultExceptionHandler());
+
+        try (RunningServer server = startServer(kernel, List.of(), root)) {
+            HttpResponse<String> response = get(server, "/asset.txt");
+
+            assertEquals(200, response.statusCode());
+            assertEquals("asset", response.body());
+            assertEquals("yes", header(response, "X-Middleware"));
+        }
+    }
+
+    @Test
+    void servesStaticAssetsWithCacheValidationAndByteRanges() throws Exception {
+        Path root = Files.createTempDirectory("javelin-http-cache");
+        String css = "body { color: #111; }";
+        Files.writeString(root.resolve("app.css"), css, StandardCharsets.UTF_8);
+        HttpKernel kernel = new HttpKernel(new Router(), new DefaultExceptionHandler());
+
+        try (RunningServer server = startServer(kernel, List.of(), root)) {
+            HttpResponse<String> full = get(server, "/app.css");
+            HttpResponse<String> range = get(server, "/app.css", Map.of("Range", "bytes=0-5"));
+            HttpResponse<String> conditional = get(server, "/app.css",
+                    Map.of("If-None-Match", header(full, "ETag")));
+
+            assertEquals(200, full.statusCode());
+            assertEquals("public, max-age=3600", header(full, "Cache-Control"));
+            assertEquals("nosniff", header(full, "X-Content-Type-Options"));
+            assertEquals(206, range.statusCode());
+            assertEquals("bytes 0-5/" + css.length(), header(range, "Content-Range"));
+            assertEquals("body {", range.body());
+            assertEquals(304, conditional.statusCode());
+        }
+    }
+
+    @Test
+    void emptyBodiesDoNotUseChunkedTransferEncoding() throws Exception {
+        Path root = Files.createTempDirectory("javelin-http-empty");
+        Files.writeString(root.resolve("empty.txt"), "", StandardCharsets.UTF_8);
+        HttpKernel kernel = new HttpKernel(new Router(), new DefaultExceptionHandler());
+
+        try (RunningServer server = startServer(kernel, List.of(), root)) {
+            HttpResponse<String> response = get(server, "/empty.txt");
+
+            assertEquals(200, response.statusCode());
+            assertEquals("", header(response, "Transfer-Encoding"));
+        }
+    }
+
+    @Test
+    void rejectsBodiesLargerThanTheConfiguredLimit() throws Exception {
+        Router router = new Router();
+        router.post("/upload", request -> Response.text("ok"));
+        HttpKernel kernel = new HttpKernel(router, new DefaultExceptionHandler());
+
+        try (RunningServer server = startServer(kernel, List.of(), Files.createTempDirectory("javelin-http-limit"), 64)) {
+            HttpRequest request = HttpRequest.newBuilder(uri(server, "/upload"))
+                    .POST(HttpRequest.BodyPublishers.ofByteArray("x".repeat(128).getBytes(StandardCharsets.UTF_8)))
+                    .timeout(Duration.ofSeconds(5))
+                    .build();
+            HttpResponse<String> response = CLIENT.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+
+            assertEquals(413, response.statusCode());
+        }
+    }
+
     private static Router routeForIp() {
         Router router = new Router();
         router.get("/ip", request -> Response.text(request.remoteAddress()));
@@ -136,8 +285,12 @@ final class JdkHttpServerIntegrationTest {
     }
 
     private static RunningServer startServer(HttpKernel kernel, List<String> trustedProxies, Path staticRoot) throws IOException {
+        return startServer(kernel, trustedProxies, staticRoot, 1_048_576);
+    }
+
+    private static RunningServer startServer(HttpKernel kernel, List<String> trustedProxies, Path staticRoot, int maxRequestBytes) throws IOException {
         int port = freePort();
-        JdkHttpServer server = new JdkHttpServer("127.0.0.1", port, kernel, trustedProxies, staticRoot);
+        JdkHttpServer server = new JdkHttpServer("127.0.0.1", port, kernel, trustedProxies, staticRoot, maxRequestBytes);
         server.start();
         awaitReady(port);
         return new RunningServer(server, port);

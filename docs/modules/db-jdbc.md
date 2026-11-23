@@ -4,36 +4,180 @@ Artifact: `io.javelin:javelin-db-jdbc`
 
 `javelin-db-jdbc` provides a HikariCP-backed JDBC database implementation, a YAML migration runner, and a service provider for core wiring.
 
-## Public API
+## JdbcDatabase
 
-- `JdbcDatabase`
-- `JdbcQueryBuilder`
-- `MigrationRunner`
-- `JdbcDatabaseServiceProvider`
-
-## Example
+`JdbcDatabase` implements the `Database` contract using HikariCP connection pooling.
 
 ```java
-Database db = app.make(Database.class);
+HikariConfig hikariConfig = new HikariConfig();
+hikariConfig.setJdbcUrl("jdbc:postgresql://localhost:5432/myapp");
+hikariConfig.setUsername("user");
+hikariConfig.setPassword("pass");
+hikariConfig.setMaximumPoolSize(10);
 
-db.transaction(database -> {
-    return database.table("users").where("id", 1).first();
-});
+JdbcDatabase db = new JdbcDatabase(hikariConfig);
 ```
 
-## Function Usage
+- `new JdbcDatabase(HikariConfig config)` -- creates a database instance backed by a HikariCP connection pool.
+- `db.dataSource()` -- returns the underlying `HikariDataSource` for direct JDBC access.
 
-- `JdbcDatabase` is the concrete JDBC-backed `Database` implementation.
-- `Database.table(name)` starts a fluent query for a table.
-- `QueryBuilder` methods are used to add filters and fetch results.
-- `Database.transaction(callback)` wraps multiple operations in one transaction.
-- `MigrationRunner` reads YAML files from `database/migrations`, executes `up` statements in order, and records applied files in `javelin_migrations`.
-- `MigrationRunner.rollback()` replays the `down` statements from the latest batch.
-- `JdbcDatabaseServiceProvider` binds the database into the container.
+### Database operations
+
+```java
+// Fluent queries
+QueryBuilder qb = db.table("users");
+List<Map<String, Object>> users = qb.where("active", true).get();
+Optional<Map<String, Object>> user = qb.where("email", "alice@example.com").first();
+
+// Pagination
+List<Map<String, Object>> page2 = db.table("users").paginate(2, 20);
+
+// Insert
+long newId = db.table("users").insert(Map.of("name", "Alice", "email", "alice@example.com"));
+
+// Update
+int updated = db.table("users").where("id", 1).update(Map.of("name", "Bob"));
+
+// Delete
+int deleted = db.table("users").where("id", 1").delete();
+
+// Raw SQL (used by migration runner)
+int affected = db.execute("DELETE FROM sessions WHERE expires < NOW()");
+
+// Transactions
+String result = db.transaction(database -> {
+    long orderId = database.table("orders").insert(Map.of("total", 100));
+    database.table("logs").insert(Map.of("order_id", orderId, "action", "created"));
+    return "completed";
+});
+
+// Close
+db.close();
+```
+
+### QueryBuilder
+
+`QueryBuilder` provides a fluent interface for table queries.
+
+```java
+QueryBuilder qb = db.table("products");
+
+// Filter
+qb.where("category", "electronics");
+qb.where("price", 100); // adds to WHERE clause
+
+// Single result
+Optional<Map<String, Object>> product = qb.first();
+
+// Multiple results
+List<Map<String, Object>> products = qb.get();
+
+// Paginated results
+List<Map<String, Object>> page = qb.paginate(1, 10); // page 1, 10 per page
+
+// Insert
+long id = qb.insert(Map.of("name", "Widget", "price", 9.99));
+
+// Update (with WHERE already set)
+int updated = qb.update(Map.of("price", 12.99));
+
+// Delete (with WHERE already set)
+int deleted = qb.delete();
+```
+
+- `builder.where(column, value)` -- adds a WHERE condition. Can be called multiple times (conditions are ANDed).
+- `builder.first()` -- returns the first matching row as `Optional<Map<String, Object>>`.
+- `builder.get()` -- returns all matching rows as `List<Map<String, Object>>`.
+- `builder.paginate(page, perPage)` -- returns a page of results using LIMIT/OFFSET.
+- `builder.insert(values)` -- inserts a row and returns the generated key.
+- `builder.update(values)` -- updates matching rows and returns the count.
+- `builder.delete()` -- deletes matching rows and returns the count.
+
+## MigrationRunner
+
+`MigrationRunner` manages database schema changes through YAML migration files.
+
+```java
+MigrationRunner runner = new MigrationRunner(database, Path.of("database/migrations"));
+
+// Run pending migrations
+List<String> applied = runner.migrate();
+
+// Roll back the last batch
+List<String> rolledBack = runner.rollback();
+
+// List migration files
+List<Path> files = runner.migrationFiles();
+```
+
+- `new MigrationRunner(Database, Path)` -- creates a runner that reads YAML migration files from the given directory.
+- `runner.migrate()` -- runs all pending migrations in order. Each migration is a YAML file with `name`, `up`, and `down` keys. Applied migrations are recorded in the `javelin_migrations` table.
+- `runner.rollback()` -- rolls back the last batch of migrations by executing their `down` statements in reverse order.
+- `runner.migrationFiles()` -- lists migration files sorted by filename (which should be timestamped for ordering).
+
+### Migration YAML format
+
+```yaml
+# database/migrations/20240101000001-create-users.yml
+name: Create users table
+up:
+  - |
+    CREATE TABLE users (
+      id BIGSERIAL PRIMARY KEY,
+      name VARCHAR(255) NOT NULL,
+      email VARCHAR(255) NOT NULL UNIQUE,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+down:
+  - DROP TABLE IF EXISTS users
+```
+
+Additional migration templates generated by `javelin make:migration`:
+
+- `--type create-table --table users` -- scaffolds a CREATE TABLE migration.
+- `--type add-column --table users --column avatar_path` -- scaffolds an ALTER TABLE migration.
+- `--type seed --table users` -- scaffolds a data seed migration.
+
+```yaml
+# Generated by: javelin make:migration --type add-column --table users --column avatar_path
+name: Add avatar_path to users
+up:
+  - ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_path VARCHAR(500)
+down:
+  - ALTER TABLE users DROP COLUMN IF EXISTS avatar_path
+```
+
+## JdbcDatabaseServiceProvider
+
+`JdbcDatabaseServiceProvider` binds the database into the container.
+
+```java
+JdbcDatabaseServiceProvider provider = new JdbcDatabaseServiceProvider();
+provider.register(app);
+```
+
+- `provider.register(app)` -- reads `database.default` from config to determine the connection name, then reads `database.connections.<name>.*` for JDBC URL, username, password, and pool settings. Creates a `HikariConfig`, instantiates `JdbcDatabase`, and registers it as `Database` singleton. Also registers `MigrationRunner`.
+
+```java
+// Config keys (config/database.yaml):
+// database.default: "pgsql"
+// database.connections.pgsql.driver: "org.postgresql.Driver"
+// database.connections.pgsql.url: "${DATABASE_URL}"
+// database.connections.pgsql.username: "${DB_USERNAME}"
+// database.connections.pgsql.password: "${DB_PASSWORD}"
+// database.connections.pgsql.max_pool_size: 10
+// database.migrations_dir: "database/migrations"
+```
+
+```java
+// After provider registration:
+Database db = app.make(Database.class);
+MigrationRunner runner = app.make(MigrationRunner.class);
+```
 
 ## Notes
 
-- Uses prepared statements for values.
-- Keep table and column names validated or framework-controlled.
+- Uses prepared statements for all parameterized queries.
 - Migration files are YAML documents with `name`, `up`, and `down` keys.
-- The console generator can scaffold `create-table`, `add-column`, and `seed` migration shapes while still leaving the file editable.
+- The console generator can scaffold `create-table`, `add-column`, and `seed` migration shapes.
+- Keep table and column names validated or framework-controlled.

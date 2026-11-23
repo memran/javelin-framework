@@ -36,7 +36,7 @@ public final class DotenvEnv implements Env {
     }
 
     private static Optional<Entry> parseLine(String line) {
-        String trimmed = line.trim();
+        String trimmed = line.startsWith("\uFEFF") ? line.substring(1).trim() : line.trim();
         if (trimmed.isEmpty() || trimmed.startsWith("#")) {
             return Optional.empty();
         }

@@ -16,6 +16,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-http-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>

@@ -2,13 +2,16 @@
 
 Javelin is a lightweight Java framework inspired by MarwaPHP-style service providers while staying explicit, modular, and close to the JDK.
 
-This repository is the first production-oriented MVP phase. It includes the boot flow, service container, provider loading, JDK HTTP runtime with virtual threads, routing, middleware, YAML and `.env` config, SLF4J logging, Pebble views, JDBC/Hikari database access, Picocli commands, security middleware, in-memory cache, a demo app, and unit tests.
+This repository is the first production-oriented MVP phase. It includes the boot flow, service container, provider loading, Netty HTTP runtime by default (JDK and Undertow pluggable), routing, middleware, YAML and `.env` config, SLF4J logging, Pebble views, JDBC/Hikari database access, Picocli commands, security middleware, in-memory cache, a demo app, and unit tests.
 
 ## Modules
 
 - `modules/javelin-core` - application, container, providers, router, request/response, facades, kernel contracts
 - `modules/javelin-config` - `.env` and YAML config loading
+- `modules/javelin-http-common` - shared static asset, trusted proxy, and adapter config helpers
 - `modules/javelin-http-jdk` - JDK `HttpServer` adapter using virtual threads
+- `modules/javelin-http-netty` - Netty adapter using event loops
+- `modules/javelin-http-undertow` - Undertow adapter using worker dispatch
 - `modules/javelin-db-jdbc` - HikariCP-backed JDBC database, query builder, and YAML migration runner
 - `modules/javelin-log-slf4j` - SLF4J/Logback logger adapter
 - `modules/javelin-view-pebble` - Pebble template renderer
@@ -281,6 +284,16 @@ Build only the demo app and required modules:
 ```bash
 mvn -pl demo-app -am package -DskipTests
 ```
+
+Build a lean demo jar for one HTTP driver. Each profile includes only that adapter and writes the driver into `config/app.yaml` under `javelin.starter.http-driver`:
+
+```bash
+mvn -pl demo-app -am package -DskipTests -Pdriver-netty      # default
+mvn -pl demo-app -am package -DskipTests -Pdriver-jdk
+mvn -pl demo-app -am package -DskipTests -Pdriver-undertow
+```
+
+The driver is written into the packaged `config/app.yaml` under `javelin.starter.http-driver`. When you run a profile-built jar from inside the source tree, Javelin finds the *source* `config/app.yaml` first (which contains the build placeholder); pass `-Djavelin.root=<dir-with-packaged-config>` or run the jar from outside the repository so the packaged config is used.
 
 ## Roadmap
 

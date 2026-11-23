@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class ResponseTest {
@@ -80,5 +81,17 @@ final class ResponseTest {
         String errorBody = new String(error.body(), StandardCharsets.UTF_8);
         assertTrue(errorBody.contains("Internal Server Error"));
         assertTrue(errorBody.contains("Boom"));
+    }
+
+    @Test
+    void withHeaderReturnsANewResponseWithoutMutatingTheOriginal() {
+        Response original = Response.text("ok");
+
+        Response withAllow = original.withHeader("Allow", "GET, HEAD");
+
+        assertEquals("GET, HEAD", withAllow.headers().get("Allow"));
+        assertEquals("text/plain; charset=utf-8", withAllow.headers().get("Content-Type"));
+        assertEquals("ok", new String(withAllow.body(), StandardCharsets.UTF_8));
+        assertFalse(original.headers().containsKey("Allow"));
     }
 }

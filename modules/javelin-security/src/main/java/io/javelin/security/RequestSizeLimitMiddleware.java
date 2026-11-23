@@ -14,7 +14,7 @@ public final class RequestSizeLimitMiddleware implements Middleware {
 
     @Override
     public Response handle(Request request, Next next) throws Exception {
-        if (request.body().length > maxBytes) {
+        if (request.bodyLength() > maxBytes) {
             return JsonResponse.error("Payload Too Large", 413);
         }
         return next.handle(request);

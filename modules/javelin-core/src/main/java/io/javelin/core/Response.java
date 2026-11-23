@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Response {
     private final int status;
@@ -161,6 +162,14 @@ public class Response {
 
     public Map<String, String> headers() {
         return Map.copyOf(headers);
+    }
+
+    public Response withHeader(String name, String value) {
+        Objects.requireNonNull(name, "name");
+        Objects.requireNonNull(value, "value");
+        Map<String, String> updated = new LinkedHashMap<>(headers);
+        updated.put(name, value);
+        return new Response(status, updated, body);
     }
 
     public byte[] body() {

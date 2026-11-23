@@ -1,0 +1,19 @@
+<configuration>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Netty/Undertow probe Unsafe and reflection at startup. Netty logs the
+         expected "sun.misc.Unsafe unavailable" probe as DEBUG with a stack
+         trace on Java 24+, which is harmless but noisy. -->
+    <logger name="io.netty" level="WARN"/>
+    <logger name="io.undertow" level="WARN"/>
+    <logger name="org.xnio" level="WARN"/>
+    <logger name="org.jboss.threads" level="WARN"/>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>

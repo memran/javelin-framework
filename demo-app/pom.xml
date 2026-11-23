@@ -11,6 +11,7 @@
     <properties>
         <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <http.driver>netty</http.driver>
     </properties>
     <dependencies>
         <dependency>
@@ -25,8 +26,16 @@
         <resources>
             <resource>
                 <directory>.</directory>
+                <filtering>true</filtering>
                 <includes>
                     <include>config/**</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>.</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>logback.xml</include>
                     <include>routes/**</include>
                     <include>resources/**</include>
                 </includes>
@@ -65,4 +74,48 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>driver-netty</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <http.driver>netty</http.driver>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>io.javelin</groupId>
+                    <artifactId>javelin-http-netty</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>driver-jdk</id>
+            <properties>
+                <http.driver>jdk</http.driver>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>io.javelin</groupId>
+                    <artifactId>javelin-http-jdk</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>driver-undertow</id>
+            <properties>
+                <http.driver>undertow</http.driver>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>io.javelin</groupId>
+                    <artifactId>javelin-http-undertow</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>
