@@ -27,6 +27,12 @@
             <artifactId>javelin-http-netty</artifactId>
             <version>${javelin.version}</version>
         </dependency>
+        <!-- Configurable Jackson mapping for JSON responses and parsing. -->
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-json-jackson</artifactId>
+            <version>${javelin.version}</version>
+        </dependency>
         <!-- Centralized exception handling with redaction and custom error pages. -->
         <dependency>
             <groupId>io.javelin</groupId>

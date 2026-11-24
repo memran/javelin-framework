@@ -181,6 +181,30 @@ public final class Request {
         return remoteAddress;
     }
 
+    /** Parses the Cookie header into a simple name/value map. */
+    public Map<String, String> cookies() {
+        Optional<String> header = header("Cookie");
+        if (header.isEmpty() || header.get().isBlank()) {
+            return Map.of();
+        }
+        Map<String, String> values = new LinkedHashMap<>();
+        for (String part : header.get().split(";")) {
+            String[] pair = part.trim().split("=", 2);
+            if (pair.length == 2 && !pair[0].isBlank()) {
+                values.put(pair[0].trim(), pair[1].trim());
+            }
+        }
+        return Map.copyOf(values);
+    }
+
+    public Optional<String> cookie(String name) {
+        return Optional.ofNullable(cookies().get(name));
+    }
+
+    public Optional<Session> session() {
+        return attribute(Session.ATTRIBUTE).filter(Session.class::isInstance).map(Session.class::cast);
+    }
+
     public Optional<Object> attribute(String name) {
         Objects.requireNonNull(name, "name");
         return Optional.ofNullable(attributes.get(name));

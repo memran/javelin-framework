@@ -43,6 +43,18 @@ queue:
   jetstream: ${NATS_JETSTREAM:true}
   stream: ${NATS_STREAM:JAVELIN}
 
+json:
+  indent_output: false
+  fail_on_unknown_properties: false
+  write_nulls: true
+
+session:
+  cookie_name: javelin_session
+  ttl_seconds: 1800
+  secure: true
+  http_only: true
+  same_site: Lax
+
 log:
   channel: console
   request_logging: true
@@ -71,7 +83,9 @@ security:
 
 providers:
   - app.providers.AppServiceProvider
+  - io.javelin.json.jackson.JacksonJsonServiceProvider
   - io.javelin.exception.ExceptionHandlerServiceProvider
+  - io.javelin.security.SessionServiceProvider
   - io.javelin.cache.valkey.ValkeyCacheServiceProvider
   - io.javelin.queue.nats.NatsQueueServiceProvider
 

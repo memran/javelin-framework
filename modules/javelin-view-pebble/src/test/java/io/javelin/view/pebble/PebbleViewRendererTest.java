@@ -53,6 +53,57 @@ final class PebbleViewRendererTest {
         assertTrue(body.contains("HELLO Javelin"));
     }
 
+    @Test
+    void rendersLayoutsIncludesAndBlocks() throws Exception {
+        Path root = Files.createTempDirectory("javelin-view-layouts");
+        Path views = root.resolve("resources/views");
+        Files.createDirectories(views);
+        Files.writeString(views.resolve("layout.peb"),
+                "<html>{% block content %}{% endblock %}{% include \"footer\" %}</html>");
+        Files.writeString(views.resolve("footer.peb"), "<footer>end</footer>");
+        Files.writeString(views.resolve("page.peb"),
+                "{% extends \"layout\" %}{% block content %}Hello {{ name }}{% endblock %}");
+
+        PebbleViewRenderer renderer = new PebbleViewRenderer(root, "resources/views");
+
+        String body = new String(renderer.render("page", Map.of("name", "Javelin")).body(), StandardCharsets.UTF_8);
+        assertTrue(body.contains("<html>"), body);
+        assertTrue(body.contains("Hello Javelin"), body);
+        assertTrue(body.contains("<footer>end</footer>"), body);
+    }
+
+    @Test
+    void rendersImportedMacrosAsReusableComponents() throws Exception {
+        Path root = Files.createTempDirectory("javelin-view-macros");
+        Path views = root.resolve("resources/views");
+        Files.createDirectories(views);
+        Files.writeString(views.resolve("alert.peb"),
+                "{% macro alert(message) %}<div>{{ message }}</div>{% endmacro %}");
+        Files.writeString(views.resolve("page.peb"),
+                "{% import \"alert\" as ui %}{{ ui.alert(\"Saved\") }}");
+        PebbleViewRenderer renderer = new PebbleViewRenderer(root, "resources/views");
+
+        String body = new String(renderer.render("page", Map.of()).body(), StandardCharsets.UTF_8);
+        assertTrue(body.contains("<div>Saved</div>"), body);
+    }
+
+    @Test
+    void autoEscapesVariablesByDefault() throws Exception {
+        Path root = Files.createTempDirectory("javelin-view-escaping");
+        Path views = root.resolve("resources/views");
+        Files.createDirectories(views);
+        Files.writeString(views.resolve("escaped.peb"), "{{ value }}");
+        Files.writeString(views.resolve("raw.peb"), "{{ value|raw }}");
+        PebbleViewRenderer renderer = new PebbleViewRenderer(root, "resources/views");
+
+        String escaped = new String(renderer.render("escaped", Map.of("value", "<b>x</b>")).body(), StandardCharsets.UTF_8);
+        String raw = new String(renderer.render("raw", Map.of("value", "<b>x</b>")).body(), StandardCharsets.UTF_8);
+
+        assertTrue(escaped.contains("&lt;b&gt;"), escaped);
+        assertTrue(!escaped.contains("<b>"), escaped);
+        assertTrue(raw.contains("<b>x</b>"), raw);
+    }
+
     private Filter shoutFilter() {
         return new Filter() {
             @Override

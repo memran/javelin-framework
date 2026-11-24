@@ -34,6 +34,11 @@
             <artifactId>javelin-exception</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-json-jackson</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <sourceDirectory>.</sourceDirectory>

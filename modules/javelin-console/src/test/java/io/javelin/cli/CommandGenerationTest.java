@@ -179,12 +179,19 @@ final class CommandGenerationTest {
         assertTrue(packageJson.contains("\"dev:bun\": \"bun scripts/dev.mjs\""));
 
         String welcome = Files.readString(project.resolve("resources/views/welcome.peb"));
-        assertTrue(welcome.contains("href=\"/css/app.css\""));
-        assertTrue(welcome.contains("src=\"/js/app.js\""));
+        String layout = Files.readString(project.resolve("resources/views/layouts/app.peb"));
+        assertTrue(layout.contains("href=\"/css/app.css\""));
+        assertTrue(layout.contains("src=\"/js/app.js\""));
         assertTrue(welcome.contains("x-data"));
         assertFalse(welcome.contains("cdn.tailwindcss.com"));
         assertTrue(Files.readString(project.resolve("app/controllers/HomeController.java"))
                 .contains("View.render(\"welcome\""));
+        assertTrue(Files.readString(project.resolve("resources/views/welcome.peb"))
+                .contains("{% extends \"layouts/app\" %}"));
+        assertTrue(Files.readString(project.resolve("resources/views/layouts/app.peb"))
+                .contains("{% block content %}"));
+        assertTrue(Files.readString(project.resolve("resources/views/components/alert.peb"))
+                .contains("{% macro alert(message) %}"));
 
         assertTrue(Files.readString(project.resolve("resources/assets/app.css")).contains("@import \"tailwindcss\";"));
         assertTrue(Files.readString(project.resolve("resources/assets/app.js")).contains("Alpine.start()"));
@@ -208,6 +215,10 @@ final class CommandGenerationTest {
         assertTrue(appYaml.contains("ValkeyCacheServiceProvider"));
         assertTrue(appYaml.contains("NatsQueueServiceProvider"));
         assertTrue(appYaml.contains("ExceptionHandlerServiceProvider"));
+        assertTrue(appYaml.contains("JacksonJsonServiceProvider"));
+        assertTrue(appYaml.contains("SessionServiceProvider"));
+        assertTrue(appYaml.contains("cookie_name: javelin_session"));
+        assertTrue(appYaml.contains("indent_output: false"));
         assertTrue(appYaml.contains("request_logging: true"));
         assertTrue(appYaml.contains("correlation_id_header: X-Correlation-ID"));
         assertTrue(appYaml.contains("redact_keys:"));
@@ -219,6 +230,7 @@ final class CommandGenerationTest {
         assertTrue(generatedPom.contains("javelin-queue-nats"));
         assertTrue(generatedPom.contains("javelin-exception"));
         assertTrue(generatedPom.contains("javelin-db-migration"));
+        assertTrue(generatedPom.contains("javelin-json-jackson"));
         assertTrue(generatedPom.contains("<include>errors/**</include>"));
         assertTrue(Files.exists(project.resolve("logback.xml")));
         assertTrue(Files.exists(project.resolve("logback-prod.xml")));

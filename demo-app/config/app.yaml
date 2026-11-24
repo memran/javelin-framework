@@ -25,6 +25,18 @@ database:
       minimum_idle: 2
       connection_timeout_ms: 5000
 
+json:
+  indent_output: false
+  fail_on_unknown_properties: false
+  write_nulls: true
+
+session:
+  cookie_name: javelin_session
+  ttl_seconds: 1800
+  secure: true
+  http_only: true
+  same_site: Lax
+
 log:
   channel: console
   path: storage/logs/app.log
@@ -51,7 +63,9 @@ security:
 
 providers:
   - app.providers.AppServiceProvider
+  - io.javelin.json.jackson.JacksonJsonServiceProvider
   - io.javelin.exception.ExceptionHandlerServiceProvider
+  - io.javelin.security.SessionServiceProvider
 
 javelin:
   starter:

@@ -662,6 +662,29 @@ Map<?, ?> data = Json.parse(json, Map.class);
 User user = Json.convert(data, User.class);
 ```
 
+`JsonMapper` is the mapping contract behind these helpers. Adapters such as [JSON Jackson](json-jackson.md) replace it with `Json.use(mapper)`; `Json.mapper()` returns the active instance. `JsonResponse` serializes through the same mapper.
+
+## Cookies and sessions
+
+`Cookie` is a small value type for `Set-Cookie` headers. `Request.cookie(name)` / `Request.cookies()` parse the `Cookie` header, and `Response.withCookie(...)` / `withoutCookie(...)` add cookie headers.
+
+```java
+String theme = request.cookie("theme").orElse("light");
+return Response.text("ok").withCookie(Cookie.session("sid", "abc123"));
+```
+
+`Session`, `SessionStore` and `Request.session()` are the session contracts. Core defines them; a security-module provider supplies the implementation and middleware. See [Security — Cookie-backed sessions](security.md#cookie-backed-sessions).
+
+## Validation error responses
+
+`ValidationErrors` renders `Map<String, List<String>>` field errors as a 422 JSON or HTML response.
+
+```java
+Map<String, List<String>> errors = Validation.errors();
+return ValidationErrors.of(request, errors); // content-negotiated
+// or explicitly: ValidationErrors.json(errors) / ValidationErrors.html(errors)
+```
+
 ## Queue contracts
 
 `io.javelin.core.queue` holds the queue contracts. Backends live in adapter modules.

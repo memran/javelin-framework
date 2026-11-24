@@ -45,6 +45,19 @@ queue:
 storage:
   upload_dir: storage/uploads
 
+json:
+  indent_output: false
+  fail_on_unknown_properties: false
+  write_nulls: true
+  date_format: ""
+
+session:
+  cookie_name: javelin_session
+  ttl_seconds: 1800
+  secure: true
+  http_only: true
+  same_site: Lax
+
 log:
   channel: console
   path: storage/logs/app.log
@@ -77,7 +90,9 @@ security:
 
 providers:
   - app.providers.AppServiceProvider
+  - io.javelin.json.jackson.JacksonJsonServiceProvider
   - io.javelin.exception.ExceptionHandlerServiceProvider
+  - io.javelin.security.SessionServiceProvider
   - io.javelin.cache.valkey.ValkeyCacheServiceProvider
   - io.javelin.queue.nats.NatsQueueServiceProvider
 

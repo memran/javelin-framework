@@ -75,6 +75,8 @@ public final class NewCommand extends AbstractCommand {
         files.write(root.resolve(".dockerignore"), "dockerignore.stub", values, force);
         files.write(root.resolve("package.json"), "package-json.stub", values, force);
         files.write(root.resolve("resources/views/welcome.peb"), "welcome-peb.stub", values, force);
+        files.write(root.resolve("resources/views/layouts/app.peb"), "layout-peb.stub", values, force);
+        files.write(root.resolve("resources/views/components/alert.peb"), "component-peb.stub", values, force);
         files.write(root.resolve("resources/assets/app.css"), "tailwind-css.stub", values, force);
         files.write(root.resolve("resources/assets/app.js"), "alpine-js.stub", values, force);
         files.write(root.resolve("scripts/dev.mjs"), "dev-assets-js.stub", values, force);

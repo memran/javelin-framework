@@ -21,6 +21,7 @@
         <module>modules/javelin-log-slf4j</module>
         <module>modules/javelin-exception</module>
         <module>modules/javelin-view-pebble</module>
+        <module>modules/javelin-json-jackson</module>
         <module>modules/javelin-console</module>
         <module>modules/javelin-security</module>
         <module>modules/javelin-support</module>

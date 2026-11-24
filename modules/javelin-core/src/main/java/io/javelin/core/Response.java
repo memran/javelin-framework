@@ -172,6 +172,20 @@ public class Response {
         return new Response(status, updated, body);
     }
 
+    /** Adds a Set-Cookie header. Multiple cookies are joined with ", " in this header. */
+    public Response withCookie(Cookie cookie) {
+        Objects.requireNonNull(cookie, "cookie");
+        String existing = headers.get("Set-Cookie");
+        String value = existing == null || existing.isBlank()
+                ? cookie.headerValue()
+                : existing + ", " + cookie.headerValue();
+        return withHeader("Set-Cookie", value);
+    }
+
+    public Response withoutCookie(String name) {
+        return withCookie(Cookie.expired(name));
+    }
+
     public byte[] body() {
         return body.clone();
     }

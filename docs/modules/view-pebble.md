@@ -4,146 +4,110 @@ Artifact: `io.javelin:javelin-view-pebble`
 
 `javelin-view-pebble` integrates the Pebble template engine as the framework view backend.
 
-## PebbleViewRenderer
-
-`PebbleViewRenderer` implements `ViewRenderer` and renders Pebble templates.
+## Rendering
 
 ```java
-// Basic renderer — loads templates from classpath with "templates/" prefix
-PebbleViewRenderer renderer = new PebbleViewRenderer("templates/");
+PebbleViewRenderer renderer = new PebbleViewRenderer("resources/views");
+HtmlResponse html = renderer.render("users/index", Map.of("name", "Javelin"));
 
-// With custom options
-PebbleViewRenderer renderer = new PebbleViewRenderer("templates/",
-    PebbleViewRenderer.Options.defaults());
-
-// With custom options and extensions
-PebbleViewRenderer renderer = new PebbleViewRenderer("templates/",
-    new PebbleViewRenderer.Options(true, ".peb", true, false, true,
-        Optional.empty(), Optional.empty(), false, Optional.empty(),
-        false, false, false),
-    List.of(new MyExtension()));
-
-// From a filesystem root
-PebbleViewRenderer renderer = new PebbleViewRenderer(Path.of("src/main/resources"), "templates/");
-
-// Render a template
-HtmlResponse html = renderer.render("index", Map.of("title", "Hello"));
+// Filesystem root (used by the service provider when a Path is bound)
+PebbleViewRenderer fileRenderer = new PebbleViewRenderer(
+        Path.of("."), "resources/views", PebbleViewRenderer.Options.defaults(), extensions.extensions());
 ```
 
-- `new PebbleViewRenderer(String prefix)` -- loads templates from the classpath with the given prefix.
-- `new PebbleViewRenderer(String prefix, Options options)` -- loads templates with custom Pebble options.
-- `new PebbleViewRenderer(String prefix, Options options, List<Extension> extensions)` -- loads templates with options and Pebble extensions.
-- `new PebbleViewRenderer(Path root, String prefix)` -- loads templates from a filesystem root path.
-- `new PebbleViewRenderer(Path root, String prefix, Options options)` -- filesystem root with options.
-- `new PebbleViewRenderer(Path root, String prefix, Options options, List<Extension> extensions)` -- filesystem root with options and extensions.
-- `renderer.share(String key, Object value)` -- sets a global template variable available in every template.
-- `renderer.render(String template, Map<String, Object> data)` -- renders the template and returns an `HtmlResponse`.
+Constructors accept a classpath prefix or a filesystem root plus prefix, with optional `Options` and `List<Extension>`. `renderer.share(key, value)` adds a global variable available in every template; `render(template, data)` merges per-request data over globals.
 
-### Options
+## Options and caching
+
+`Options` is a record in this order:
 
 ```java
-PebbleViewRenderer.Options opts = PebbleViewRenderer.Options.defaults();
-
-// Or build custom options:
-PebbleViewRenderer.Options custom = new PebbleViewRenderer.Options(
-    true,            // cache compiled templates
-    ".peb",          // template file suffix
-    true,            // auto-escape
-    false,           // strict variables
-    true,            // newline trimming
-    Optional.empty(), // default locale
-    Optional.empty(), // max rendered size
-    false,           // allow override core operators
-    Optional.empty(), // default escaping strategy
-    false,           // literal decimal as integer
-    false,           // literal numbers as big decimals
-    false            // greedy match method
+new PebbleViewRenderer.Options(
+        ".peb",                 // suffix
+        true,                   // cache compiled templates
+        true,                   // auto-escaping
+        false,                  // strict variables
+        false,                  // new-line trimming
+        Optional.empty(),       // default locale
+        Optional.empty(),       // max rendered size
+        false,                  // allow overriding core operators
+        Optional.empty(),       // default escaping strategy
+        false,                  // literal decimals as integers
+        false,                  // literal numbers as BigDecimals
+        false                   // greedy method matching
 );
 ```
 
-- `Options.defaults()` -- returns a pre-built default configuration with caching enabled, `.peb` suffix, auto-escaping on, and newline trimming on.
+`Options.defaults()` uses `.peb`, caching **off**, auto-escaping **on**, strict variables off and new-line trimming off. The service provider reads `config/view.yml`:
 
-## PebbleViewExtensions
+| Key | Default | Meaning |
+|---|---|---|
+| `view.prefix` | `resources/views` | Template directory/prefix |
+| `view.suffix` | `.peb` | Template file suffix |
+| `view.pebble.cache` | `false` | Cache compiled templates |
+| `view.pebble.auto_escaping` | `true` | Escape `{{ ... }}` output by default |
+| `view.pebble.strict_variables` | `false` | Fail on undefined variables |
+| `view.pebble.new_line_trimming` | `false` | Trim new lines |
+| `view.pebble.default_locale` | — | Locale tag |
+| `view.pebble.max_rendered_size` | — | Render size limit |
+| `view.pebble.default_escaping_strategy` | — | Escaping strategy name |
 
-`PebbleViewExtensions` adds custom filters, functions, tests, and globals to the Pebble template engine. All methods return `PebbleViewExtensions` for fluent chaining.
+Enable caching in production with `view.pebble.cache: true`; leave it off in development to see template edits immediately.
+
+## Layouts, includes and components
+
+Pebble's native tags are available without extra wiring. Generated projects ship:
+
+- `resources/views/layouts/app.peb` — a base layout with `{% block content %}`
+- `resources/views/components/alert.peb` — a reusable `{% macro alert(message) %}`
+- `resources/views/welcome.peb` — extends the layout and imports the component
+
+```peb
+{# resources/views/pages/show.peb #}
+{% extends "layouts/app" %}
+{% import "components/alert" as ui %}
+{% block content %}
+    {{ ui.alert("Saved") }}
+    <h1>{{ user.name }}</h1>
+    {% include "partials/footer" %}
+{% endblock %}
+```
+
+Templates are resolved relative to the configured prefix, so `layouts/app` loads `layouts/app.peb`.
+
+## Automatic escaping
+
+`{{ value }}` is HTML-escaped when `view.pebble.auto_escaping` is true. Use `{{ value|raw }}` only for content you already sanitized:
+
+```peb
+{{ user.bio }}       {# escaped #}
+{{ trustedHtml|raw }} {# not escaped #}
+```
+
+`Response.errorPage(...)` and `ValidationErrors.html(...)` also escape their HTML output independently of Pebble.
+
+## Shared view data
 
 ```java
 PebbleViewExtensions extensions = new PebbleViewExtensions()
-    .filter("slugify", new SlugifyFilter())
-    .function("greet", new GreetFunction())
-    .test("admin", new AdminTest())
-    .global("siteName", "Javelin")
-    .extension(new MyCustomExtension());
-```
+        .filter("slugify", new SlugifyFilter())
+        .function("greet", new GreetFunction())
+        .test("admin", new AdminTest())
+        .global("siteName", "Javelin")
+        .extension(new MyCustomExtension());
 
-- `extensions.extension(Extension ext)` -- adds a complete Pebble extension.
-- `extensions.filter(String name, Filter filter)` -- registers a template filter (e.g., `{{ title | slugify }}`).
-- `extensions.function(String name, Function function)` -- registers a template function (e.g., `{{ greet("Alice") }}`).
-- `extensions.test(String name, Test test)` -- registers a template test (e.g., `{% if user is admin %}`).
-- `extensions.global(String name, Object value)` -- registers a global variable available in all templates.
-
-```java
-// Wiring extensions into the renderer:
 PebbleViewRenderer renderer = new PebbleViewRenderer(
-    "templates/",
-    PebbleViewRenderer.Options.defaults(),
-    List.of(new PebbleViewExtensions()
-        .filter("upper", (Filter) (value, args) -> value.toString().toUpperCase())
-        .build()) // extensions list containing the custom filter
-);
+        "resources/views", PebbleViewRenderer.Options.defaults(), List.of(extensions));
 ```
 
-Note: `PebbleViewExtensions` itself implements `Extension`, so you can pass it directly in the extensions list.
+`PebbleViewServiceProvider` registers `PebbleViewExtensions` in the container, so applications can add filters, functions, tests or globals from their own provider before `boot()`.
 
-## PebbleViewServiceProvider
+## Service provider
 
-`PebbleViewServiceProvider` wires the Pebble renderer into the container.
+`provider.register(app)` binds `ViewRenderer` and `PebbleViewExtensions`; `provider.boot(app)` calls `View.use(renderer)`. Application code uses the facade:
 
 ```java
-PebbleViewServiceProvider provider = new PebbleViewServiceProvider();
-provider.register(app);
-provider.boot(app);
+return View.render("users/index", Map.of("users", users));
 ```
 
-- `provider.register(app)` -- reads `view.template_dir`, `view.cache`, `view.suffix`, `view.auto_escape` from config, creates a `PebbleViewRenderer`, and registers it as `ViewRenderer` singleton. Also registers `PebbleViewExtensions`.
-- `provider.boot(app)` -- calls `View.use(renderer)` to activate Pebble as the view backend.
-
-```java
-// Config keys used (config/view.yaml):
-// view.template_dir: "templates"
-// view.cache: true
-// view.suffix: ".peb"
-// view.auto_escape: true
-```
-
-```java
-// After provider boot:
-HtmlResponse html = View.view("users/index", Map.of("name", "Javelin"));
-
-// Or with varargs for simple templates:
-HtmlResponse html = View.view("greeting", "name", "Alice", "role", "Admin");
-```
-
-## Using templates in routes
-
-```java
-app.router().get("/", request ->
-    View.view("home", Map.of("title", "Welcome"))
-);
-
-app.router().get("/users/{id}", request -> {
-    String id = request.param("id").orElseThrow();
-    return View.view("users/show", Map.of("userId", id));
-});
-
-// With global shared variables:
-PebbleViewRenderer renderer = app.make(ViewRenderer.class);
-renderer.share("appName", "Javelin");
-// Now all templates have access to {{ appName }}
-```
-
-## Notes
-
-- Configure Pebble in `config/view.yml`.
-- Use extensions for filters, functions, tests, and globals.
-- Templates with the `.peb` suffix are resolved from the configured template directory.
+See [CLI Reference](../cli-reference.md) for the full list of generated files.

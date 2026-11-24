@@ -38,7 +38,8 @@ Every new project includes:
 
 - Java skeleton: `pom.xml`, `Main.java`, `app/`, `routes/`, `config/`, `tests/`, `logback.xml`
 - HTTP driver: Netty adapter dependency with `javelin.starter.http-driver: netty` in config
-- Welcome page: `resources/views/welcome.peb` rendered by `HomeController`, using the local `/css/app.css` and `/js/app.js` with an Alpine.js interaction
+- Welcome page: `resources/views/welcome.peb` extends `resources/views/layouts/app.peb` and imports the reusable `resources/views/components/alert.peb` macro; the layout uses local `/css/app.css` and `/js/app.js` with an Alpine.js interaction
+- JSON and sessions: `javelin-json-jackson` provider plus configurable `json.*` and `session.*` keys in `config/app.yaml`
 - Frontend sources: `resources/assets/app.css` (Tailwind v4) and `resources/assets/app.js` (Alpine.js)
 - Frontend build: `package.json`, `scripts/dev.mjs`, output into `public/css` and `public/js`
 - Docker: `docker-compose.yml` (app + PostgreSQL + Valkey cache + NATS/JetStream), `Dockerfile` (asset build → jar → runtime), `.dockerignore`

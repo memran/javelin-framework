@@ -1,0 +1,5 @@
+{% macro alert(message) %}
+<div class="rounded-md border border-emerald-300/20 bg-emerald-300/10 px-4 py-2 text-sm text-emerald-200">
+    {{ message }}
+</div>
+{% endmacro %}

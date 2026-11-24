@@ -33,7 +33,8 @@ It is deliberately *not* Spring Boot and deliberately *not* an ORM. If you need 
 - **Security defaults** — secure response headers, configurable trusted proxies (IP/CIDR), request size limits, password hashing, bearer auth with 401/403 responses, and dev/prod error handling.
 - **Static assets** — ETag and `304` support, byte ranges, cache headers, `nosniff`, path-traversal and symlink containment, and a middleware-friendly pipeline.
 - **Database** — bounded HikariCP pools, multiple named connections, a prepared-statement query builder with CRUD and pagination, transactions with rollback, slow-query logging, bundled PostgreSQL/MySQL/MariaDB/SQLite drivers, and dialect-aware YAML migrations with history and batch rollback.
-- **Views** — Pebble templates with custom filters, functions, globals, and extensions; a `View` facade for convenient rendering.
+- **Views** — Pebble templates with layouts, includes, blocks, reusable macros, shared globals, automatic escaping and configurable caching; a `View` facade for convenient rendering.
+- **JSON and web responses** — a configurable Jackson mapper behind `Json`/`JsonResponse`, HTML/JSON/redirect/file/stream responses, secure static assets, cookies, opt-in sessions, and 422 validation-error rendering for both HTML and JSON clients.
 - **Caching** — a small `Cache` contract with an in-memory TTL implementation and a Lettuce-backed Valkey adapter for distributed caching.
 - **Queues** — a `Job` / `RetryPolicy` contract with a NATS JetStream adapter, push consumers, and retry with attempt tracking.
 - **CLI and generators** — Picocli commands to scaffold apps, controllers, models, migrations, and validation rules. Generated projects include Docker Compose, a multi-stage Dockerfile, Tailwind CSS, Alpine.js, npm/bun scripts with auto-detection, build scripts, and opt-in Nginx/Caddy proxy configs.
@@ -72,7 +73,8 @@ Core owns the contracts; adapters implement them; the starter wires defaults; ap
 - `modules/javelin-db-migration` - YAML migrations, history table, batch rollback, dialect-aware DDL
 - `modules/javelin-log-slf4j` - SLF4J/Logback adapter, structured logging, request IDs, JSON encoder, config-driven levels
 - `modules/javelin-exception` - global exception handler, custom error pages, sensitive-data redaction
-- `modules/javelin-view-pebble` - Pebble template renderer
+- `modules/javelin-view-pebble` - Pebble template renderer, layouts, components, escaping, caching
+- `modules/javelin-json-jackson` - configurable Jackson mapper for JSON responses and parsing
 - `modules/javelin-console` - Picocli command kernel and generators
 - `modules/javelin-security` - secure headers, request limits, rate limiting, password hashing
 - `modules/javelin-support` - short Laravel-style helper facades for strings, dates, arrays, files, images, HTTP client, AI client, objects, validation, HTML, and security
@@ -224,6 +226,19 @@ String path = app.router().path("users.show", Map.of("id", "42")); // /users/42
 ```java
 return Json.ok(Map.of("status", "ok"));
 return View.render("users/index", Map.of("name", "Javelin"));
+return Response.redirect("/dashboard");
+```
+
+The same controller can serve both HTML and JSON clients:
+
+```java
+if (!errors.isEmpty()) {
+    return ValidationErrors.of(request, errors); // 422 JSON or HTML
+}
+
+Session session = request.session().orElseThrow();
+session.put("lastViewed", request.path());
+return Response.text("ok").withCookie(Cookie.session("pref", "dark"));
 ```
 
 Pebble settings live in `config/view.yml`. Applications can register custom Pebble filters, functions, tests, globals, or full extensions from a service provider:

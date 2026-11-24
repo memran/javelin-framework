@@ -138,9 +138,44 @@ This is read by `JdkHttpServiceProvider` and passed to the configured HTTP adapt
 
 Bearer-token and permission middleware are part of `javelin-core` (package `io.javelin.core.security`), not this module. They are intentionally small: you supply a `BearerTokenResolver` function and the middleware produces 401/403 responses. See [Core — Bearer authentication and authorization](core.md#bearer-authentication-and-authorization) for the full example.
 
+## Cookie-backed sessions
+
+`SessionServiceProvider` is opt-in; add it to `config.providers`:
+
+```yaml
+providers:
+  - io.javelin.security.SessionServiceProvider
+
+session:
+  cookie_name: javelin_session
+  ttl_seconds: 1800
+  secure: true
+  http_only: true
+  same_site: Lax
+```
+
+It binds a `SessionStore` and registers `SessionMiddleware`, which attaches a `Session` to each request and returns the session cookie on the response.
+
+```java
+Session session = request.session().orElseThrow();
+session.put("user_id", 42);
+session.save();                 // optional: middleware also saves after the handler
+session.invalidate();            // middleware sends an expired cookie
+```
+
+Core also provides the `Cookie` value type and response helpers:
+
+```java
+return Response.text("ok").withCookie(Cookie.session("pref", "dark"));
+return Response.redirect("/login").withoutCookie("javelin_session");
+String theme = request.cookie("pref").orElse("light");
+```
+
+`InMemorySessionStore` is process-local and intended for single-instance deployments. Register a different `SessionStore` provider for shared sessions across instances. Cookie defaults are `Secure`, `HttpOnly`, `Path=/`, `SameSite=Lax`; keep `secure: true` behind HTTPS. Multiple `Set-Cookie` values are joined with `", "` in the single header supported by the response model.
+
 ## Notes
 
 - Keep security defaults enabled in starter wiring.
 - Use middleware for request protection, not global magic.
 - `SecureHeadersMiddleware` and `RequestSizeLimitMiddleware` are applied automatically by the starter.
-- `RateLimitMiddleware` must be added explicitly where needed.
+- `RateLimitMiddleware` and `SessionServiceProvider` must be added explicitly where needed.
