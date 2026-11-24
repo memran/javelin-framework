@@ -21,6 +21,7 @@
         <module>modules/javelin-log-slf4j</module>
         <module>modules/javelin-exception</module>
         <module>modules/javelin-view-pebble</module>
+        <module>modules/javelin-storage</module>
         <module>modules/javelin-json-jackson</module>
         <module>modules/javelin-console</module>
         <module>modules/javelin-security</module>
@@ -28,6 +29,7 @@
         <module>modules/javelin-support</module>
         <module>modules/javelin-cache</module>
         <module>modules/javelin-cache-valkey</module>
+        <module>modules/javelin-cache-caffeine</module>
         <module>modules/javelin-queue-nats</module>
         <module>modules/javelin-starter</module>
         <module>demo-app</module>

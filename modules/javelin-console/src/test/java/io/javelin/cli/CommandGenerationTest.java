@@ -226,6 +226,11 @@ final class CommandGenerationTest {
         assertTrue(appYaml.contains("ValidationServiceProvider"));
         assertTrue(appYaml.contains("SecretsServiceProvider"));
         assertTrue(appYaml.contains("bcrypt_cost: 12"));
+        assertTrue(appYaml.contains("maximum_size: 10000"));
+        assertTrue(appYaml.contains("disks:"));
+        assertTrue(appYaml.contains("StorageServiceProvider"));
+        assertTrue(appYaml.contains("CaffeineCacheServiceProvider"));
+        assertEquals(1, appYaml.split("(?m)^storage:", -1).length - 1);
         assertTrue(appYaml.contains("request_logging: true"));
         assertTrue(appYaml.contains("correlation_id_header: X-Correlation-ID"));
         assertTrue(appYaml.contains("redact_keys:"));
@@ -239,6 +244,9 @@ final class CommandGenerationTest {
         assertTrue(generatedPom.contains("javelin-db-migration"));
         assertTrue(generatedPom.contains("javelin-json-jackson"));
         assertTrue(generatedPom.contains("javelin-validation"));
+        assertTrue(generatedPom.contains("javelin-cache-caffeine"));
+        assertTrue(generatedPom.contains("javelin-storage"));
+        assertTrue(generatedPom.contains("META-INF/*.SF"));
         assertTrue(generatedPom.contains("<include>errors/**</include>"));
         assertTrue(Files.exists(project.resolve("logback.xml")));
         assertTrue(Files.exists(project.resolve("logback-prod.xml")));

@@ -35,15 +35,39 @@ database:
 cache:
   driver: ${CACHE_DRIVER:memory}
   url: ${VALKEY_URL:}
+  caffeine:
+    maximum_size: 10000
+    default_ttl_seconds: 0
+
+storage:
+  upload_dir: storage/uploads
+  default: public
+  disks:
+    public:
+      driver: local
+      root: storage/app/public
+      domain: /files/
+      max_bytes: 10485760
+      allowed_extensions:
+        - txt
+        - png
+        - jpg
+        - pdf
+    private:
+      driver: local
+      root: storage/app/private
+      domain: /files/
+      public: false
+    temporary:
+      driver: local
+      root: storage/app/tmp
+      domain: /files/
 
 queue:
   driver: ${QUEUE_DRIVER:none}
   url: ${NATS_URL:}
   jetstream: ${NATS_JETSTREAM:false}
   stream: ${NATS_STREAM:JAVELIN}
-
-storage:
-  upload_dir: storage/uploads
 
 json:
   indent_output: false
@@ -118,6 +142,8 @@ providers:
   - io.javelin.security.CorsServiceProvider
   - io.javelin.validation.ValidationServiceProvider
   - io.javelin.config.SecretsServiceProvider
+  - io.javelin.storage.StorageServiceProvider
+  - io.javelin.cache.caffeine.CaffeineCacheServiceProvider
   - io.javelin.cache.valkey.ValkeyCacheServiceProvider
   - io.javelin.queue.nats.NatsQueueServiceProvider
 

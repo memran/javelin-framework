@@ -94,6 +94,16 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-cache-caffeine</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-storage</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>

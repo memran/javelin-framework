@@ -36,6 +36,27 @@ database:
 cache:
   driver: ${CACHE_DRIVER:valkey}
   url: ${VALKEY_URL:redis://valkey:6379}
+  caffeine:
+    maximum_size: 10000
+    default_ttl_seconds: 0
+
+storage:
+  default: public
+  disks:
+    public:
+      driver: local
+      root: storage/app/public
+      domain: /files/
+      max_bytes: 10485760
+    private:
+      driver: local
+      root: storage/app/private
+      domain: /files/
+      public: false
+    temporary:
+      driver: local
+      root: storage/app/tmp
+      domain: /files/
 
 queue:
   driver: ${QUEUE_DRIVER:nats}
@@ -112,6 +133,8 @@ providers:
   - io.javelin.security.CorsServiceProvider
   - io.javelin.validation.ValidationServiceProvider
   - io.javelin.config.SecretsServiceProvider
+  - io.javelin.storage.StorageServiceProvider
+  - io.javelin.cache.caffeine.CaffeineCacheServiceProvider
   - io.javelin.cache.valkey.ValkeyCacheServiceProvider
   - io.javelin.queue.nats.NatsQueueServiceProvider
 

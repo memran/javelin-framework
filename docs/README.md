@@ -32,6 +32,8 @@ This folder documents the public API of each Javelin module with small usage exa
 - [Validation](modules/validation.md) — string-rule Validator, supported rules, 422 error rendering relationship
 - [Cache](modules/cache.md) — Cache interface, InMemoryCache, CacheServiceProvider, TTL-based storage
 - [Cache Valkey](modules/cache-valkey.md) — Lettuce-backed Valkey cache provider and config keys
+- [Cache Caffeine](modules/cache-caffeine.md) — fast bounded local cache, per-entry TTL, static facade
+- [Storage](modules/storage.md) — named disks, x-file-storage adapters, uploads, private downloads, S3/MinIO
 - [Queue NATS](modules/queue-nats.md) — Job/RetryPolicy contracts, JetStream publish/subscribe and provider config
 - [Support](modules/support.md) — Collection, Input, Validation, ValidationRule, Str, Arr, File, Image, Http, Ai, Date, Obj, Html, Security
 

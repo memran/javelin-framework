@@ -3,6 +3,7 @@ package routes;
 import app.controllers.BackendController;
 import app.controllers.HomeController;
 import app.controllers.SecurityExampleController;
+import app.controllers.StorageExampleController;
 import app.controllers.UserController;
 import io.javelin.core.Application;
 import io.javelin.core.security.BearerAuthMiddleware;
@@ -22,6 +23,7 @@ public final class web {
         UserController users = app.make(UserController.class);
         BackendController backends = app.make(BackendController.class);
         SecurityExampleController security = app.make(SecurityExampleController.class);
+        StorageExampleController files = app.make(StorageExampleController.class);
 
         add(app.router(), get("/", home::index));
         add(app.router(), get("/health", home::health));
@@ -40,5 +42,11 @@ public final class web {
         add(app.router(), get("/demo/api/token", security::token));
         add(app.router(), get("/demo/api/me", security::me)
                 .middleware(new BearerAuthMiddleware(app.make(BearerTokenResolver.class))));
+
+        // Runnable examples for docs/tutorials/files-and-cache.md
+        add(app.router(), get("/demo/files", files::form));
+        add(app.router(), post("/demo/files", files::upload));
+        add(app.router(), get("/demo/files/download", files::download));
+        add(app.router(), get("/demo/cache", files::cache));
     }
 }

@@ -8,4 +8,9 @@ public final class CacheServiceProvider implements ServiceProvider {
     public void register(Application app) {
         app.singleton(Cache.class, InMemoryCache::new);
     }
+
+    @Override
+    public void boot(Application app) {
+        io.javelin.caches.Cache.use(app.make(Cache.class));
+    }
 }

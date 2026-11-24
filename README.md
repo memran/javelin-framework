@@ -81,6 +81,8 @@ Core owns the contracts; adapters implement them; the starter wires defaults; ap
 - `modules/javelin-support` - short Laravel-style helper facades for strings, dates, arrays, files, images, HTTP client, AI client, objects, validation, HTML, and security
 - `modules/javelin-cache` - simple in-memory cache contract and implementation
 - `modules/javelin-cache-valkey` - Lettuce-backed Valkey cache adapter
+- `modules/javelin-cache-caffeine` - bounded Caffeine cache with per-entry TTL and static facade
+- `modules/javelin-storage` - named disks backed by x-file-storage (local, S3, MinIO)
 - `modules/javelin-queue-nats` - NATS JetStream queue adapter with job retries
 - `modules/javelin-starter` - batteries-included bootstrap
 - `demo-app` - runnable demo application and Docker stack
@@ -316,8 +318,27 @@ queue.subscribe("emails.welcome", job -> sendWelcome(job.payload(Map.class)), Re
 queue.publish(Job.of("emails.welcome", Map.of("userId", 42)));
 ```
 
-- `javelin-cache` provides an in-memory TTL cache; `javelin-cache-valkey` uses Lettuce against Valkey/Redis.
+- `javelin-cache` provides an in-memory TTL cache; `javelin-cache-caffeine` is the bounded default and `javelin-cache-valkey` uses Lettuce against Valkey/Redis. The static facade is `import io.javelin.caches.Cache;`:
+
+```java
+io.javelin.caches.Cache.put("users_count", 100, Duration.ofMinutes(5));
+```
+
 - `javelin-queue-nats` publishes to NATS JetStream and consumes with retries and attempt tracking.
+
+## Storage
+
+Named disks are backed by [x-file-storage](https://github.com/dromara/x-file-storage). Generated apps ship `public`, `private` and `temporary` local disks; MinIO and S3 disks use the same API.
+
+```java
+import io.javelin.storages.Storage;
+
+StoredFile file = Storage.disk("public").put("photo.jpg", bytes);
+String url = file.url();
+Response privateFile = Storage.download("private", "contract.pdf", request); // 403 unless authorized
+```
+
+See [Storage](docs/modules/storage.md) for disk config, validation rules and download policies.
 
 Both are wired only when configured, and generated Compose files start Valkey and NATS/JetStream alongside the app and PostgreSQL.
 
