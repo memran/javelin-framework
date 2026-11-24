@@ -10,9 +10,14 @@
                 <p class="text-sm text-zinc-400">Javelin application</p>
             </div>
         </div>
-        <a class="rounded-md border border-white/10 px-3 py-2 text-sm font-medium text-zinc-200 transition hover:border-emerald-300" href="/health">
-            Health
-        </a>
+        <div class="flex items-center gap-2">
+            <a class="rounded-md px-3 py-2 text-sm font-medium text-zinc-200 transition hover:text-emerald-200" href="https://github.com/memran/javelin-framework/blob/main/docs/tutorials/secure-web-app.md">
+                Tutorial
+            </a>
+            <a class="rounded-md border border-white/10 px-3 py-2 text-sm font-medium text-zinc-200 transition hover:border-emerald-300" href="/health">
+                Health
+            </a>
+        </div>
     </header>
 
     <section class="flex flex-1 flex-col justify-center py-12">

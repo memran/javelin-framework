@@ -18,9 +18,17 @@
                         <p class="text-sm text-zinc-400">Framework demo app</p>
                     </div>
                 </div>
-                <a class="rounded-md border border-white/10 px-3 py-2 text-sm font-medium text-zinc-200 transition hover:border-emerald-300 hover:text-emerald-200" href="/health">
-                    Health
-                </a>
+                <div class="flex items-center gap-2">
+                    <a class="rounded-md px-3 py-2 text-sm font-medium text-zinc-200 transition hover:text-emerald-200" href="https://github.com/memran/javelin-framework/blob/main/docs/tutorials/secure-web-app.md">
+                        Tutorial
+                    </a>
+                    <a class="rounded-md px-3 py-2 text-sm font-medium text-zinc-200 transition hover:text-emerald-200" href="/demo/session/login">
+                        Security demo
+                    </a>
+                    <a class="rounded-md border border-white/10 px-3 py-2 text-sm font-medium text-zinc-200 transition hover:border-emerald-300 hover:text-emerald-200" href="/health">
+                        Health
+                    </a>
+                </div>
             </header>
 
             <div class="grid flex-1 items-center gap-10 py-12 lg:grid-cols-[1.05fr_0.95fr]">
@@ -40,6 +48,9 @@
                         </a>
                         <a class="rounded-md border border-white/10 px-5 py-3 text-sm font-bold text-zinc-100 transition hover:border-zinc-400" href="/health">
                             Check health
+                        </a>
+                        <a class="rounded-md border border-emerald-300/30 px-5 py-3 text-sm font-bold text-emerald-200 transition hover:border-emerald-300" href="/demo/api/token">
+                            Try the JWT API
                         </a>
                     </div>
                 </section>

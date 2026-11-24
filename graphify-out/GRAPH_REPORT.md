@@ -1,7 +1,7 @@
 # Graph Report - javelin-framework  (2026-11-25)
 
 ## Corpus Check
-- 343 files · ~88,068 words
+- 343 files · ~88,069 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 52 file(s) not represented in the graph (top: .stub 37, (none) 9, .xml 2)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `4fa5a4f7`
+- Built from commit: `65bce0ea`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -206,16 +206,16 @@
 10. `Handle` - 43 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `5. JWT for the API` --references--> `JwtAuthServiceProvider`  [INFERRED]
-  docs/tutorials/secure-web-app.md → modules/javelin-security/src/main/java/io/javelin/security/JwtAuthServiceProvider.java
-- `Architecture at a glance` --references--> `ServiceProvider`  [INFERRED]
-  README.md → modules/javelin-core/src/main/java/io/javelin/core/ServiceProvider.java
-- `1. Enable the providers` --references--> `SessionServiceProvider`  [INFERRED]
-  docs/tutorials/secure-web-app.md → modules/javelin-security/src/main/java/io/javelin/security/SessionServiceProvider.java
 - `Notes` --references--> `ValkeyCacheServiceProvider`  [INFERRED]
   docs/modules/cache.md → modules/javelin-cache-valkey/src/main/java/io/javelin/cache/valkey/ValkeyCacheServiceProvider.java
 - `TemplateEngine` --references--> `TemplateEngine`  [INFERRED]
   docs/modules/console.md → modules/javelin-console/src/main/java/io/javelin/cli/generator/TemplateEngine.java
+- `ConsoleServiceProvider` --references--> `ConsoleServiceProvider`  [INFERRED]
+  docs/modules/console.md → modules/javelin-console/src/main/java/io/javelin/console/ConsoleServiceProvider.java
+- `HTTP driver selection` --references--> `HttpServerDriverProvider`  [INFERRED]
+  docs/modules/starter.md → modules/javelin-starter/src/main/java/io/javelin/starter/HttpServerDriverProvider.java
+- `Trusted proxy configuration` --references--> `JdkHttpServiceProvider`  [INFERRED]
+  docs/deployment.md → modules/javelin-http-jdk/src/main/java/io/javelin/http/jdk/JdkHttpServiceProvider.java
 
 ## Import Cycles
 - None detected.
@@ -711,16 +711,16 @@ Nodes (3): server, host, port
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `Application` connect `Application` to `ServiceProvider`, `.instance`, `io.javelin.core.ServiceProvider`, `optional`, `cli/ConsoleKernel.java`, `.commands`, `ApplicationTest`, `io.javelin.core.Application`, `SupportUtilitiesTest.java`, `Container`, `Javelin.java`, `NewCommand`, `AppProfile`, `Config`, `.adapterFor`, `.output`?**
-  _High betweenness centrality (0.089) - this node is a cross-community bridge._
+  _High betweenness centrality (0.060) - this node is a cross-community bridge._
 - **What connects `io.javelin:javelin-parent`, `DRAFT`, `PUBLISHED` to the rest of the system?**
   _12 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `ServiceProvider` be split into smaller, more focused modules?**
   _Cohesion score 0.08081632653061224 - nodes in this community are weakly interconnected._
 - **Why does `ServiceProvider` connect `ServiceProvider` to `Agent Notes`, `io.javelin.core.ServiceProvider`, `QueryBuilder`, `Request`, `ApplicationTest`, `Application`, `.adapterFor`, `Container`, `Module Authoring`, `Javelin.java`, `.boot`, `Core Module`?**
-  _High betweenness centrality (0.039) - this node is a cross-community bridge._
+  _High betweenness centrality (0.041) - this node is a cross-community bridge._
 - **Should `path` be split into smaller, more focused modules?**
   _Cohesion score 0.11904761904761904 - nodes in this community are weakly interconnected._
+- **Why does `Collection` connect `Collection` to `objects`, `SupportUtilitiesTest`?**
+  _High betweenness centrality (0.032) - this node is a cross-community bridge._
 - **Should `cli/ConsoleKernel.java` be split into smaller, more focused modules?**
   _Cohesion score 0.05393000573723465 - nodes in this community are weakly interconnected._
-- **Should `Handle` be split into smaller, more focused modules?**
-  _Cohesion score 0.057946069994262765 - nodes in this community are weakly interconnected._

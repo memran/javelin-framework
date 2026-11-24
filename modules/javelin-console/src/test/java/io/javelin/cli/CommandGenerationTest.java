@@ -183,6 +183,7 @@ final class CommandGenerationTest {
         assertTrue(layout.contains("href=\"/css/app.css\""));
         assertTrue(layout.contains("src=\"/js/app.js\""));
         assertTrue(welcome.contains("x-data"));
+        assertTrue(welcome.contains("docs/tutorials/secure-web-app.md"));
         assertFalse(welcome.contains("cdn.tailwindcss.com"));
         assertTrue(Files.readString(project.resolve("app/controllers/HomeController.java"))
                 .contains("View.render(\"welcome\""));
