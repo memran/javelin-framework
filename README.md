@@ -24,7 +24,9 @@ This repository is the first production-oriented MVP phase. It includes the boot
 
 ## Documentation
 
-Module-by-module API and usage examples live under [`docs/`](docs/README.md).
+- [Quick Start](docs/quick-start.md) — create and run your first app
+- [Installation](docs/installation.md) — prerequisites, CLI install, local artifacts, troubleshooting
+- Module-by-module API and usage examples live under [`docs/`](docs/README.md).
 
 ## Maven Split
 
@@ -109,7 +111,7 @@ cd <name>
 6. Load configured service providers
 7. Run `provider.register(app)`
 8. Run `provider.boot(app)`
-9. Start JDK `HttpServer` with virtual threads
+9. Start the configured HTTP driver (Netty by default; JDK and Undertow are pluggable)
 10. Serve requests
 
 ## Example Routes

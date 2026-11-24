@@ -1008,9 +1008,9 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1795459109.2674034,
-    "seen": 1795459243.8922856,
-    "ast_hash": "698431fd705a6229eaeb3309ace63c53",
+    "mtime": 1795506065.1361592,
+    "seen": 1795506089.5159347,
+    "ast_hash": "4754ef69c136b522cb193e9b35604de8",
     "semantic_hash": ""
   },
   "agents.md": {
@@ -1020,9 +1020,9 @@
     "semantic_hash": ""
   },
   "docs/README.md": {
-    "mtime": 1795467490.4113846,
-    "seen": 1795467625.7332065,
-    "ast_hash": "7d0a0013c32068667a67c35cb88f9741",
+    "mtime": 1795506046.5084834,
+    "seen": 1795506089.5159378,
+    "ast_hash": "b2065edd750d2ce766256970e3039f1b",
     "semantic_hash": ""
   },
   "docs/application-flow.md": {
@@ -1533,6 +1533,18 @@
     "mtime": 1795505454.8612533,
     "seen": 1795505789.2938323,
     "ast_hash": "22efc38a330ae1b68a879439afb89302",
+    "semantic_hash": ""
+  },
+  "docs/installation.md": {
+    "mtime": 1795505997.88624,
+    "seen": 1795506089.5159442,
+    "ast_hash": "52d5245b6b87ea0858d2714db573ad2b",
+    "semantic_hash": ""
+  },
+  "docs/quick-start.md": {
+    "mtime": 1795505982.3754227,
+    "seen": 1795506089.5159671,
+    "ast_hash": "0f44febb0c6bd7bfb1c30bdec6230eac",
     "semantic_hash": ""
   }
 }

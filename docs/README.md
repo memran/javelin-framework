@@ -2,6 +2,8 @@
 
 This folder documents the public API of each Javelin module with small usage examples and short function-usage notes.
 
+- [Installation](installation.md) — Prerequisites, CLI install, local artifacts, Docker, troubleshooting
+- [Quick Start](quick-start.md) — Create, build and run your first Javelin app
 - [Architecture](architecture.md) — Module dependency graph, design principles, module boundaries, core abstractions
 - [Application Flow](application-flow.md) — Boot sequence, HTTP request lifecycle, middleware pipeline, console command flow, container resolution
 - [Module Authoring](module-authoring.md) — How to create, structure, test, and integrate a Javelin module
@@ -32,20 +34,20 @@ This folder documents the public API of each Javelin module with small usage exa
 
 If you are new to Javelin:
 
-1. Start with [Architecture](architecture.md) to understand the module system and design philosophy.
-2. Read [Core](modules/core.md) for all foundational contracts.
-3. Read [Starter](modules/starter.md) for the default boot path and entry point.
-4. Read [Application Flow](application-flow.md) to trace exactly what happens during boot and request handling.
-5. Read [Module Authoring](module-authoring.md) when you need to create or extend a module.
-6. Read [Config](modules/config.md) for environment and YAML configuration.
+1. Follow the [Quick Start](quick-start.md) for a working app, or [Installation](installation.md) for detailed setup.
+2. Start with [Architecture](architecture.md) to understand the module system and design philosophy.
+3. Read [Core](modules/core.md) for all foundational contracts.
+4. Read [Starter](modules/starter.md) for the default boot path and entry point.
+5. Read [Application Flow](application-flow.md) to trace exactly what happens during boot and request handling.
+6. Read [Module Authoring](module-authoring.md) when you need to create or extend a module.
+7. Read [Config](modules/config.md) for environment and YAML configuration.
 8. Use the module pages for the feature you want to add:
    - [HTTP adapters](modules/http-common.md) for driver selection (`jdk`, `netty`, `undertow`) and the server adapter
    - [Database JDBC](modules/db-jdbc.md) for data access and migrations
    - [View Pebble](modules/view-pebble.md) for template rendering
    - [Security](modules/security.md) for hashing and middleware
-   - [Cache](modules/cache.md) for caching
+   - [Cache Valkey](modules/cache-valkey.md) and [Queue NATS](modules/queue-nats.md) for distributed backends
    - [Logging SLF4J](modules/log-slf4j.md) for logging
 9. Use [Console](modules/console.md) for the workspace toolchain and scaffolding commands.
-8. Use [CLI Reference](cli-reference.md) for detailed `javelin` command examples with output.
-9. See [Deployment](deployment.md) when you are ready to go to production.
-10. Use [Support](modules/support.md) for helper utilities, collections, validation, HTTP client, and AI client.
+10. Use [CLI Reference](cli-reference.md) for detailed `javelin` command examples with output.
+11. See [Deployment](deployment.md) when you are ready to go to production, then [Support](modules/support.md) for helper utilities.
