@@ -27,7 +27,8 @@ This folder documents the public API of each Javelin module with small usage exa
 - [View Pebble](modules/view-pebble.md) — Pebble templates, layouts, includes, macros, escaping, caching, shared data
 - [JSON Jackson](modules/json-jackson.md) — configurable Jackson mapper, JSON config keys, facade integration
 - [Console](modules/console.md) — CLI commands, JavelinConsole, CommandRegistry, generator helpers, AI commands
-- [Security](modules/security.md) — PasswordHasher, secure headers, request limits, rate limiting, trusted proxies, cookie-backed sessions (Bearer auth lives in [Core](modules/core.md#bearer-authentication-and-authorization))
+- [Security](modules/security.md) — password strategies (PBKDF2/BCrypt), secure headers, HSTS/CSP, CORS, CSRF, sessions, session auth, JWT, rate limiting, trusted proxies
+- [Validation](modules/validation.md) — string-rule Validator, supported rules, 422 error rendering relationship
 - [Cache](modules/cache.md) — Cache interface, InMemoryCache, CacheServiceProvider, TTL-based storage
 - [Cache Valkey](modules/cache-valkey.md) — Lettuce-backed Valkey cache provider and config keys
 - [Queue NATS](modules/queue-nats.md) — Job/RetryPolicy contracts, JetStream publish/subscribe and provider config

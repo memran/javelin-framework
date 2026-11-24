@@ -30,7 +30,7 @@ It is deliberately *not* Spring Boot and deliberately *not* an ORM. If you need 
 - **Logging and error handling** — SLF4J/Logback with structured context in the MDC, config-driven levels, a dependency-free JSON encoder with rotating file output, plus a global exception handler with dev-only stack traces, custom HTML error pages, and sensitive-data redaction.
 - **Three HTTP drivers** — Netty (event loops, default), JDK `HttpServer` (virtual threads), and Undertow (worker dispatch), all behind one `HttpServerAdapter` contract.
 - **Configuration** — YAML config files and `.env` loading with `${ENV_VAR}` resolution, `APP_ENV` dev/prod profiles, and explicit config keys with documented defaults.
-- **Security defaults** — secure response headers, configurable trusted proxies (IP/CIDR), request size limits, password hashing, bearer auth with 401/403 responses, and dev/prod error handling.
+- **Security defaults** — secure response headers with opt-in HSTS/CSP, configurable trusted proxies (IP/CIDR), request size limits, configurable CORS, opt-in CSRF, cookie-backed sessions with session authentication, JWT bearer verification, PBKDF2/BCrypt hashing, rate limiting, secret providers, and dev/prod error handling.
 - **Static assets** — ETag and `304` support, byte ranges, cache headers, `nosniff`, path-traversal and symlink containment, and a middleware-friendly pipeline.
 - **Database** — bounded HikariCP pools, multiple named connections, a prepared-statement query builder with CRUD and pagination, transactions with rollback, slow-query logging, bundled PostgreSQL/MySQL/MariaDB/SQLite drivers, and dialect-aware YAML migrations with history and batch rollback.
 - **Views** — Pebble templates with layouts, includes, blocks, reusable macros, shared globals, automatic escaping and configurable caching; a `View` facade for convenient rendering.
@@ -76,7 +76,8 @@ Core owns the contracts; adapters implement them; the starter wires defaults; ap
 - `modules/javelin-view-pebble` - Pebble template renderer, layouts, components, escaping, caching
 - `modules/javelin-json-jackson` - configurable Jackson mapper for JSON responses and parsing
 - `modules/javelin-console` - Picocli command kernel and generators
-- `modules/javelin-security` - secure headers, request limits, rate limiting, password hashing
+- `modules/javelin-security` - secure headers, HSTS/CSP, CORS, CSRF, sessions, session auth, JWT, PBKDF2/BCrypt, rate limiting
+- `modules/javelin-validation` - explicit string-rule Validator for HTML and JSON input
 - `modules/javelin-support` - short Laravel-style helper facades for strings, dates, arrays, files, images, HTTP client, AI client, objects, validation, HTML, and security
 - `modules/javelin-cache` - simple in-memory cache contract and implementation
 - `modules/javelin-cache-valkey` - Lettuce-backed Valkey cache adapter
@@ -90,6 +91,7 @@ Core owns the contracts; adapters implement them; the starter wires defaults; ap
 - [Installation](docs/installation.md) — prerequisites, CLI install, local artifacts, troubleshooting
 - [Architecture](docs/architecture.md) — design principles and module dependency graph
 - [Exception handling](docs/modules/exception.md) — global handler, error pages and redaction
+- [Security](docs/modules/security.md) — CORS, CSRF, sessions, JWT and password strategies
 - [Application Flow](docs/application-flow.md) — boot sequence and request lifecycle
 - [Deployment](docs/deployment.md) — production tuning, Docker Compose, proxies, health checks, benchmarks
 - [CLI Reference](docs/cli-reference.md) — every `javelin` command

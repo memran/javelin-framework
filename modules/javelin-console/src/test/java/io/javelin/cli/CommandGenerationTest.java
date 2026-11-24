@@ -219,6 +219,12 @@ final class CommandGenerationTest {
         assertTrue(appYaml.contains("SessionServiceProvider"));
         assertTrue(appYaml.contains("cookie_name: javelin_session"));
         assertTrue(appYaml.contains("indent_output: false"));
+        assertTrue(appYaml.contains("CorsServiceProvider"));
+        assertTrue(appYaml.contains("SessionAuthServiceProvider"));
+        assertTrue(appYaml.contains("JwtAuthServiceProvider"));
+        assertTrue(appYaml.contains("ValidationServiceProvider"));
+        assertTrue(appYaml.contains("SecretsServiceProvider"));
+        assertTrue(appYaml.contains("bcrypt_cost: 12"));
         assertTrue(appYaml.contains("request_logging: true"));
         assertTrue(appYaml.contains("correlation_id_header: X-Correlation-ID"));
         assertTrue(appYaml.contains("redact_keys:"));
@@ -231,6 +237,7 @@ final class CommandGenerationTest {
         assertTrue(generatedPom.contains("javelin-exception"));
         assertTrue(generatedPom.contains("javelin-db-migration"));
         assertTrue(generatedPom.contains("javelin-json-jackson"));
+        assertTrue(generatedPom.contains("javelin-validation"));
         assertTrue(generatedPom.contains("<include>errors/**</include>"));
         assertTrue(Files.exists(project.resolve("logback.xml")));
         assertTrue(Files.exists(project.resolve("logback-prod.xml")));

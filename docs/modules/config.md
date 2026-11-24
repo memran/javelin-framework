@@ -115,6 +115,26 @@ Env env = app.env();
 Config config = app.config();
 ```
 
+## Secret providers
+
+`SecretProvider` gives secrets one explicit lookup path. Register `SecretsServiceProvider` to bind a composite provider that checks the environment first, then files in `secrets.dir`:
+
+```yaml
+secrets:
+  dir: secrets
+```
+
+```java
+String dbPassword = app.make(SecretProvider.class)
+        .get("DB_PASSWORD")
+        .orElseThrow();
+```
+
+- `EnvSecretProvider` reads `Env` (process environment plus `.env`).
+- `FileSecretProvider` reads one trimmed value per file from a directory and rejects paths that escape it.
+- `CompositeSecretProvider` tries providers in order.
+- `APP_KEY` is used as the JWT signing fallback but is not generated or stored by the framework; supply it yourself. Keep `.env` for local development and use a real secret store in production.
+
 ## Notes
 
 - `YamlConfig` supports `config/app.yaml` plus extra files in `config/`.

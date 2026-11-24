@@ -33,6 +33,12 @@
             <artifactId>javelin-json-jackson</artifactId>
             <version>${javelin.version}</version>
         </dependency>
+        <!-- Explicit input validation rules. -->
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-validation</artifactId>
+            <version>${javelin.version}</version>
+        </dependency>
         <!-- Centralized exception handling with redaction and custom error pages. -->
         <dependency>
             <groupId>io.javelin</groupId>

@@ -24,6 +24,7 @@
         <module>modules/javelin-json-jackson</module>
         <module>modules/javelin-console</module>
         <module>modules/javelin-security</module>
+        <module>modules/javelin-validation</module>
         <module>modules/javelin-support</module>
         <module>modules/javelin-cache</module>
         <module>modules/javelin-cache-valkey</module>

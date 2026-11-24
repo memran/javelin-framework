@@ -87,12 +87,36 @@ security:
     - 127.0.0.1
     # Docker's default bridge network; needed when running behind nginx/Caddy.
     - 172.16.0.0/12
+  password:
+    hash: pbkdf2
+    bcrypt_cost: 12
+  jwt:
+    secret: ${APP_KEY:}
+    issuer: ""
+    audience: ""
+  hsts:
+    enabled: false
+  csp: ""
+
+# Empty origins means CORS is disabled; add exact origins to opt in.
+cors:
+  allowed_origins: []
+  allow_credentials: false
+  max_age_seconds: 600
+
+secrets:
+  dir: secrets
 
 providers:
   - app.providers.AppServiceProvider
   - io.javelin.json.jackson.JacksonJsonServiceProvider
   - io.javelin.exception.ExceptionHandlerServiceProvider
   - io.javelin.security.SessionServiceProvider
+  - io.javelin.security.SessionAuthServiceProvider
+  - io.javelin.security.JwtAuthServiceProvider
+  - io.javelin.security.CorsServiceProvider
+  - io.javelin.validation.ValidationServiceProvider
+  - io.javelin.config.SecretsServiceProvider
   - io.javelin.cache.valkey.ValkeyCacheServiceProvider
   - io.javelin.queue.nats.NatsQueueServiceProvider
 

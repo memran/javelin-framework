@@ -60,12 +60,35 @@ errors:
 
 security:
   max_request_bytes: 1048576
+  password:
+    hash: pbkdf2
+    bcrypt_cost: 12
+  jwt:
+    secret: ""
+    issuer: ""
+    audience: ""
+  hsts:
+    enabled: false
+  csp: ""
+
+cors:
+  allowed_origins: []
+  allow_credentials: false
+  max_age_seconds: 600
+
+secrets:
+  dir: secrets
 
 providers:
   - app.providers.AppServiceProvider
   - io.javelin.json.jackson.JacksonJsonServiceProvider
   - io.javelin.exception.ExceptionHandlerServiceProvider
   - io.javelin.security.SessionServiceProvider
+  - io.javelin.security.SessionAuthServiceProvider
+  - io.javelin.security.JwtAuthServiceProvider
+  - io.javelin.security.CorsServiceProvider
+  - io.javelin.validation.ValidationServiceProvider
+  - io.javelin.config.SecretsServiceProvider
 
 javelin:
   starter:

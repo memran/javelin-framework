@@ -39,7 +39,9 @@ public final class HttpKernel {
                 if (!allowed.isEmpty()) {
                     String allow = allowed.stream().map(HttpMethod::name).collect(Collectors.joining(", "));
                     if (request.method() == HttpMethod.OPTIONS) {
-                        return Response.noContent().withHeader("Allow", allow);
+                        Response preflight = Response.noContent().withHeader("Allow", allow);
+                        return dispatch(new ArrayList<>(router.globalMiddleware()), 0, request,
+                                ignored -> preflight);
                     }
                     Response response = wantsJson(request)
                             ? JsonResponse.error("Method Not Allowed", 405)

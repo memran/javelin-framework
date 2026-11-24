@@ -173,9 +173,95 @@ String theme = request.cookie("pref").orElse("light");
 
 `InMemorySessionStore` is process-local and intended for single-instance deployments. Register a different `SessionStore` provider for shared sessions across instances. Cookie defaults are `Secure`, `HttpOnly`, `Path=/`, `SameSite=Lax`; keep `secure: true` behind HTTPS. Multiple `Set-Cookie` values are joined with `", "` in the single header supported by the response model.
 
+## CORS
+
+`CorsServiceProvider` enables configurable CORS. With no `cors.allowed_origins`, its middleware does nothing.
+
+```yaml
+cors:
+  allowed_origins:
+    - https://app.example.com
+  allow_credentials: false
+  max_age_seconds: 600
+```
+
+`CorsMiddleware` handles preflight (`OPTIONS` with `Access-Control-Request-Method`) and returns 204 with `Allow-Origin`, `Allow-Methods`, `Allow-Headers`, `Max-Age` and `Vary: Origin`. Unknown origins are rejected on preflight with 403 and receive no CORS headers on actual requests. `*` must be listed explicitly; combine it with `allow_credentials: false` (the middleware echoes the concrete origin when credentials are enabled). The kernel's automatic OPTIONS response now passes through global middleware, so preflight works on routes that only define GET.
+
+## CSRF
+
+`CsrfServiceProvider` adds the synchronizer-token pattern for browser sessions. Register it after `SessionServiceProvider`.
+
+```yaml
+providers:
+  - io.javelin.security.SessionServiceProvider
+  - io.javelin.security.CsrfServiceProvider
+```
+
+Safe methods (`GET`, `HEAD`, `OPTIONS`) create a token in the session and return it as `X-CSRF-Token`. Unsafe methods must supply the same token in `X-CSRF-Token` or the `_token` form field; mismatches return 403. Comparison uses `MessageDigest.isEqual`. Requests with a Bearer token are skipped, so API clients are not forced through browser CSRF.
+
+## Session authentication
+
+`SessionAuthServiceProvider` resolves a principal from `javelin.user` in the session and exposes it under the same attribute used by `RequiresAuthenticationMiddleware` and `RequiresPermissionMiddleware`.
+
+```java
+session.put("javelin.user", new Authenticated("alice", Set.of("users.read")));
+// or simply: session.put("javelin.user", "alice");  // no permissions
+```
+
+Register it after `SessionServiceProvider`; it is a no-op when there is no session or no principal.
+
+## JWT adapter
+
+`JwtTokenResolver` verifies HS256 JWTs with JDK crypto and maps `sub` and `permissions`/`scope` claims to `Authenticated`.
+
+```yaml
+security:
+  jwt:
+    secret: ${APP_KEY:}       # falls back to the APP_KEY environment value
+    issuer: javelin
+    audience: my-api
+```
+
+`JwtAuthServiceProvider` binds a `BearerTokenResolver`; combine it with core's `BearerAuthMiddleware` on protected routes:
+
+```java
+app.router().get("/me", user::show)
+        .middleware(new BearerAuthMiddleware(app.make(BearerTokenResolver.class)));
+```
+
+Tokens with an invalid signature, unsupported `alg`, expired `exp`, future `nbf` or mismatched issuer/audience are rejected.
+
+## Password hashing
+
+`PasswordHasher` delegates to a `PasswordHashStrategy`. The default is PBKDF2 (`210,000` iterations, unchanged legacy format); BCrypt is available:
+
+```yaml
+security:
+  password:
+    hash: bcrypt      # or pbkdf2
+    bcrypt_cost: 12
+```
+
+`verify(...)` also accepts legacy PBKDF2 and BCrypt hashes regardless of the active strategy, so changing strategies does not lock out existing users.
+
+## HSTS and CSP
+
+`SecureHeadersMiddleware` always sets the four baseline headers. HSTS and CSP are opt-in:
+
+```yaml
+security:
+  hsts:
+    enabled: true
+    max_age_seconds: 31536000
+  csp: "default-src 'self'"
+```
+
+HSTS is only emitted for HTTPS requests (or when no `X-Forwarded-Proto` is present).
+
 ## Notes
 
 - Keep security defaults enabled in starter wiring.
 - Use middleware for request protection, not global magic.
 - `SecureHeadersMiddleware` and `RequestSizeLimitMiddleware` are applied automatically by the starter.
-- `RateLimitMiddleware` and `SessionServiceProvider` must be added explicitly where needed.
+- `RateLimitMiddleware`, CORS, CSRF, session auth and JWT are explicit providers — add only what your app needs.
+- Secrets should come from `SecretProvider` (environment first, then files); see [Config](config.md#secret-providers).

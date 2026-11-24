@@ -58,6 +58,21 @@ final class HttpKernelTest {
     }
 
     @Test
+    void automaticOptionsReplyPassesThroughGlobalMiddleware() {
+        Router router = new Router();
+        router.get("/users", request -> Response.text("users"));
+        router.middleware((request, next) -> next.handle(request).withHeader("X-Middleware", "seen"));
+        HttpKernel kernel = new HttpKernel(router, new DefaultExceptionHandler());
+        Request request = new Request(
+                HttpMethod.OPTIONS, "/users", Map.of(), Map.of(), Map.of(), new byte[0], "127.0.0.1");
+
+        Response response = kernel.handle(request);
+
+        assertEquals("seen", response.headers().get("X-Middleware"));
+        assertEquals("GET, HEAD", response.headers().get("Allow"));
+    }
+
+    @Test
     void returns404WhenNoMethodMatchesThePath() {
         HttpKernel kernel = new HttpKernel(new Router(), new DefaultExceptionHandler());
         Request request = new Request(
