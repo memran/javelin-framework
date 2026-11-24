@@ -36,6 +36,18 @@ final class JwtTokenResolverTest {
     }
 
     @Test
+    void issuerTokensAreAcceptedByResolver() {
+        JwtTokenIssuer issuer = new JwtTokenIssuer(SECRET, "javelin", "my-api", 600);
+        JwtTokenResolver resolver = new JwtTokenResolver(SECRET, "javelin", "my-api");
+        String token = issuer.issue("alice", java.util.Set.of("users.read"));
+
+        Authenticated principal = resolver.resolve(token).orElseThrow();
+
+        assertEquals("alice", principal.subject());
+        assertTrue(principal.hasPermission("users.read"));
+    }
+
+    @Test
     void rejectsInvalidSignatureExpiredTokenAndWrongIssuer() {
         JwtTokenResolver resolver = new JwtTokenResolver(SECRET, "javelin", "");
         String valid = token(Map.of("sub", "alice", "exp", Instant.now().getEpochSecond() + 600, "iss", "javelin"), SECRET);

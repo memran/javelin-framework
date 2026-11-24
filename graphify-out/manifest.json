@@ -36,9 +36,9 @@
     "semantic_hash": ""
   },
   "demo-app/config/app.yaml": {
-    "mtime": 1795552484.227743,
-    "seen": 1795552799.6851425,
-    "ast_hash": "c45695e4d684bab023797d27bfefa56c",
+    "mtime": 1795557309.9133623,
+    "seen": 1795557500.1985576,
+    "ast_hash": "2162471c379163dd954639da1f9dd8e6",
     "semantic_hash": ""
   },
   "demo-app/config/view.yml": {
@@ -54,9 +54,9 @@
     "semantic_hash": ""
   },
   "demo-app/routes/web.java": {
-    "mtime": 1795504255.8197792,
-    "seen": 1795504743.241601,
-    "ast_hash": "33a2d33840baa1a2e126b804e03c3a52",
+    "mtime": 1795557247.3920176,
+    "seen": 1795557500.1985703,
+    "ast_hash": "bf4b69e9cc96fbf26ea10021a08e06b6",
     "semantic_hash": ""
   },
   "install.ps1": {
@@ -1008,9 +1008,9 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1795552719.6434345,
-    "seen": 1795552799.6855178,
-    "ast_hash": "78d4e7bd5602f9cca17f212ecd2cbe9a",
+    "mtime": 1795557380.0020976,
+    "seen": 1795557500.1989844,
+    "ast_hash": "631083d1326e18af291291bf0f142fa1",
     "semantic_hash": ""
   },
   "agents.md": {
@@ -1020,9 +1020,9 @@
     "semantic_hash": ""
   },
   "docs/README.md": {
-    "mtime": 1795552680.609373,
-    "seen": 1795552799.6855218,
-    "ast_hash": "b8b375ce23af3f20e7585c4bba01e8ac",
+    "mtime": 1795557370.8319273,
+    "seen": 1795557500.198991,
+    "ast_hash": "be28c559d5016171c60c3cb1c2798435",
     "semantic_hash": ""
   },
   "docs/application-flow.md": {
@@ -1362,9 +1362,9 @@
     "semantic_hash": ""
   },
   "demo-app/docker-app.yaml": {
-    "mtime": 1795552523.6600983,
-    "seen": 1795552799.6851463,
-    "ast_hash": "0cbcf936d2134fe238a3ffb19baacf10",
+    "mtime": 1795557329.0735016,
+    "seen": 1795557500.1985612,
+    "ast_hash": "7f25b477eba230c5c1175f78d0cc2fe8",
     "semantic_hash": ""
   },
   "demo-app/docker-compose.yml": {
@@ -1938,9 +1938,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-security/src/main/java/io/javelin/security/JwtAuthServiceProvider.java": {
-    "mtime": 1795552037.9507732,
-    "seen": 1795552799.6854463,
-    "ast_hash": "281921e860b98e0cc6aeff6a49d9807e",
+    "mtime": 1795557186.0408802,
+    "seen": 1795557500.1988938,
+    "ast_hash": "47965b19a20b3830cb8ee78c825814fa",
     "semantic_hash": ""
   },
   "modules/javelin-security/src/main/java/io/javelin/security/JwtTokenResolver.java": {
@@ -1986,9 +1986,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-security/src/test/java/io/javelin/security/JwtTokenResolverTest.java": {
-    "mtime": 1795552209.4079092,
-    "seen": 1795552799.6854641,
-    "ast_hash": "21afb1a6ef7ba9b2c6e5f41e5ebaf159",
+    "mtime": 1795557198.8353217,
+    "seen": 1795557500.198927,
+    "ast_hash": "c221ad6ff860c87a12313f2377b88df2",
     "semantic_hash": ""
   },
   "modules/javelin-security/src/test/java/io/javelin/security/PasswordHashStrategyTest.java": {
@@ -2037,6 +2037,30 @@
     "mtime": 1795552670.6644878,
     "seen": 1795552799.6855533,
     "ast_hash": "8a5dd4e8ecfd99c6f758abe54607925b",
+    "semantic_hash": ""
+  },
+  "demo-app/app/controllers/SecurityExampleController.java": {
+    "mtime": 1795557236.1147285,
+    "seen": 1795557500.1985438,
+    "ast_hash": "18854c78e5f830a52db2d2f2485ff3ef",
+    "semantic_hash": ""
+  },
+  "modules/javelin-security/src/main/java/io/javelin/security/JwtTokenIssuer.java": {
+    "mtime": 1795557164.9650784,
+    "seen": 1795557500.1988952,
+    "ast_hash": "050e694b46b63ecf510b6907c3100215",
+    "semantic_hash": ""
+  },
+  "docs/tutorials/README.md": {
+    "mtime": 1795557343.5572593,
+    "seen": 1795557500.1990266,
+    "ast_hash": "3ce45c4888dd44b62d89a7e353e02377",
+    "semantic_hash": ""
+  },
+  "docs/tutorials/secure-web-app.md": {
+    "mtime": 1795557361.2966454,
+    "seen": 1795557500.1990285,
+    "ast_hash": "1f639bc29205bd6a1462419e16ea923b",
     "semantic_hash": ""
   }
 }

@@ -64,15 +64,17 @@ security:
     hash: pbkdf2
     bcrypt_cost: 12
   jwt:
-    secret: ""
+    secret: "demo-only-secret-change-me"
     issuer: ""
     audience: ""
+    ttl_seconds: 3600
   hsts:
     enabled: false
   csp: ""
 
 cors:
-  allowed_origins: []
+  allowed_origins:
+    - http://localhost:5173
   allow_credentials: false
   max_age_seconds: 600
 
@@ -84,6 +86,7 @@ providers:
   - io.javelin.json.jackson.JacksonJsonServiceProvider
   - io.javelin.exception.ExceptionHandlerServiceProvider
   - io.javelin.security.SessionServiceProvider
+  - io.javelin.security.CsrfServiceProvider
   - io.javelin.security.SessionAuthServiceProvider
   - io.javelin.security.JwtAuthServiceProvider
   - io.javelin.security.CorsServiceProvider

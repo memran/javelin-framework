@@ -92,6 +92,7 @@ Core owns the contracts; adapters implement them; the starter wires defaults; ap
 - [Architecture](docs/architecture.md) — design principles and module dependency graph
 - [Exception handling](docs/modules/exception.md) — global handler, error pages and redaction
 - [Security](docs/modules/security.md) — CORS, CSRF, sessions, JWT and password strategies
+- [Tutorials](docs/tutorials/README.md) — build a secure web app and API step by step
 - [Application Flow](docs/application-flow.md) — boot sequence and request lifecycle
 - [Deployment](docs/deployment.md) — production tuning, Docker Compose, proxies, health checks, benchmarks
 - [CLI Reference](docs/cli-reference.md) — every `javelin` command

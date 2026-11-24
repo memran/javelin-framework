@@ -91,9 +91,10 @@ security:
     hash: pbkdf2
     bcrypt_cost: 12
   jwt:
-    secret: ${APP_KEY:}
+    secret: ${APP_KEY:change-me}
     issuer: ""
     audience: ""
+    ttl_seconds: 3600
   hsts:
     enabled: false
   csp: ""
