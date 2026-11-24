@@ -67,6 +67,8 @@ public final class NewCommand extends AbstractCommand {
         files.write(root.resolve("build.sh"), "build-sh.stub", values, force);
         files.write(root.resolve("build.ps1"), "build-ps1.stub", values, force);
         files.write(root.resolve("docker-compose.yml"), "docker-compose.yml.stub", values, force);
+        files.write(root.resolve("nginx.conf"), "nginx-conf.stub", values, force);
+        files.write(root.resolve("Caddyfile"), "caddyfile.stub", values, force);
         files.write(root.resolve("Dockerfile"), "dockerfile.stub", values, force);
         files.write(root.resolve(".dockerignore"), "dockerignore.stub", values, force);
         files.write(root.resolve("package.json"), "package-json.stub", values, force);

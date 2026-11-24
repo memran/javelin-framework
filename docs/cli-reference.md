@@ -42,6 +42,7 @@ Every new project includes:
 - Frontend sources: `resources/assets/app.css` (Tailwind v4) and `resources/assets/app.js` (Alpine.js)
 - Frontend build: `package.json`, `scripts/dev.mjs`, output into `public/css` and `public/js`
 - Docker: `docker-compose.yml` (app + PostgreSQL + Valkey cache + NATS/JetStream), `Dockerfile` (asset build → jar → runtime), `.dockerignore`
+- Frontend proxy: `nginx.conf` and `Caddyfile` (opt-in Compose profiles `--profile nginx` / `--profile caddy`)
 - Install scripts: `install.sh`, `install.ps1`
 - Build scripts: `build.sh`, `build.ps1` with `assets`, `java`, `all` modes; the Dockerfile calls these during `docker compose build`
 

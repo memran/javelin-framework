@@ -68,3 +68,7 @@ Reads the shared adapter settings:
 | `security.max_request_bytes` | `1048576` |
 | `server.static_cache_seconds` | `3600` |
 | `server.static_cache_immutable` | `false` |
+| `server.request_timeout_seconds` | `30` |
+| `server.idle_timeout_seconds` | `60` |
+
+`HttpTimeoutConfig` validates positive durations. Netty returns 408 on a read timeout and closes idle connections; Undertow uses `REQUEST_PARSE_TIMEOUT` and `IDLE_TIMEOUT`; the JDK adapter applies the request timeout via a watchdog that closes the exchange (it has no native idle timeout).

@@ -8,6 +8,8 @@ server:
   static_dir: public
   static_cache_seconds: 3600
   static_cache_immutable: false
+  request_timeout_seconds: 30
+  idle_timeout_seconds: 60
 
 database:
   driver: postgresql
@@ -39,6 +41,8 @@ security:
   max_request_bytes: 1048576
   trusted_proxies:
     - 127.0.0.1
+    # Docker's default bridge network; needed when running behind nginx/Caddy.
+    - 172.16.0.0/12
 
 providers:
   - app.providers.AppServiceProvider

@@ -94,7 +94,8 @@ router.get("/orders/{orderId:[0-9]+}", request ->
 - `router.middleware(Middleware m)` -- adds global middleware applied to every route.
 - `router.group(prefix, middleware, routesConsumer)` -- scopes routes under a prefix with shared middleware.
 - `router.routes()` -- returns the list of registered `Route` objects.
-- `router.allowedMethods(path)` -- returns the methods (in enum order) that match a path, including `HEAD` when `GET` is registered. The kernel uses this to build `Allow` on a 405 response.
+- `router.named(name)` -- looks up a route by its name; `router.path(name, params)` generates a URL path from it (parameters are URL-encoded). Duplicate names are rejected at registration.
+- `router.allowedMethods(path)` -- returns the methods (in enum order) that match a path, including `HEAD` when `GET` is registered. The kernel uses this to build `Allow` on a 405 response and on automatic OPTIONS replies.
 - Static paths are indexed by method for direct lookup; only `{param}` routes are pattern-matched. A `HEAD` request with no explicit HEAD route falls back to the matching `GET` route.
 - Constraints only narrow URL matching. Revalidate parameters in the handler (or with your validation layer) before using them for database lookups, filesystem paths or authorization decisions.
 - Registering the same method and path twice throws `IllegalArgumentException` at boot, so route-table order never silently decides which handler wins. Different methods on the same path are allowed.
@@ -132,6 +133,8 @@ Optional<String> name = route.name();
 - `route.handler()` -- returns the `RouteHandler`.
 - `route.middleware()` -- returns the list of middleware for this route.
 - `route.name()` -- returns the optional route name.
+- `route.parameterNames()` -- names of the `{parameters}` in the path.
+- `route.buildPath(params)` -- fills and URL-encodes those parameters into a concrete path.
 
 ### Routes
 
@@ -393,7 +396,7 @@ Response response = kernel.handle(request);
 - `new HttpKernel(router, exceptionHandler)` -- constructs the kernel with a router and error handler.
 - `kernel.withStaticFallback(resolver)` -- returns a kernel that first consults `resolver` (a `Function<Request, Optional<Response>>`) and runs any match through global middleware before returning it. Adapters use this for static assets.
 - `kernel.handle(request)` -- dispatches the request through middleware, routing, and the matched handler.
-- When no route matches the method but the path exists for other methods, the kernel returns 405 with an `Allow` header listing those methods (including `HEAD` when `GET` is registered); otherwise it returns 404.
+- When no route matches the method but the path exists for other methods, the kernel returns 405 with an `Allow` header listing those methods (including `HEAD` when `GET` is registered). An `OPTIONS` request to such a path returns 204 with the same `Allow` header. Otherwise it returns 404.
 
 ### ExceptionHandler
 

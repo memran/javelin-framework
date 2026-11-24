@@ -1,5 +1,6 @@
 package io.javelin.http.netty;
 
+import io.javelin.core.AppProfile;
 import io.javelin.core.DefaultExceptionHandler;
 import io.javelin.core.HttpKernel;
 import io.javelin.core.Response;
@@ -8,11 +9,14 @@ import io.javelin.core.Router;
 import io.javelin.core.security.Authenticated;
 import io.javelin.core.security.BearerAuthMiddleware;
 import io.javelin.core.security.RequiresPermissionMiddleware;
+import io.javelin.http.common.HttpTimeoutConfig;
+import io.javelin.http.common.StaticCachePolicy;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -27,6 +31,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class NettyHttpServerIntegrationTest {
     private static final HttpClient CLIENT = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(3)).build();
@@ -121,6 +126,29 @@ final class NettyHttpServerIntegrationTest {
             HttpResponse<String> response = CLIENT.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
 
             assertEquals(413, response.statusCode());
+        }
+    }
+
+    @Test
+    void returns408ForRequestsThatExceedTheConfiguredReadTimeout() throws Exception {
+        int port = freePort();
+        NettyHttpServer server = new NettyHttpServer("127.0.0.1", port,
+                new HttpKernel(new Router(), new DefaultExceptionHandler()), List.of(),
+                Files.createTempDirectory("javelin-netty-timeout"), 1_048_576, AppProfile.DEV,
+                StaticCachePolicy.DEFAULT, new HttpTimeoutConfig(Duration.ofSeconds(1), Duration.ofSeconds(10)));
+        server.start();
+        try {
+            try (Socket socket = new Socket("127.0.0.1", port)) {
+                socket.setSoTimeout(5000);
+                socket.getOutputStream().write("GET / HTTP/1.1\r\nHost: localhost\r\n".getBytes(StandardCharsets.UTF_8));
+                socket.getOutputStream().flush();
+                byte[] buffer = new byte[256];
+                int read = socket.getInputStream().read(buffer);
+                String response = new String(buffer, 0, Math.max(read, 0), StandardCharsets.UTF_8);
+                assertTrue(response.contains("408"), response);
+            }
+        } finally {
+            server.stop(1);
         }
     }
 

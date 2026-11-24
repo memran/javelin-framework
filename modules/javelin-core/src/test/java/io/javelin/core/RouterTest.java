@@ -102,6 +102,32 @@ final class RouterTest {
     }
 
     @Test
+    void generatesUrlsForNamedRoutes() {
+        Router router = new Router();
+        router.add(Route.get("/users/{id:[0-9]+}", request -> Response.text("user"))
+                .name("users.show"));
+
+        Route route = router.named("users.show").orElseThrow();
+
+        assertEquals(List.of("id"), route.parameterNames());
+        assertEquals("/users/42", router.path("users.show", Map.of("id", "42")));
+        assertEquals("/users/a%20b", router.path("users.show", Map.of("id", "a b")));
+        assertThrows(IllegalArgumentException.class,
+                () -> router.path("users.show", Map.of()));
+        assertThrows(IllegalArgumentException.class,
+                () -> router.path("missing", Map.of()));
+    }
+
+    @Test
+    void rejectsDuplicateRouteNames() {
+        Router router = new Router();
+        router.add(Route.get("/a", request -> Response.text("a")).name("same"));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> router.add(Route.get("/b", request -> Response.text("b")).name("same")));
+    }
+
+    @Test
     void rejectsDuplicateMethodAndPathRegistrations() {
         Router router = new Router();
         router.get("/users", request -> Response.text("first"));

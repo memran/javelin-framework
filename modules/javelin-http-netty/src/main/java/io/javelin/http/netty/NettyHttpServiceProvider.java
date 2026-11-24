@@ -27,7 +27,8 @@ public final class NettyHttpServiceProvider implements ServiceProvider {
                 config.staticRoot(),
                 config.maxRequestBytes(),
                 app.profile(),
-                config.staticCachePolicy()
+                config.staticCachePolicy(),
+                config.timeouts()
         ));
     }
 }

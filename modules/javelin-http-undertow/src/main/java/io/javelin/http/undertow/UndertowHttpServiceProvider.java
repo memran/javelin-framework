@@ -26,7 +26,8 @@ public final class UndertowHttpServiceProvider implements ServiceProvider {
                 config.trustedProxies(),
                 config.staticRoot(),
                 config.maxRequestBytes(),
-                config.staticCachePolicy()
+                config.staticCachePolicy(),
+                config.timeouts()
         ));
     }
 }

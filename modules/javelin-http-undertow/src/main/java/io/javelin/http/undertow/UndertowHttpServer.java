@@ -5,10 +5,12 @@ import io.javelin.core.HttpMethod;
 import io.javelin.core.HttpServerAdapter;
 import io.javelin.core.Request;
 import io.javelin.core.Response;
+import io.javelin.http.common.HttpTimeoutConfig;
 import io.javelin.http.common.StaticAssetResolver;
 import io.javelin.http.common.StaticCachePolicy;
 import io.javelin.http.common.TrustedProxyResolver;
 import io.undertow.Undertow;
+import io.undertow.UndertowOptions;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HeaderValues;
@@ -30,6 +32,7 @@ public final class UndertowHttpServer implements HttpServerAdapter {
     private final HttpKernel kernel;
     private final TrustedProxyResolver trustedProxyResolver;
     private final StaticAssetResolver staticAssetResolver;
+    private final HttpTimeoutConfig timeouts;
 
     private Undertow server;
 
@@ -51,9 +54,15 @@ public final class UndertowHttpServer implements HttpServerAdapter {
 
     public UndertowHttpServer(String host, int port, HttpKernel kernel, List<String> trustedProxies, Path staticRoot,
                               int maxRequestBytes, StaticCachePolicy cachePolicy) {
+        this(host, port, kernel, trustedProxies, staticRoot, maxRequestBytes, cachePolicy, HttpTimeoutConfig.DEFAULT);
+    }
+
+    public UndertowHttpServer(String host, int port, HttpKernel kernel, List<String> trustedProxies, Path staticRoot,
+                              int maxRequestBytes, StaticCachePolicy cachePolicy, HttpTimeoutConfig timeouts) {
         this.host = host;
         this.port = port;
         this.maxRequestBytes = maxRequestBytes;
+        this.timeouts = timeouts;
         this.trustedProxyResolver = new TrustedProxyResolver(trustedProxies);
         this.staticAssetResolver = new StaticAssetResolver(staticRoot, cachePolicy);
         this.kernel = kernel.withStaticFallback(staticAssetResolver::resolve);
@@ -70,6 +79,8 @@ public final class UndertowHttpServer implements HttpServerAdapter {
         };
         server = Undertow.builder()
                 .addHttpListener(port, host)
+                .setServerOption(UndertowOptions.REQUEST_PARSE_TIMEOUT, (int) timeouts.request().toMillis())
+                .setServerOption(UndertowOptions.IDLE_TIMEOUT, (int) timeouts.idle().toMillis())
                 .setHandler(handler)
                 .build();
         server.start();

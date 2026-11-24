@@ -1,7 +1,9 @@
 package io.javelin.core;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public final class Routes {
@@ -30,6 +32,14 @@ public final class Routes {
 
     public static Router add(Router router, Route.RouteBuilder builder) {
         return Objects.requireNonNull(router, "router").add(Objects.requireNonNull(builder, "builder"));
+    }
+
+    public static Optional<Route> named(Router router, String name) {
+        return Objects.requireNonNull(router, "router").named(name);
+    }
+
+    public static String path(Router router, String name, Map<String, String> params) {
+        return Objects.requireNonNull(router, "router").path(name, params);
     }
 
     public static Router middleware(Router router, Middleware middleware) {

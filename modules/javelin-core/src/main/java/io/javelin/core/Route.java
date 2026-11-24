@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -70,6 +72,37 @@ public final class Route {
 
     boolean hasParameters() {
         return !parameterNames.isEmpty();
+    }
+
+    public List<String> parameterNames() {
+        return parameterNames;
+    }
+
+    /** Builds a concrete URL path, filling and encoding each named parameter. */
+    public String buildPath(Map<String, String> params) {
+        if (parameterNames.isEmpty()) {
+            return path;
+        }
+        StringBuilder result = new StringBuilder();
+        for (String segment : path.split("/")) {
+            if (segment.isEmpty()) {
+                continue;
+            }
+            result.append('/');
+            if (segment.startsWith("{") && segment.endsWith("}")) {
+                String definition = segment.substring(1, segment.length() - 1);
+                int colon = definition.indexOf(':');
+                String name = colon < 0 ? definition : definition.substring(0, colon);
+                String value = params.get(name);
+                if (value == null || value.isBlank()) {
+                    throw new IllegalArgumentException("Missing route parameter: " + name);
+                }
+                result.append(URLEncoder.encode(value, StandardCharsets.UTF_8).replace("+", "%20"));
+            } else {
+                result.append(segment);
+            }
+        }
+        return result.length() == 0 ? "/" : result.toString();
     }
 
     Optional<Map<String, String>> matches(HttpMethod requestMethod, String requestPath) {

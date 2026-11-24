@@ -230,7 +230,8 @@ services:
     environment:
       SERVER_HOST: 0.0.0.0
       SERVER_PORT: 8080
-      TRUSTED_PROXIES: 10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+      # Trusted proxies are configured in config/app.yaml under
+      # security.trusted_proxies, not through an environment variable.
       DATABASE_URL: jdbc:postgresql://db:5432/javelin
       DB_USERNAME: javelin
       DB_PASSWORD: ${DB_PASSWORD}
@@ -293,6 +294,22 @@ volumes:
   pgdata:
   redisdata:
 ```
+
+Generated projects ship a simpler, working version of this stack plus ready-made proxy files. Both `nginx.conf` and `Caddyfile` forward to `app:8080` and pass `X-Forwarded-*` headers. The proxy services are opt-in Compose profiles:
+
+```bash
+docker compose --profile nginx up --build       # app at http://localhost:8081
+docker compose --profile caddy up --build       # app at http://localhost:8082
+```
+
+For `demo-app` in this repository, use `docker compose -f demo-app/docker-compose.yml --profile nginx up --build`. The app config trusts `127.0.0.1` and Docker's `172.16.0.0/12` bridge network so forwarded headers are honoured only from those peers.
+
+### Timeouts
+
+| Config key | Default | Applied by |
+|---|---|---|
+| `server.request_timeout_seconds` | `30` | Netty `ReadTimeoutHandler` (408 on read timeout), Undertow `REQUEST_PARSE_TIMEOUT`, JDK watchdog closes the exchange |
+| `server.idle_timeout_seconds` | `60` | Netty `IdleStateHandler`, Undertow `IDLE_TIMEOUT`; the JDK `HttpServer` has no native idle timeout |
 
 ### Dockerfile
 

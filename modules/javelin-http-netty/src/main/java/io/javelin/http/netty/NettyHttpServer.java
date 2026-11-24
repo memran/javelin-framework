@@ -6,6 +6,7 @@ import io.javelin.core.HttpMethod;
 import io.javelin.core.HttpServerAdapter;
 import io.javelin.core.Request;
 import io.javelin.core.Response;
+import io.javelin.http.common.HttpTimeoutConfig;
 import io.javelin.http.common.StaticAssetResolver;
 import io.javelin.http.common.StaticCachePolicy;
 import io.javelin.http.common.TrustedProxyResolver;
@@ -23,6 +24,10 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.TooLongFrameException;
+import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.handler.timeout.ReadTimeoutException;
+import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
@@ -53,6 +58,7 @@ public final class NettyHttpServer implements HttpServerAdapter {
     private final HttpKernel kernel;
     private final TrustedProxyResolver trustedProxyResolver;
     private final StaticAssetResolver staticAssetResolver;
+    private final HttpTimeoutConfig timeouts;
     private final AppProfile profile;
 
     private EventLoopGroup bossGroup;
@@ -82,9 +88,17 @@ public final class NettyHttpServer implements HttpServerAdapter {
 
     public NettyHttpServer(String host, int port, HttpKernel kernel, List<String> trustedProxies, Path staticRoot,
                            int maxRequestBytes, AppProfile profile, StaticCachePolicy cachePolicy) {
+        this(host, port, kernel, trustedProxies, staticRoot, maxRequestBytes, profile, cachePolicy,
+                HttpTimeoutConfig.DEFAULT);
+    }
+
+    public NettyHttpServer(String host, int port, HttpKernel kernel, List<String> trustedProxies, Path staticRoot,
+                           int maxRequestBytes, AppProfile profile, StaticCachePolicy cachePolicy,
+                           HttpTimeoutConfig timeouts) {
         this.host = host;
         this.port = port;
         this.maxRequestBytes = maxRequestBytes;
+        this.timeouts = timeouts;
         this.profile = profile;
         this.trustedProxyResolver = new TrustedProxyResolver(trustedProxies);
         this.staticAssetResolver = new StaticAssetResolver(staticRoot, cachePolicy);
@@ -109,6 +123,8 @@ public final class NettyHttpServer implements HttpServerAdapter {
                     protected void initChannel(SocketChannel socket) {
                         socket.pipeline()
                                 .addLast(new HttpServerCodec())
+                                .addLast(new ReadTimeoutHandler(timeouts.request().toSeconds(), TimeUnit.SECONDS))
+                                .addLast(new IdleStateHandler(0, 0, timeouts.idle().toSeconds(), TimeUnit.SECONDS))
                                 .addLast(new HttpObjectAggregator(maxRequestBytes + HEADER_SLACK))
                                 .addLast(new RequestHandler());
                     }
@@ -137,10 +153,29 @@ public final class NettyHttpServer implements HttpServerAdapter {
 
         @Override
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-            int status = cause instanceof TooLongFrameException ? 413 : 500;
-            String text = status == 413 ? "Payload Too Large" : "Internal Server Error";
+            int status;
+            String text;
+            if (cause instanceof TooLongFrameException) {
+                status = 413;
+                text = "Payload Too Large";
+            } else if (cause instanceof ReadTimeoutException) {
+                status = 408;
+                text = "Request Timeout";
+            } else {
+                status = 500;
+                text = "Internal Server Error";
+            }
             ChannelFuture future = send(ctx, status, text, false);
             future.addListener(ChannelFutureListener.CLOSE);
+        }
+
+        @Override
+        public void userEventTriggered(ChannelHandlerContext ctx, Object event) throws Exception {
+            if (event instanceof IdleStateEvent) {
+                ctx.close();
+                return;
+            }
+            super.userEventTriggered(ctx, event);
         }
     }
 

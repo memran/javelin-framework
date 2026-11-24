@@ -139,7 +139,14 @@ Because `0.1.0-SNAPSHOT` is not published, this requires framework artifacts rea
 docker compose -f demo-app/docker-compose.yml up --build
 ```
 
-See [Deployment](deployment.md) for details, including the demo endpoints that let you exercise cache and queue behavior.
+To put a frontend proxy in front of the app, start the opt-in profile:
+
+```bash
+docker compose --profile nginx up --build   # http://localhost:8081
+# or: docker compose --profile caddy up --build   # http://localhost:8082
+```
+
+The generated `nginx.conf` / `Caddyfile` forward `X-Forwarded-*` headers, and the app trusts Docker's bridge network so client IPs resolve correctly. See [Deployment](deployment.md) for details and the demo endpoints that let you exercise cache and queue behavior.
 
 ## Next reading
 

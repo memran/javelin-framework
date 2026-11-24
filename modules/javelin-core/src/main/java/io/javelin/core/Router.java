@@ -46,6 +46,9 @@ public final class Router {
         if (hasConflict(route)) {
             throw new IllegalArgumentException("Duplicate route registration: " + route.method() + " " + route.path());
         }
+        if (route.name().filter(this::hasNameConflict).isPresent()) {
+            throw new IllegalArgumentException("Duplicate route name: " + route.name().orElseThrow());
+        }
         routes.add(route);
         if (route.hasParameters()) {
             patternRoutes.computeIfAbsent(route.method(), ignored -> new ArrayList<>()).add(route);
@@ -78,6 +81,20 @@ public final class Router {
         return List.copyOf(routes);
     }
 
+    /** Finds a route by its name. */
+    public Optional<Route> named(String name) {
+        return routes.stream()
+                .filter(route -> route.name().filter(name::equals).isPresent())
+                .findFirst();
+    }
+
+    /** Generates a URL path for a named route, filling its parameters. */
+    public String path(String name, Map<String, String> params) {
+        return named(name)
+                .orElseThrow(() -> new IllegalArgumentException("Unknown route name: " + name))
+                .buildPath(params);
+    }
+
     /**
      * Methods that would match this path, used to build {@code Allow} on a 405 response.
      * HEAD is included whenever GET is registered because GET routes accept HEAD.
@@ -98,6 +115,10 @@ public final class Router {
         List<HttpMethod> ordered = new ArrayList<>(allowed);
         ordered.sort(Comparator.comparingInt(Enum::ordinal));
         return List.copyOf(ordered);
+    }
+
+    private boolean hasNameConflict(String name) {
+        return routes.stream().anyMatch(route -> route.name().filter(name::equals).isPresent());
     }
 
     private boolean hasConflict(Route route) {

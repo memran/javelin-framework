@@ -154,6 +154,11 @@ final class CommandGenerationTest {
         assertTrue(compose.contains("NATS_URL: nats://nats:4222"));
         assertTrue(compose.contains("\"-js\""));
         assertTrue(compose.contains("NATS_STREAM: JAVELIN"));
+        assertTrue(compose.contains("profiles: [\"nginx\"]"));
+        assertTrue(compose.contains("profiles: [\"caddy\"]"));
+        assertTrue(compose.contains("./nginx.conf:/etc/nginx/conf.d/default.conf:ro"));
+        assertTrue(Files.exists(project.resolve("nginx.conf")));
+        assertTrue(Files.exists(project.resolve("Caddyfile")));
 
         String dockerfile = Files.readString(project.resolve("Dockerfile"));
         assertTrue(dockerfile.contains("FROM node:22-alpine AS assets"));
@@ -189,6 +194,9 @@ final class CommandGenerationTest {
         assertTrue(appYaml.contains("host: ${DATABASE_HOST:localhost}"));
         assertTrue(appYaml.contains("database: ${DATABASE_NAME:crm-app}"));
         assertTrue(appYaml.contains("static_cache_seconds: 3600"));
+        assertTrue(appYaml.contains("request_timeout_seconds: 30"));
+        assertTrue(appYaml.contains("idle_timeout_seconds: 60"));
+        assertTrue(appYaml.contains("172.16.0.0/12"));
         assertTrue(appYaml.contains("http-driver: netty"));
         assertTrue(appYaml.contains("driver: ${CACHE_DRIVER:memory}"));
         assertTrue(appYaml.contains("url: ${VALKEY_URL:}"));

@@ -9,6 +9,7 @@ import io.javelin.core.HttpServerAdapter;
 import io.javelin.core.Request;
 import io.javelin.core.Response;
 import io.javelin.http.common.StaticAssetResolver;
+import io.javelin.http.common.HttpTimeoutConfig;
 import io.javelin.http.common.StaticCachePolicy;
 import io.javelin.http.common.TrustedProxyResolver;
 
@@ -20,6 +21,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 public final class JdkHttpServer implements HttpServerAdapter {
     private static final int DEFAULT_MAX_REQUEST_BYTES = 1_048_576;
@@ -30,6 +35,8 @@ public final class JdkHttpServer implements HttpServerAdapter {
     private final TrustedProxyResolver trustedProxyResolver;
     private final StaticAssetResolver staticAssetResolver;
     private final int maxRequestBytes;
+    private final HttpTimeoutConfig timeouts;
+    private final ScheduledExecutorService watchdog;
 
     public JdkHttpServer(String host, int port, HttpKernel kernel) {
         this(host, port, kernel, List.of(), Path.of("public"), DEFAULT_MAX_REQUEST_BYTES);
@@ -49,12 +56,22 @@ public final class JdkHttpServer implements HttpServerAdapter {
 
     public JdkHttpServer(String host, int port, HttpKernel kernel, List<String> trustedProxies, Path staticRoot,
                          int maxRequestBytes, StaticCachePolicy cachePolicy) {
+        this(host, port, kernel, trustedProxies, staticRoot, maxRequestBytes, cachePolicy, HttpTimeoutConfig.DEFAULT);
+    }
+
+    public JdkHttpServer(String host, int port, HttpKernel kernel, List<String> trustedProxies, Path staticRoot,
+                         int maxRequestBytes, StaticCachePolicy cachePolicy, HttpTimeoutConfig timeouts) {
         this(host, port, kernel, new TrustedProxyResolver(trustedProxies),
-                new StaticAssetResolver(staticRoot, cachePolicy), maxRequestBytes);
+                new StaticAssetResolver(staticRoot, cachePolicy), maxRequestBytes, timeouts);
     }
 
     JdkHttpServer(String host, int port, HttpKernel kernel, TrustedProxyResolver trustedProxyResolver,
                   StaticAssetResolver staticAssetResolver, int maxRequestBytes) {
+        this(host, port, kernel, trustedProxyResolver, staticAssetResolver, maxRequestBytes, HttpTimeoutConfig.DEFAULT);
+    }
+
+    JdkHttpServer(String host, int port, HttpKernel kernel, TrustedProxyResolver trustedProxyResolver,
+                  StaticAssetResolver staticAssetResolver, int maxRequestBytes, HttpTimeoutConfig timeouts) {
         try {
             this.server = HttpServer.create(new InetSocketAddress(host, port), 0);
         } catch (IOException exception) {
@@ -64,6 +81,13 @@ public final class JdkHttpServer implements HttpServerAdapter {
         this.trustedProxyResolver = trustedProxyResolver;
         this.staticAssetResolver = staticAssetResolver;
         this.maxRequestBytes = maxRequestBytes;
+        this.timeouts = timeouts;
+        ThreadFactory daemon = task -> {
+            Thread thread = new Thread(task, "javelin-http-timeout");
+            thread.setDaemon(true);
+            return thread;
+        };
+        this.watchdog = Executors.newSingleThreadScheduledExecutor(daemon);
         this.kernel = kernel.withStaticFallback(staticAssetResolver::resolve);
         this.server.setExecutor(executor);
         this.server.createContext("/", this::handle);
@@ -78,17 +102,24 @@ public final class JdkHttpServer implements HttpServerAdapter {
     public void stop(int delaySeconds) {
         server.stop(delaySeconds);
         executor.close();
+        watchdog.shutdownNow();
     }
 
     private void handle(HttpExchange exchange) throws IOException {
-        Request request;
+        ScheduledFuture<?> deadline = watchdog.schedule(() -> exchange.close(),
+                timeouts.request().toMillis(), TimeUnit.MILLISECONDS);
         try {
-            request = toRequest(exchange);
-        } catch (RequestRejected rejected) {
-            write(exchange, errorResponse(rejected.status));
-            return;
+            Request request;
+            try {
+                request = toRequest(exchange);
+            } catch (RequestRejected rejected) {
+                write(exchange, errorResponse(rejected.status));
+                return;
+            }
+            write(exchange, kernel.handle(request));
+        } finally {
+            deadline.cancel(false);
         }
-        write(exchange, kernel.handle(request));
     }
 
     private static Response errorResponse(int status) {

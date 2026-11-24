@@ -43,6 +43,21 @@ final class HttpKernelTest {
     }
 
     @Test
+    void answersOptionsWith204AndAllowForKnownPaths() {
+        Router router = new Router();
+        router.get("/users", request -> Response.text("users"));
+        HttpKernel kernel = new HttpKernel(router, new DefaultExceptionHandler());
+        Request request = new Request(
+                HttpMethod.OPTIONS, "/users", Map.of(), Map.of(), Map.of(), new byte[0], "127.0.0.1");
+
+        Response response = kernel.handle(request);
+
+        assertEquals(204, response.status());
+        assertEquals("GET, HEAD", response.headers().get("Allow"));
+        assertEquals(0, response.body().length);
+    }
+
+    @Test
     void returns404WhenNoMethodMatchesThePath() {
         HttpKernel kernel = new HttpKernel(new Router(), new DefaultExceptionHandler());
         Request request = new Request(
