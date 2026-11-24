@@ -601,19 +601,14 @@ javelin doctor
 ```
 Javelin Doctor
 ══════════════
-✓ Java version: 25
-✓ Project root: /home/user/my-blog
-✓ config/app.yaml: found
-✓ config/database.yaml: found
-✓ .env: found
-✓ database/migrations/: found
-  - 3 migration files
-✓ Database connection: OK (PostgreSQL 16)
-✓ Required modules: 10/10
-⚠ Queue driver not configured
-
-System: OK
+Java: 25
+OK   pom.xml
+OK   config/app.yaml
+OK   .env
+OK   storage
 ```
+
+`doctor` checks those four paths only. Database settings live in `config/app.yaml` under `database.*` (see [Database JDBC](modules/db-jdbc.md)); it does not probe the database or count migration files.
 
 ---
 
