@@ -1,14 +1,69 @@
 # Javelin Framework
 
-Javelin is a lightweight Java framework inspired by MarwaPHP-style service providers while staying explicit, modular, and close to the JDK.
+Javelin is a lightweight, modular Java web framework inspired by MarwaPHP-style service providers. It stays explicit, small, and close to the JDK: no annotation scanning, no hidden global state, no ORM-style abstraction, and no Spring-style magic.
 
-This repository is the first production-oriented MVP phase. It includes the boot flow, service container, provider loading, Netty HTTP runtime by default (JDK and Undertow pluggable), routing, middleware, YAML and `.env` config, SLF4J logging, Pebble views, JDBC/Hikari database access, Picocli commands, security middleware, in-memory cache, a demo app, and unit tests.
+This repository is the first production-oriented MVP phase. It includes a deterministic boot flow, a small DI container, provider-based wiring, three pluggable HTTP drivers (Netty by default, JDK and Undertow alternatives), routing with named routes, middleware and bearer-token security, YAML + `.env` config, SLF4J logging, Pebble views, HikariCP-backed JDBC with YAML migrations, an in-memory and a Valkey-backed cache, a NATS JetStream queue with job retries, a Picocli CLI with project generators, static assets, and a runnable demo app.
+
+## Why Javelin
+
+Most Java web frameworks trade startup cost and transparency for convenience. They scan the classpath, discover annotations at runtime, and hide wiring behind proxies and reflection. That is a poor fit for small services, CLIs, embedded apps, and teams that want to see exactly what their program does.
+
+Javelin was built to answer a simple question: *what is the smallest coherent framework that still gives you routing, dependency injection, configuration, views, database access, security, caching, and queuing?*
+
+The answers that shaped the project:
+
+- **Explicit over automatic.** You register providers and routes in code. There is nothing hidden to discover and no startup scan.
+- **Fast, predictable startup.** The boot sequence is linear, with no lazy initialization of core infrastructure. Dependency graphs stay shallow.
+- **JDK-first.** Standard library types are used wherever they are enough (virtual threads, `java.net.http`, records, `Duration`, `Path`). External libraries are behind interfaces.
+- **Replaceable adapters.** HTTP server, database, logger, view renderer, and cache all sit behind core contracts. Swap a backend by registering a different service provider, without touching application code.
+- **Cheap to learn and debug.** Small, single-purpose classes and direct names mean the flow is easy to follow with a normal debugger.
+- **Production-oriented defaults.** Secure headers, request limits, trusted-proxy handling, bounded timeouts, and dev/prod profiles are on by default in starter wiring.
+
+It is deliberately *not* Spring Boot and deliberately *not* an ORM. If you need those ecosystems, use them. If you want control, transparency, and a small runtime, Javelin is built for that.
+
+## Features
+
+- **Dependency injection** — type-keyed container with instance, transient, and singleton bindings plus deterministic constructor auto-resolution, factory bindings, and circular-dependency detection.
+- **Service providers** — a two-phase `register()` / `boot()` lifecycle with explicit ordering; adapters are activated by listing providers in config, never by scanning.
+- **Routing** — method + path routes with `{parameters}`, inline constraints, named routes with URL generation, automatic `HEAD` and `OPTIONS` responses, `405` + `Allow`, and duplicate route/name rejection.
+- **Middleware** — a chain-of-responsibility pipeline for global and per-route middleware, including secure headers, request-size limits, rate limiting, and bearer-token authentication with permission checks.
+- **Three HTTP drivers** — Netty (event loops, default), JDK `HttpServer` (virtual threads), and Undertow (worker dispatch), all behind one `HttpServerAdapter` contract.
+- **Configuration** — YAML config files and `.env` loading with `${ENV_VAR}` resolution, `APP_ENV` dev/prod profiles, and explicit config keys with documented defaults.
+- **Security defaults** — secure response headers, configurable trusted proxies (IP/CIDR), request size limits, password hashing, bearer auth with 401/403 responses, and dev/prod error handling.
+- **Static assets** — ETag and `304` support, byte ranges, cache headers, `nosniff`, path-traversal and symlink containment, and a middleware-friendly pipeline.
+- **Database** — HikariCP connection pooling, a prepared-statement query builder, transactions, and a human-readable YAML migration runner with `migrate` / `migrate:rollback`.
+- **Views** — Pebble templates with custom filters, functions, globals, and extensions; a `View` facade for convenient rendering.
+- **Caching** — a small `Cache` contract with an in-memory TTL implementation and a Lettuce-backed Valkey adapter for distributed caching.
+- **Queues** — a `Job` / `RetryPolicy` contract with a NATS JetStream adapter, push consumers, and retry with attempt tracking.
+- **CLI and generators** — Picocli commands to scaffold apps, controllers, models, migrations, and validation rules. Generated projects include Docker Compose, a multi-stage Dockerfile, Tailwind CSS, Alpine.js, npm/bun scripts with auto-detection, build scripts, and opt-in Nginx/Caddy proxy configs.
+- **Support helpers** — small, stateless facades for strings, arrays, dates, files, images, HTTP client, AI client, objects, validation, HTML, and security.
+
+## Architecture at a glance
+
+```
+javelin-support        (JDK-only utilities, no dependencies)
+        │
+        ▼
+javelin-core           (contracts, container, routing, kernel, security primitives)
+        │
+        ├── config / http adapters / db-jdbc / log-slf4j / view-pebble / security / cache
+        │
+        ├── cache-valkey / queue-nats     (distributed backends)
+        │
+        ▼
+javelin-starter        (wires the default stack)
+        ▲
+        │
+javelin-console        (CLI + generators, developer toolchain)
+```
+
+Core owns the contracts; adapters implement them; the starter wires defaults; application routes load through configured `ServiceProvider` classes. See [Architecture](docs/architecture.md) and [Application Flow](docs/application-flow.md) for the full dependency graph and request lifecycle.
 
 ## Modules
 
-- `modules/javelin-core` - application, container, providers, router, request/response, facades, kernel contracts
+- `modules/javelin-core` - application, container, providers, router, request/response, facades, kernel contracts, queue/cache contracts
 - `modules/javelin-config` - `.env` and YAML config loading
-- `modules/javelin-http-common` - shared static asset, trusted proxy, and adapter config helpers
+- `modules/javelin-http-common` - shared static asset, trusted proxy, and adapter/timeout config helpers
 - `modules/javelin-http-jdk` - JDK `HttpServer` adapter using virtual threads
 - `modules/javelin-http-netty` - Netty adapter using event loops
 - `modules/javelin-http-undertow` - Undertow adapter using worker dispatch
@@ -19,14 +74,50 @@ This repository is the first production-oriented MVP phase. It includes the boot
 - `modules/javelin-security` - secure headers, request limits, rate limiting, password hashing
 - `modules/javelin-support` - short Laravel-style helper facades for strings, dates, arrays, files, images, HTTP client, AI client, objects, validation, HTML, and security
 - `modules/javelin-cache` - simple in-memory cache contract and implementation
+- `modules/javelin-cache-valkey` - Lettuce-backed Valkey cache adapter
+- `modules/javelin-queue-nats` - NATS JetStream queue adapter with job retries
 - `modules/javelin-starter` - batteries-included bootstrap
-- `demo-app` - runnable demo application
+- `demo-app` - runnable demo application and Docker stack
 
 ## Documentation
 
 - [Quick Start](docs/quick-start.md) — create and run your first app
 - [Installation](docs/installation.md) — prerequisites, CLI install, local artifacts, troubleshooting
+- [Architecture](docs/architecture.md) — design principles and module dependency graph
+- [Application Flow](docs/application-flow.md) — boot sequence and request lifecycle
+- [Deployment](docs/deployment.md) — production tuning, Docker Compose, proxies, health checks, benchmarks
+- [CLI Reference](docs/cli-reference.md) — every `javelin` command
 - Module-by-module API and usage examples live under [`docs/`](docs/README.md).
+
+## Requirements
+
+- JDK 25+ (compiled for Java 25; newer JDKs are supported)
+- Maven 3.9+
+
+## Performance
+
+Local, client-inclusive benchmarks measured on the development machine: Windows 11, 12 logical CPUs, Temurin JDK 25 with default JVM flags, demo app started with `serve`, application logging suppressed. Client and server ran on the same host using `hey` v0.1.5 with 50 keep-alive connections. Each 10-second run returned only `200` responses.
+
+| Driver | `GET /health` (JSON, 15 bytes) | `GET /` (HTML, ~4.9 KB) |
+|---|---|---|
+| `jdk` | ~20,600 req/s | ~8,900 req/s |
+| `netty` | ~21,400 req/s | ~11,900 req/s |
+| `undertow` | ~25,000 req/s | ~9,300 req/s |
+
+Undertow was fastest for the tiny JSON response; Netty was fastest for the larger HTML response. Differences below roughly 15–20% should be treated as noise on this machine, and logging level matters (DEBUG template lookups measurably reduce throughput). These are not a server ceiling — hardware, OS networking, JVM flags, middleware, and the client tool all change the result. Earlier draft figures of ~28,000–30,000 req/s were estimates and were removed.
+
+To reproduce:
+
+```bash
+# Terminal 1: set javelin.starter.http-driver in config/app.yaml (netty | jdk | undertow)
+java -jar demo-app/target/javelin-demo-app-0.1.0-SNAPSHOT.jar serve
+
+# Terminal 2:
+hey -z 10s -c 50 http://127.0.0.1:8080/health
+hey -z 10s -c 50 http://127.0.0.1:8080/
+```
+
+See [Performance Benchmarks](docs/deployment.md#performance-benchmarks) for the full methodology.
 
 ## Maven Split
 
@@ -51,11 +142,6 @@ Then keep your actual workspace as a normal Maven application project. That work
 The generated workspace template already follows that shape: the project POM depends on `javelin-starter`, while the workspace remains free to add its own application dependencies.
 It also includes a workspace-local `README.md`, `install.ps1`, and `install.sh` that explain the app setup, verify Java and Maven, then run `mvn test` from inside the generated app.
 The starter validation example is customizable too: `javelin new crm-app --validation-rule TeenAge` will generate `app/validation/TeenAgeRule.java`.
-
-## Requirements
-
-- Java 25
-- Maven 3.9+
 
 ## Install
 
@@ -108,11 +194,9 @@ cd <name>
 3. Create `Application`
 4. Create `Container`
 5. Register core bindings
-6. Load configured service providers
-7. Run `provider.register(app)`
-8. Run `provider.boot(app)`
-9. Start the configured HTTP driver (Netty by default; JDK and Undertow are pluggable)
-10. Serve requests
+6. Load configured service providers (in registration order: `register()` first, then `boot()`)
+7. Start the configured HTTP driver (Netty by default; JDK and Undertow are pluggable)
+8. Serve requests
 
 ## Example Routes
 
@@ -121,6 +205,14 @@ app.router()
     .get("/", home::index)
     .get("/health", home::health)
     .get("/users/{id}", users::show);
+```
+
+Routes can be named and later turned into paths:
+
+```java
+app.router().add(Route.get("/users/{id}", users::show).name("users.show"));
+
+String path = app.router().path("users.show", Map.of("id", "42")); // /users/42
 ```
 
 ## JSON And Views
@@ -135,7 +227,7 @@ Pebble settings live in `config/view.yml`. Applications can register custom Pebb
 ```java
 app.make(PebbleViewExtensions.class)
     .extension(new JavelinViewExtension())
-    .global("javelinRuntime", "JDK 25");
+    .global("javelinRuntime", "JDK 25+");
 ```
 
 See `demo-app/app/views/JavelinViewExtension.java` for a custom filter and function example.
@@ -185,6 +277,35 @@ db.table("users").where("id", 1).first();
 
 The query builder uses prepared statements for values. Keep table and column names framework-controlled or validated before passing dynamic identifiers.
 YAML migration files live under `database/migrations`, and `javelin migrate` / `javelin migrate:rollback` execute them through the JDBC migration runner.
+
+## Cache And Queues
+
+Cache and queue adapters are opt-in: list their service providers in config, then resolve the contract from the container.
+
+```java
+Cache cache = app.make(Cache.class);
+cache.put("greeting", "hello", Duration.ofMinutes(5));
+
+Queue queue = app.make(Queue.class);
+queue.subscribe("emails.welcome", job -> sendWelcome(job.payload(Map.class)), RetryPolicy.DEFAULT);
+queue.publish(Job.of("emails.welcome", Map.of("userId", 42)));
+```
+
+- `javelin-cache` provides an in-memory TTL cache; `javelin-cache-valkey` uses Lettuce against Valkey/Redis.
+- `javelin-queue-nats` publishes to NATS JetStream and consumes with retries and attempt tracking.
+
+Both are wired only when configured, and generated Compose files start Valkey and NATS/JetStream alongside the app and PostgreSQL.
+
+## Security
+
+Security defaults are on in starter wiring. Configure them under `security` in `config/app.yaml`:
+
+- `secure_headers` — `X-Content-Type-Options`, `X-Frame-Options`, referrer and permissions policies
+- `max_request_bytes` — request size limit (413 when exceeded)
+- `trusted_proxies` — IP/CIDR allowlist for `X-Forwarded-*` resolution; Docker bridge ranges are trusted in generated configs
+- Bearer authentication and permission middleware live in core (`BearerAuthMiddleware`, `RequiresPermissionMiddleware`)
+
+In production, keep detailed error pages off via `APP_ENV=prod`, terminate TLS at a trusted proxy, and restrict `trusted_proxies` to your real proxy network.
 
 ## CLI
 
@@ -258,7 +379,7 @@ javelin --project demo-app migrate
 
 `javelin build` is explicit. Other project commands, including `serve`, do not rebuild automatically; they run the existing application jar from `target/`.
 
-`javelin make:migration` now generates YAML files under `database/migrations`, and `javelin migrate` / `javelin migrate:rollback` execute those files through the JDBC migration runner.
+`javelin make:migration` generates YAML files under `database/migrations`, and `javelin migrate` / `javelin migrate:rollback` execute those files through the JDBC migration runner.
 Use `--type create-table`, `--type add-column`, or `--type seed` to scaffold the common migration shapes quickly.
 
 If the jar does not exist yet, run:
@@ -299,4 +420,13 @@ The driver is written into the packaged `config/app.yaml` under `javelin.starter
 
 ## Roadmap
 
-Next phases should add validation, file uploads, trusted proxy parsing, static assets, CSRF/session support, Redis, queues, scheduler, WebSocket, OAuth, metrics, and deploy tooling.
+The MVP is complete. Natural next additions include:
+
+- Multipart upload parsing and a larger static-assets story
+- Integration tests for the JDK HTTP adapter
+- A scheduler and recurring-job support
+- WebSocket support
+- OAuth / external identity providers
+- Metrics and observability hooks
+
+Have an idea? Open an issue or a pull request — contributions that keep the explicit, provider-based, JDK-first design are welcome.

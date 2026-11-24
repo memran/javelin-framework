@@ -4,7 +4,7 @@ This gets you from zero to a running Javelin app in a few minutes. For detailed 
 
 ## 1. Prerequisites
 
-- **Java 25** (`java -version`, with `JAVA_HOME` set)
+- **JDK 25+** (`java -version`, with `JAVA_HOME` set)
 - **Maven 3.9+** (`mvn -v`)
 - Optional: **npm** or **bun** for frontend assets, **Docker** for the full Compose stack
 

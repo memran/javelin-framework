@@ -20,7 +20,7 @@ bun --version   # or: npm --version
 docker compose version
 ```
 
-Set `JAVA_HOME` to the JDK 25 installation if `java` resolves to an older JDK.
+Set `JAVA_HOME` to a JDK 25+ installation if `java` resolves to an older JDK.
 
 ## 2. Install the `javelin` CLI
 
@@ -85,7 +85,7 @@ javelin new my-app
 cd my-app
 ```
 
-The generated workspace includes its own `install.sh` / `install.ps1`. They check for Java 25 and Maven 3.9+, then run `mvn test`:
+The generated workspace includes its own `install.sh` / `install.ps1`. They check for JDK 25+ and Maven 3.9+, then run `mvn test`:
 
 ```bash
 ./install.sh
@@ -137,7 +137,7 @@ docker compose -f demo-app/docker-compose.yml down
 | Symptom | Cause | Fix |
 |---|---|---|
 | `javelin` is not recognized | PATH change needs a new shell | Open a new terminal; check `~/.javelin/bin` (Windows: `%USERPROFILE%\.javelin\bin`) is on PATH |
-| `Unsupported class file major version` or compiler errors | Wrong JDK | Install JDK 25 and point `JAVA_HOME` at it |
+| `Unsupported class file major version` or compiler errors | Wrong JDK | Install JDK 25+ and point `JAVA_HOME` at it |
 | `Could not resolve io.javelin:javelin-starter:0.1.0-SNAPSHOT` | Framework not installed locally | Run `mvn clean install` from the repo root |
 | `javelin new` refuses to write | Directory exists | Choose another name or pass `--force` |
 | `mvn clean` fails to delete a jar | A running server holds the file | Stop `javelin serve` / the demo app, then retry |
