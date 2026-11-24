@@ -203,13 +203,24 @@ final class CommandGenerationTest {
         assertTrue(appYaml.contains("jetstream: ${NATS_JETSTREAM:false}"));
         assertTrue(appYaml.contains("ValkeyCacheServiceProvider"));
         assertTrue(appYaml.contains("NatsQueueServiceProvider"));
+        assertTrue(appYaml.contains("ExceptionHandlerServiceProvider"));
+        assertTrue(appYaml.contains("request_logging: true"));
+        assertTrue(appYaml.contains("correlation_id_header: X-Correlation-ID"));
+        assertTrue(appYaml.contains("redact_keys:"));
 
         String generatedPom = Files.readString(project.resolve("pom.xml"));
         assertTrue(generatedPom.contains("maven-shade-plugin"));
         assertTrue(generatedPom.contains("javelin-http-netty"));
         assertTrue(generatedPom.contains("javelin-cache-valkey"));
         assertTrue(generatedPom.contains("javelin-queue-nats"));
+        assertTrue(generatedPom.contains("javelin-exception"));
+        assertTrue(generatedPom.contains("<include>errors/**</include>"));
         assertTrue(Files.exists(project.resolve("logback.xml")));
+        assertTrue(Files.exists(project.resolve("logback-prod.xml")));
+        assertTrue(Files.readString(project.resolve("logback-prod.xml"))
+                .contains("io.javelin.log.slf4j.JsonLogEncoder"));
+        assertTrue(Files.exists(project.resolve("errors/500.html")));
+        assertTrue(Files.readString(project.resolve("Dockerfile")).contains("COPY errors ./errors"));
         String buildScript = Files.readString(project.resolve("build.sh"));
         assertTrue(buildScript.contains("command -v bun"));
         assertTrue(buildScript.contains("mvn -B -q -DskipTests package"));

@@ -441,7 +441,10 @@ int port = config.getInt("server.port", 8080);
 Optional<Boolean> debug = config.getBoolean("app.debug");
 boolean debug = config.getBoolean("app.debug", false);
 List<String> cors = config.getStringList("app.cors_origins");
+Set<String> keys = config.keys(); // all known leaf keys
 ```
+
+`keys()` is a default method returning an empty set for custom implementations. `YamlConfig` returns every dotted leaf key, which lets adapters discover documented key patterns such as `log.level.*` without parsing files themselves.
 
 ## Env
 
@@ -629,11 +632,14 @@ Log.error("Failed to connect to database", exception);
 ```
 
 - `Log.use(logger)` -- sets the active `Logger` implementation.
-- `Log.info(message)` -- log an informational message.
+- `Log.debug(message)` -- debug message when the active logger implements `StructuredLogger`.
+- `Log.info(message)` / `Log.info(message, context)` -- informational message, optionally with structured fields.
 - `Log.warn(message)` -- log a warning.
 - `Log.error(message, throwable)` -- log an error with exception.
 
 ### Logger
+
+`StructuredLogger` is an optional extension of `Logger` that adds `debug` and context-aware `info`/`warn`/`error` overloads. Implementations put the context into the SLF4J MDC for the duration of the call. See [Logging SLF4J](log-slf4j.md#structuredlogger).
 
 ```java
 Logger logger = app.make(Logger.class);

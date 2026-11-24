@@ -2,8 +2,14 @@ package io.javelin.core;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface Config {
+    /** All known leaf keys, used when a consumer must discover documented key patterns. */
+    default Set<String> keys() {
+        return Set.of();
+    }
+
     Optional<String> getString(String key);
 
     default String getString(String key, String fallback) {

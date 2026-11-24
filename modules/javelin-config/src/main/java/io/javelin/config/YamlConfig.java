@@ -12,9 +12,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public final class YamlConfig implements Config {
@@ -79,6 +81,26 @@ public final class YamlConfig implements Config {
             return new YamlConfig(values, env);
         } catch (IOException exception) {
             throw new IllegalStateException("Unable to load YAML config directory " + directory, exception);
+        }
+    }
+
+    @Override
+    public Set<String> keys() {
+        Set<String> keys = new LinkedHashSet<>();
+        collectKeys(values, "", keys);
+        return Set.copyOf(keys);
+    }
+
+    private static void collectKeys(Map<String, Object> map, String prefix, Set<String> keys) {
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            String key = prefix.isEmpty() ? entry.getKey() : prefix + "." + entry.getKey();
+            if (entry.getValue() instanceof Map<?, ?> child) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> nested = (Map<String, Object>) child;
+                collectKeys(nested, key, keys);
+            } else {
+                keys.add(key);
+            }
         }
     }
 

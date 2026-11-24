@@ -21,7 +21,8 @@ This folder documents the public API of each Javelin module with small usage exa
 - [HTTP Netty](modules/http-netty.md) — NettyHttpServer, event-loop concurrency, driver selection
 - [HTTP Undertow](modules/http-undertow.md) — UndertowHttpServer, worker dispatch, driver selection
 - [Database JDBC](modules/db-jdbc.md) — JdbcDatabase, QueryBuilder, MigrationRunner, YAML migrations, transactions
-- [Logging SLF4J](modules/log-slf4j.md) — Slf4jLogger, Slf4jLogServiceProvider, Log facade integration
+- [Logging SLF4J](modules/log-slf4j.md) — Slf4jLogger, structured logging, request IDs, MDC, JSON encoder, config-driven levels
+- [Exception](modules/exception.md) — global handler, custom error pages, environment-dependent details, sensitive-data redaction
 - [View Pebble](modules/view-pebble.md) — PebbleViewRenderer, PebbleViewExtensions, template options, global variables
 - [Console](modules/console.md) — CLI commands, JavelinConsole, CommandRegistry, generator helpers, AI commands
 - [Security](modules/security.md) — PasswordHasher, SecureHeadersMiddleware, RequestSizeLimitMiddleware, RateLimitMiddleware, trusted proxies (Bearer auth lives in [Core](modules/core.md#bearer-authentication-and-authorization))

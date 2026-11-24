@@ -27,6 +27,12 @@
             <artifactId>javelin-http-netty</artifactId>
             <version>${javelin.version}</version>
         </dependency>
+        <!-- Centralized exception handling with redaction and custom error pages. -->
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-exception</artifactId>
+            <version>${javelin.version}</version>
+        </dependency>
         <!-- Explicit service providers for the cache and queue backends. -->
         <dependency>
             <groupId>io.javelin</groupId>
@@ -55,7 +61,9 @@
                 <directory>.</directory>
                 <includes>
                     <include>logback.xml</include>
+                    <include>logback-prod.xml</include>
                     <include>config/**</include>
+                    <include>errors/**</include>
                     <include>routes/**</include>
                     <include>resources/**</include>
                 </includes>

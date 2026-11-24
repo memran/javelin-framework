@@ -61,7 +61,9 @@ public final class NewCommand extends AbstractCommand {
         files.write(root.resolve("Main.java"), "main.stub", values, force);
         files.write(root.resolve("config/app.yaml"), "app-yaml.stub", values, force);
         files.write(root.resolve("config/view.yml"), "view-yml.stub", values, force);
+        files.write(root.resolve("errors/500.html"), "error-500-html.stub", values, force);
         files.write(root.resolve("logback.xml"), "logback-xml.stub", values, force);
+        files.write(root.resolve("logback-prod.xml"), "logback-prod-xml.stub", values, force);
         files.write(root.resolve("install.ps1"), "install.ps1.stub", values, force);
         files.write(root.resolve("install.sh"), "install.sh.stub", values, force);
         files.write(root.resolve("build.sh"), "build-sh.stub", values, force);

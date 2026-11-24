@@ -541,6 +541,29 @@ services:
 
 ---
 
+## Logging And Error Handling
+
+Generated projects ship two Logback configurations:
+
+| File | Use |
+|---|---|
+| `logback.xml` | Development — plain console pattern, INFO root level |
+| `logback-prod.xml` | Production — JSON lines on stdout and a rotating JSON file |
+
+Activate production logging explicitly:
+
+```bash
+java -Dlogback.configurationFile=logback-prod.xml -jar app.jar serve
+```
+
+The Docker images set `LOG_LEVEL` and `LOG_PATH` so the file appender writes to `/app/storage/logs/app.log`. The file appender rolls at 10 MB, keeps 30 days and caps total size at 1 GB.
+
+The `JsonLogEncoder` emits `timestamp`, `level`, `logger`, `thread`, `message`, `mdc` and `exception` as one JSON object per line. `RequestLoggingMiddleware` puts `request_id` and `correlation_id` into the MDC and response headers, and logs method, path, status and duration for every request. Levels can be overridden with `log.level.*` config keys without editing XML.
+
+For errors, register `io.javelin.exception.ExceptionHandlerServiceProvider` (already present in generated configs). It keeps stack traces in `dev` only, redacts sensitive values, and serves `errors/500.html` in production when present. Never set `errors.detailed: true` in production.
+
+---
+
 ## Performance Benchmarks
 
 Measured on the development machine: Windows 11, 12 logical CPUs, Temurin JDK 25 with default JVM flags, demo app started with `serve`, application logging suppressed. Client and server ran on the same host using `hey` v0.1.5 with 50 keep-alive connections. Each run lasted 10 seconds and returned only 200s.

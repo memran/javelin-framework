@@ -29,6 +29,11 @@
             <artifactId>javelin-queue-nats</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-exception</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <sourceDirectory>.</sourceDirectory>
@@ -46,6 +51,8 @@
                 <filtering>false</filtering>
                 <includes>
                     <include>logback.xml</include>
+                    <include>logback-prod.xml</include>
+                    <include>errors/**</include>
                     <include>routes/**</include>
                     <include>resources/**</include>
                 </includes>

@@ -26,6 +26,6 @@ COPY --from=app-build /workspace/demo-app/target/javelin-demo-app-0.1.0-SNAPSHOT
 COPY --from=app-build /workspace/demo-app/config ./config
 COPY demo-app/docker-app.yaml ./config/app.yaml
 COPY --from=assets /assets/public ./public
-ENV APP_ENV=prod SERVER_HOST=0.0.0.0 SERVER_PORT=8080
+ENV APP_ENV=prod SERVER_HOST=0.0.0.0 SERVER_PORT=8080 LOG_LEVEL=INFO LOG_PATH=/app/storage/logs/app.log
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/app/app.jar", "serve"]

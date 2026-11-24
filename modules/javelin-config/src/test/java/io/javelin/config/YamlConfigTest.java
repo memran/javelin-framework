@@ -27,6 +27,23 @@ final class YamlConfigTest {
     }
 
     @Test
+    void keysExposesOnlyLeafKeys() throws Exception {
+        var path = Files.createTempFile("javelin", ".yaml");
+        Files.writeString(path, """
+                log:
+                  level:
+                    root: INFO
+                    io:
+                      netty: WARN
+                """);
+        DotenvEnv env = DotenvEnv.load(Path.of("missing.env"));
+
+        YamlConfig config = YamlConfig.load(path, env);
+
+        assertEquals(java.util.Set.of("log.level.root", "log.level.io.netty"), config.keys());
+    }
+
+    @Test
     void loadsNamespacedConfigFilesFromDirectory() throws Exception {
         Path directory = Files.createTempDirectory("javelin-config");
         Files.writeString(directory.resolve("app.yaml"), """

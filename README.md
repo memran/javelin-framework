@@ -26,7 +26,8 @@ It is deliberately *not* Spring Boot and deliberately *not* an ORM. If you need 
 - **Dependency injection** — type-keyed container with instance, transient, and singleton bindings plus deterministic constructor auto-resolution, factory bindings, and circular-dependency detection.
 - **Service providers** — a two-phase `register()` / `boot()` lifecycle with explicit ordering; adapters are activated by listing providers in config, never by scanning.
 - **Routing** — method + path routes with `{parameters}`, inline constraints, named routes with URL generation, automatic `HEAD` and `OPTIONS` responses, `405` + `Allow`, and duplicate route/name rejection.
-- **Middleware** — a chain-of-responsibility pipeline for global and per-route middleware, including secure headers, request-size limits, rate limiting, and bearer-token authentication with permission checks.
+- **Middleware** — a chain-of-responsibility pipeline for global and per-route middleware, including secure headers, request-size limits, rate limiting, bearer-token authentication, and optional request logging with request/correlation IDs and duration.
+- **Logging and error handling** — SLF4J/Logback with structured context in the MDC, config-driven levels, a dependency-free JSON encoder with rotating file output, plus a global exception handler with dev-only stack traces, custom HTML error pages, and sensitive-data redaction.
 - **Three HTTP drivers** — Netty (event loops, default), JDK `HttpServer` (virtual threads), and Undertow (worker dispatch), all behind one `HttpServerAdapter` contract.
 - **Configuration** — YAML config files and `.env` loading with `${ENV_VAR}` resolution, `APP_ENV` dev/prod profiles, and explicit config keys with documented defaults.
 - **Security defaults** — secure response headers, configurable trusted proxies (IP/CIDR), request size limits, password hashing, bearer auth with 401/403 responses, and dev/prod error handling.
@@ -68,7 +69,8 @@ Core owns the contracts; adapters implement them; the starter wires defaults; ap
 - `modules/javelin-http-netty` - Netty adapter using event loops
 - `modules/javelin-http-undertow` - Undertow adapter using worker dispatch
 - `modules/javelin-db-jdbc` - HikariCP-backed JDBC database, query builder, and YAML migration runner
-- `modules/javelin-log-slf4j` - SLF4J/Logback logger adapter
+- `modules/javelin-log-slf4j` - SLF4J/Logback adapter, structured logging, request IDs, JSON encoder, config-driven levels
+- `modules/javelin-exception` - global exception handler, custom error pages, sensitive-data redaction
 - `modules/javelin-view-pebble` - Pebble template renderer
 - `modules/javelin-console` - Picocli command kernel and generators
 - `modules/javelin-security` - secure headers, request limits, rate limiting, password hashing
@@ -84,6 +86,7 @@ Core owns the contracts; adapters implement them; the starter wires defaults; ap
 - [Quick Start](docs/quick-start.md) — create and run your first app
 - [Installation](docs/installation.md) — prerequisites, CLI install, local artifacts, troubleshooting
 - [Architecture](docs/architecture.md) — design principles and module dependency graph
+- [Exception handling](docs/modules/exception.md) — global handler, error pages and redaction
 - [Application Flow](docs/application-flow.md) — boot sequence and request lifecycle
 - [Deployment](docs/deployment.md) — production tuning, Docker Compose, proxies, health checks, benchmarks
 - [CLI Reference](docs/cli-reference.md) — every `javelin` command

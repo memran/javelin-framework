@@ -19,6 +19,7 @@ COPY build.sh pom.xml ./
 COPY Main.java ./
 COPY app ./app
 COPY config ./config
+COPY errors ./errors
 COPY routes ./routes
 COPY resources ./resources
 COPY tests ./tests
@@ -30,6 +31,6 @@ WORKDIR /app
 COPY --from=app-build /workspace/target/{{ project }}-*.jar app.jar
 COPY --from=app-build /workspace/config ./config
 COPY --from=assets /assets/public ./public
-ENV APP_ENV=prod SERVER_HOST=0.0.0.0 SERVER_PORT=8080
+ENV APP_ENV=prod SERVER_HOST=0.0.0.0 SERVER_PORT=8080 LOG_LEVEL=INFO LOG_PATH=/app/storage/logs/app.log
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/app/app.jar", "serve"]

@@ -1,5 +1,7 @@
 package io.javelin.core;
 
+import java.util.Map;
+
 public final class Log {
     private static volatile Logger logger = new NoopLogger();
 
@@ -10,8 +12,22 @@ public final class Log {
         Log.logger = logger;
     }
 
+    public static void debug(String message) {
+        if (logger instanceof StructuredLogger structured) {
+            structured.debug(message);
+        }
+    }
+
     public static void info(String message) {
         logger.info(message);
+    }
+
+    public static void info(String message, Map<String, ?> context) {
+        if (logger instanceof StructuredLogger structured) {
+            structured.info(message, context);
+        } else {
+            info(message);
+        }
     }
 
     public static void warn(String message) {

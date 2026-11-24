@@ -35,6 +35,23 @@ queue:
 
 log:
   channel: console
+  request_logging: true
+  request_id_header: X-Request-ID
+  correlation_id_header: X-Correlation-ID
+  level:
+    root: INFO
+    io:
+      netty: WARN
+
+errors:
+  redact: true
+  pages_dir: errors
+  redact_keys:
+    - password
+    - token
+    - authorization
+    - cookie
+    - api_key
 
 security:
   max_request_bytes: 1048576
@@ -44,6 +61,7 @@ security:
 
 providers:
   - app.providers.AppServiceProvider
+  - io.javelin.exception.ExceptionHandlerServiceProvider
   - io.javelin.cache.valkey.ValkeyCacheServiceProvider
   - io.javelin.queue.nats.NatsQueueServiceProvider
 
