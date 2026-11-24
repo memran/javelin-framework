@@ -74,6 +74,7 @@ List<String> origins = config.getStringList("app.cors_origins");
 - `config.getString(String key, String fallback)` -- returns the value or fallback.
 - `config.getInt(String key)` -- returns `Optional<Integer>`.
 - `config.getInt(String key, int fallback)` -- returns the value or fallback.
+- `config.getLong(String key)` / `config.getLong(String key, long fallback)` -- long variant for timeouts and sizes.
 - `config.getBoolean(String key)` -- returns `Optional<Boolean>`; use `.orElse(fallback)` for a default.
 - `config.getStringList(String key)` -- returns `List<String>` (empty list if key missing).
 - `config.keys()` -- returns the set of dotted leaf keys (`YamlConfig` only; the default returns an empty set).

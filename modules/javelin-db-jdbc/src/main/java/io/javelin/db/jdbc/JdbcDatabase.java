@@ -11,10 +11,20 @@ import java.sql.Connection;
 
 public final class JdbcDatabase implements Database {
     private final HikariDataSource dataSource;
+    private final SqlTimer timer;
     private final ThreadLocal<Connection> transactionConnection = new ThreadLocal<>();
 
     public JdbcDatabase(HikariConfig config) {
-        this.dataSource = new HikariDataSource(config);
+        this(config, SqlTimer.disabled());
+    }
+
+    public JdbcDatabase(HikariConfig config, SqlTimer timer) {
+        this(new HikariDataSource(config), timer);
+    }
+
+    public JdbcDatabase(HikariDataSource dataSource, SqlTimer timer) {
+        this.dataSource = dataSource;
+        this.timer = timer;
     }
 
     public DataSource dataSource() {
@@ -32,11 +42,15 @@ public final class JdbcDatabase implements Database {
 
     @Override
     public QueryBuilder table(String table) {
-        return new JdbcQueryBuilder(this, table);
+        return new JdbcQueryBuilder(this, table, timer);
     }
 
     @Override
     public int execute(String sql) {
+        return timer.measure(sql, () -> executeInternal(sql));
+    }
+
+    private int executeInternal(String sql) {
         Connection connection = null;
         try {
             connection = connection();
@@ -52,6 +66,13 @@ public final class JdbcDatabase implements Database {
 
     @Override
     public <T> T transaction(TransactionCallback<T> callback) {
+        if (inTransaction()) {
+            try {
+                return callback.run(this);
+            } catch (Exception exception) {
+                throw new IllegalStateException("Transaction failed", exception);
+            }
+        }
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(false);
             transactionConnection.set(connection);
@@ -73,6 +94,7 @@ public final class JdbcDatabase implements Database {
 
     @Override
     public void close() {
+        transactionConnection.remove();
         dataSource.close();
     }
 

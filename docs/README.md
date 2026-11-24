@@ -20,7 +20,8 @@ This folder documents the public API of each Javelin module with small usage exa
 - [HTTP JDK](modules/http-jdk.md) — JdkHttpServer, static file serving, trusted proxy resolution, virtual threads
 - [HTTP Netty](modules/http-netty.md) — NettyHttpServer, event-loop concurrency, driver selection
 - [HTTP Undertow](modules/http-undertow.md) — UndertowHttpServer, worker dispatch, driver selection
-- [Database JDBC](modules/db-jdbc.md) — JdbcDatabase, QueryBuilder, MigrationRunner, YAML migrations, transactions
+- [Database JDBC](modules/db-jdbc.md) — JdbcDatabase, QueryBuilder, named connections, bounded pools, query timing
+- [Database Migration](modules/db-migration.md) — YAML migrations, history table, batch rollback, SQL dialects
 - [Logging SLF4J](modules/log-slf4j.md) — Slf4jLogger, structured logging, request IDs, MDC, JSON encoder, config-driven levels
 - [Exception](modules/exception.md) — global handler, custom error pages, environment-dependent details, sensitive-data redaction
 - [View Pebble](modules/view-pebble.md) — PebbleViewRenderer, PebbleViewExtensions, template options, global variables

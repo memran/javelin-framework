@@ -191,8 +191,12 @@ final class CommandGenerationTest {
         assertTrue(Files.readString(project.resolve("scripts/dev.mjs")).contains("--watch"));
 
         String appYaml = Files.readString(project.resolve("config/app.yaml"));
+        assertTrue(appYaml.contains("default: primary"));
+        assertTrue(appYaml.contains("connections:"));
         assertTrue(appYaml.contains("host: ${DATABASE_HOST:localhost}"));
         assertTrue(appYaml.contains("database: ${DATABASE_NAME:crm-app}"));
+        assertTrue(appYaml.contains("max_pool_size: 10"));
+        assertTrue(appYaml.contains("slow_ms: 100"));
         assertTrue(appYaml.contains("static_cache_seconds: 3600"));
         assertTrue(appYaml.contains("request_timeout_seconds: 30"));
         assertTrue(appYaml.contains("idle_timeout_seconds: 60"));
@@ -214,6 +218,7 @@ final class CommandGenerationTest {
         assertTrue(generatedPom.contains("javelin-cache-valkey"));
         assertTrue(generatedPom.contains("javelin-queue-nats"));
         assertTrue(generatedPom.contains("javelin-exception"));
+        assertTrue(generatedPom.contains("javelin-db-migration"));
         assertTrue(generatedPom.contains("<include>errors/**</include>"));
         assertTrue(Files.exists(project.resolve("logback.xml")));
         assertTrue(Files.exists(project.resolve("logback-prod.xml")));

@@ -43,23 +43,32 @@ Default parallelism is `Runtime.getRuntime().availableProcessors()`. Set it lowe
 
 ### Connection pool (HikariCP)
 
-Configure in `config/database.yaml`:
+Configure under `database.connections.<name>` in `config/app.yaml`:
 
 ```yaml
 database:
+  default: primary
   connections:
-    pgsql:
+    primary:
+      driver: postgresql
+      url: ${DATABASE_URL}
       max_pool_size: 10
-      min_idle: 2
-      connection_timeout: 5000
-      idle_timeout: 300000
-      max_lifetime: 1800000
+      minimum_idle: 2
+      connection_timeout_ms: 5000
+      idle_timeout_ms: 300000
+      max_lifetime_ms: 1800000
+  query:
+    timing: true
+    slow_ms: 100
+    log_all: false
 ```
 
 Rules of thumb:
-- `max_pool_size = (core_count * 2) + effective_spindle_count` — usually 8–12 is enough for virtual threads since they don't block on JDBC calls.
-- `connection_timeout: 5000` — fail fast rather than queue requests.
-- `max_lifetime < database's wait_timeout` — typically 30 minutes.
+- `max_pool_size = (core_count * 2) + effective_spindle_count` — usually 8–12 is enough for virtual threads since they don't block on JDBC calls. The pool is always bounded; keep it well below the database's connection limit when running multiple instances.
+- `connection_timeout_ms: 5000` — fail fast rather than queue requests.
+- `max_lifetime_ms < database's wait_timeout` — typically 30 minutes.
+- Slow queries are logged through the core `Logger` above `query.slow_ms`; set `query.log_all` only when debugging.
+- Transactions use thread-local connection state: keep a transaction on one thread and do not hand its work to child virtual threads. Call `DatabaseManager.database("name")` for additional connections.
 
 ### Request size limit
 

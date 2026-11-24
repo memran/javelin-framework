@@ -16,12 +16,14 @@ import java.util.StringJoiner;
 
 final class JdbcQueryBuilder implements QueryBuilder {
     private final JdbcDatabase database;
+    private final SqlTimer timer;
     private final String table;
     private final List<Condition> conditions = new ArrayList<>();
 
-    JdbcQueryBuilder(JdbcDatabase database, String table) {
+    JdbcQueryBuilder(JdbcDatabase database, String table, SqlTimer timer) {
         this.database = database;
         this.table = table;
+        this.timer = timer;
     }
 
     @Override
@@ -56,11 +58,16 @@ final class JdbcQueryBuilder implements QueryBuilder {
             placeholders.add("?");
         });
         String sql = "insert into " + table + " (" + columns + ") values (" + placeholders + ")";
+        List<Object> bindings = new ArrayList<>(values.values());
+        return timer.measure(sql, () -> insertInternal(sql, bindings));
+    }
+
+    private long insertInternal(String sql, List<Object> bindings) {
         Connection connection = null;
         try {
             connection = database.connection();
             try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                bind(statement, new ArrayList<>(values.values()));
+                bind(statement, bindings);
                 statement.executeUpdate();
                 try (ResultSet keys = statement.getGeneratedKeys()) {
                     return keys.next() ? keys.getLong(1) : 0;
@@ -79,7 +86,8 @@ final class JdbcQueryBuilder implements QueryBuilder {
         values.keySet().forEach(column -> sets.add(column + " = ?"));
         List<Object> bindings = new ArrayList<>(values.values());
         bindings.addAll(conditionValues());
-        return execute("update " + table + " set " + sets + whereClause(), bindings);
+        String sql = "update " + table + " set " + sets + whereClause();
+        return execute(sql, bindings);
     }
 
     @Override
@@ -91,6 +99,10 @@ final class JdbcQueryBuilder implements QueryBuilder {
         List<Object> bindings = conditionValues();
         bindings.addAll(extraBindings);
         String sql = "select * from " + table + whereClause() + suffix;
+        return timer.measure(sql, () -> selectInternal(sql, bindings));
+    }
+
+    private List<Map<String, Object>> selectInternal(String sql, List<Object> bindings) {
         Connection connection = null;
         try {
             connection = database.connection();
@@ -108,6 +120,10 @@ final class JdbcQueryBuilder implements QueryBuilder {
     }
 
     private int execute(String sql, List<Object> bindings) {
+        return timer.measure(sql, () -> executeInternal(sql, bindings));
+    }
+
+    private int executeInternal(String sql, List<Object> bindings) {
         Connection connection = null;
         try {
             connection = database.connection();

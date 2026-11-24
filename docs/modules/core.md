@@ -438,6 +438,7 @@ Optional<String> name = config.getString("app.name");
 String name = config.getString("app.name", "Javelin");
 Optional<Integer> port = config.getInt("server.port");
 int port = config.getInt("server.port", 8080);
+long timeout = config.getLong("server.timeout_ms", 30_000L);
 Optional<Boolean> debug = config.getBoolean("app.debug");
 boolean debug = config.getBoolean("app.debug", false);
 List<String> cors = config.getStringList("app.cors_origins");

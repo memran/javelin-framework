@@ -33,6 +33,12 @@
             <artifactId>javelin-exception</artifactId>
             <version>${javelin.version}</version>
         </dependency>
+        <!-- YAML migrations with dialect-aware history tables. -->
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-db-migration</artifactId>
+            <version>${javelin.version}</version>
+        </dependency>
         <!-- Explicit service providers for the cache and queue backends. -->
         <dependency>
             <groupId>io.javelin</groupId>

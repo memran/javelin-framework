@@ -22,6 +22,14 @@ public interface Config {
         return getInt(key).orElse(fallback);
     }
 
+    default Optional<Long> getLong(String key) {
+        return getString(key).map(Long::parseLong);
+    }
+
+    default long getLong(String key, long fallback) {
+        return getLong(key).orElse(fallback);
+    }
+
     Optional<Boolean> getBoolean(String key);
 
     List<String> getStringList(String key);

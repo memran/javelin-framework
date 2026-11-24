@@ -17,6 +17,7 @@
         <module>modules/javelin-http-netty</module>
         <module>modules/javelin-http-undertow</module>
         <module>modules/javelin-db-jdbc</module>
+        <module>modules/javelin-db-migration</module>
         <module>modules/javelin-log-slf4j</module>
         <module>modules/javelin-exception</module>
         <module>modules/javelin-view-pebble</module>
@@ -41,6 +42,10 @@
         <undertow.version>2.3.18.Final</undertow.version>
         <lettuce.version>6.4.0.RELEASE</lettuce.version>
         <jnats.version>2.20.0</jnats.version>
+        <postgresql.version>42.7.4</postgresql.version>
+        <mysql.version>9.2.0</mysql.version>
+        <mariadb.version>3.5.3</mariadb.version>
+        <sqlite.version>3.49.1.0</sqlite.version>
     </properties>
 
     <dependencyManagement>

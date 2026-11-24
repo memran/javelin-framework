@@ -156,28 +156,71 @@ JdbcDatabaseServiceProvider provider = new JdbcDatabaseServiceProvider();
 provider.register(app);
 ```
 
-- `provider.register(app)` -- reads `database.default` from config to determine the connection name, then reads `database.connections.<name>.*` for JDBC URL, username, password, and pool settings. Creates a `HikariConfig`, instantiates `JdbcDatabase`, and registers it as `Database` singleton. Also registers `MigrationRunner`.
+- `provider.register(app)` -- reads `database.connections.<name>.*`, builds one bounded HikariCP-backed `JdbcDatabase` per connection, and registers a `DatabaseManager`. The connection named by `database.default` is also bound as `Database`. It registers `MigrationRunner` and query timing alongside them.
 
-```java
-// Config keys (config/database.yaml):
-// database.default: "pgsql"
-// database.connections.pgsql.driver: "org.postgresql.Driver"
-// database.connections.pgsql.url: "${DATABASE_URL}"
-// database.connections.pgsql.username: "${DB_USERNAME}"
-// database.connections.pgsql.password: "${DB_PASSWORD}"
-// database.connections.pgsql.max_pool_size: 10
-// database.migrations_dir: "database/migrations"
+### Connection configuration
+
+```yaml
+database:
+  default: primary
+  migrations_dir: database/migrations
+  query:
+    timing: true          # log slow queries
+    slow_ms: 100          # threshold in milliseconds
+    log_all: false        # also log every query at DEBUG
+  connections:
+    primary:
+      driver: postgresql
+      url: ${DATABASE_URL}          # optional; built from host/port/database when absent
+      host: localhost
+      port: 5432
+      database: app
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      max_pool_size: 10
+      minimum_idle: 2
+      connection_timeout_ms: 5000
+      idle_timeout_ms: 300000
+      max_lifetime_ms: 1800000
+    reporting:
+      driver: sqlite
+      database: reports.db
+      max_pool_size: 2
 ```
 
+| Key | Default |
+|---|---|
+| `database.default` | `default` (falls back to the first configured connection) |
+| `database.connections.<name>.driver` | `h2` |
+| `database.connections.<name>.url` | built from `driver://host:port/database`; SQLite uses `jdbc:sqlite:<database>` |
+| `database.connections.<name>.max_pool_size` | `10` (also accepts legacy `database.pool.max`) |
+| `database.connections.<name>.minimum_idle` | `0` |
+| `database.connections.<name>.connection_timeout_ms` | `30000` |
+| `database.connections.<name>.idle_timeout_ms` | `600000` |
+| `database.connections.<name>.max_lifetime_ms` | `1800000` |
+| `database.query.timing` | `true` |
+| `database.query.slow_ms` | `100` |
+| `database.query.log_all` | `false` |
+
+The legacy flat keys (`database.driver`, `database.host`, `database.port`, `database.database`, `database.url`, `database.username`, `database.password`) still work when no `database.connections.*` keys are present.
+
+### Named connections and timing
+
 ```java
-// After provider registration:
-Database db = app.make(Database.class);
-MigrationRunner runner = app.make(MigrationRunner.class);
+DatabaseManager manager = app.make(DatabaseManager.class);
+Database reporting = manager.database("reporting");
+Database primary = manager.defaultDatabase();
+
+// SqlTimer wraps every SELECT/INSERT/UPDATE/DELETE and raw execute call.
+// Slow queries are logged through the core Logger with sql and duration_ms fields.
 ```
+
+`JdbcDatabase.transaction()` reuses the current thread's transaction when called from inside another transaction, so nested calls do not open a second connection. Transaction state is held in a `ThreadLocal`; keep a transaction on one thread and do not hand the work to child virtual threads. Pools are bounded by `max_pool_size`, which is the intended way to protect the database under virtual-thread request handling.
 
 ## Notes
 
+- PostgreSQL, MySQL/MariaDB and SQLite JDBC drivers are bundled with this module.
 - Uses prepared statements for all parameterized queries.
-- Migration files are YAML documents with `name`, `up`, and `down` keys.
+- Migration files are YAML documents with `name`, `up`, and `down` keys; see [DB Migration](db-migration.md).
 - The console generator can scaffold `create-table`, `add-column`, and `seed` migration shapes.
 - Keep table and column names validated or framework-controlled.

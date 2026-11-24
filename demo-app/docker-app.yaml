@@ -15,13 +15,23 @@ server:
   idle_timeout_seconds: 60
 
 database:
-  driver: postgresql
-  host: ${DATABASE_HOST:db}
-  port: ${DATABASE_PORT:5432}
-  database: ${DATABASE_NAME:app}
+  default: primary
   migrations_dir: database/migrations
-  username: ${DATABASE_USERNAME:postgres}
-  password: ${DATABASE_PASSWORD:secret}
+  query:
+    timing: true
+    slow_ms: 100
+    log_all: false
+  connections:
+    primary:
+      driver: postgresql
+      host: ${DATABASE_HOST:db}
+      port: ${DATABASE_PORT:5432}
+      database: ${DATABASE_NAME:app}
+      username: ${DATABASE_USERNAME:postgres}
+      password: ${DATABASE_PASSWORD:secret}
+      max_pool_size: 10
+      minimum_idle: 2
+      connection_timeout_ms: 5000
 
 cache:
   driver: ${CACHE_DRIVER:valkey}

@@ -32,7 +32,7 @@ It is deliberately *not* Spring Boot and deliberately *not* an ORM. If you need 
 - **Configuration** — YAML config files and `.env` loading with `${ENV_VAR}` resolution, `APP_ENV` dev/prod profiles, and explicit config keys with documented defaults.
 - **Security defaults** — secure response headers, configurable trusted proxies (IP/CIDR), request size limits, password hashing, bearer auth with 401/403 responses, and dev/prod error handling.
 - **Static assets** — ETag and `304` support, byte ranges, cache headers, `nosniff`, path-traversal and symlink containment, and a middleware-friendly pipeline.
-- **Database** — HikariCP connection pooling, a prepared-statement query builder, transactions, and a human-readable YAML migration runner with `migrate` / `migrate:rollback`.
+- **Database** — bounded HikariCP pools, multiple named connections, a prepared-statement query builder with CRUD and pagination, transactions with rollback, slow-query logging, bundled PostgreSQL/MySQL/MariaDB/SQLite drivers, and dialect-aware YAML migrations with history and batch rollback.
 - **Views** — Pebble templates with custom filters, functions, globals, and extensions; a `View` facade for convenient rendering.
 - **Caching** — a small `Cache` contract with an in-memory TTL implementation and a Lettuce-backed Valkey adapter for distributed caching.
 - **Queues** — a `Job` / `RetryPolicy` contract with a NATS JetStream adapter, push consumers, and retry with attempt tracking.
@@ -68,7 +68,8 @@ Core owns the contracts; adapters implement them; the starter wires defaults; ap
 - `modules/javelin-http-jdk` - JDK `HttpServer` adapter using virtual threads
 - `modules/javelin-http-netty` - Netty adapter using event loops
 - `modules/javelin-http-undertow` - Undertow adapter using worker dispatch
-- `modules/javelin-db-jdbc` - HikariCP-backed JDBC database, query builder, and YAML migration runner
+- `modules/javelin-db-jdbc` - HikariCP-backed JDBC database, query builder, named connections, query timing
+- `modules/javelin-db-migration` - YAML migrations, history table, batch rollback, dialect-aware DDL
 - `modules/javelin-log-slf4j` - SLF4J/Logback adapter, structured logging, request IDs, JSON encoder, config-driven levels
 - `modules/javelin-exception` - global exception handler, custom error pages, sensitive-data redaction
 - `modules/javelin-view-pebble` - Pebble template renderer
@@ -276,6 +277,9 @@ Use them when you want concise utility methods without pulling in a heavy framew
 ```java
 Database db = app.make(Database.class);
 db.table("users").where("id", 1).first();
+
+DatabaseManager manager = app.make(DatabaseManager.class);
+Database reporting = manager.database("reporting");
 ```
 
 The query builder uses prepared statements for values. Keep table and column names framework-controlled or validated before passing dynamic identifiers.
