@@ -21,20 +21,25 @@ Application app = new Application(config, env);
 - `app.container()` -- returns the raw `Container` instance for direct access.
 - `app.bind(Class<T> abstraction, Class<? extends T> implementation)` -- registers a reusable implementation that is freshly resolved each time.
 - `app.singleton(Class<T> type, Supplier<? extends T> factory)` -- registers a supplier that is called once and then cached for every subsequent resolution.
+- `app.factory(Class<T> type, Supplier<? extends T> factory)` -- registers a transient factory; each `make()` calls the supplier again.
 - `app.instance(Class<T> type, T object)` -- registers a pre-built object directly.
 - `app.make(Class<T> type)` -- resolves any registered type or auto-resolves a concrete class.
 - `app.has(Class<?> type)` -- checks whether a type is registered.
 - `app.router()` -- returns the shared `Router` used to register routes.
 - `app.config()` -- returns the `Config` contract.
 - `app.env()` -- returns the `Env` contract.
-- `app.register(ServiceProvider provider)` -- adds a service provider to the registration queue.
-- `app.boot()` -- runs all registered providers and locks the container.
+- `app.register(ServiceProvider provider)` -- adds and immediately registers a single provider.
+- `app.registerProviders(Collection<ServiceProvider> providers)` -- registers a batch in dependency order (see `ServiceProvider` below).
+- `app.boot()` -- runs the boot hook of every provider and locks registration.
+- `app.shutdown()` -- closes container-owned `AutoCloseable` singletons/instances in reverse registration order, then calls each provider's `shutdown` hook. Idempotent; embedded runtimes should call it on exit.
 
 ```java
 app.bind(Database.class, JdbcDatabase.class);
-app.instance("app.name", "MyApp");
+app.instance(AppSettings.class, settings);
 MyService service = app.make(MyService.class);
 ```
+
+If a JVM shutdown hook is registered by the runtime (the CLI `serve` command does this), have it call `app.shutdown()` rather than stopping only the HTTP server.
 
 ### Container
 
@@ -44,16 +49,19 @@ MyService service = app.make(MyService.class);
 Container container = app.container();
 container.bind(Logger.class, Slf4jLogger.class);
 container.singleton(Cache.class, () -> new InMemoryCache());
+container.factory(RequestId.class, RequestId::new);
 container.instance(Config.class, myConfig);
 Logger logger = container.make(Logger.class);
 boolean exists = container.has(Logger.class);
 ```
 
-- `container.bind(abstraction, implementation)` -- each `make()` returns a new instance.
-- `container.singleton(type, factory)` -- the supplier is called at most once. Subsequent `make()` calls return the same instance.
+- `container.bind(abstraction, implementation)` -- each `make()` returns a new instance, auto-resolving the implementation's constructor.
+- `container.factory(type, supplier)` -- transient factory; the supplier runs on every `make()`.
+- `container.singleton(type, supplier)` -- the supplier is called at most once. Subsequent `make()` calls return the same instance.
 - `container.instance(type, object)` -- registers an already-constructed value directly.
 - `container.has(type)` -- returns `true` if the type is bound.
-- `container.make(type)` -- resolves by constructor injection. Works with concrete classes automatically.
+- `container.make(type)` -- resolves by constructor injection. Works with concrete classes automatically. A resolution cycle throws `IllegalStateException` with the full chain (for example `A -> B -> A`) instead of recursing.
+- `container.closeables()` -- snapshot of `AutoCloseable` objects the container owns, used by `Application.shutdown()`.
 
 ## Routing
 
@@ -354,11 +362,24 @@ public class MyServiceProvider implements ServiceProvider {
         MyService service = app.make(MyService.class);
         service.initialize();
     }
+
+    public List<Class<? extends ServiceProvider>> dependsOn() {
+        return List.of(DatabaseServiceProvider.class);
+    }
+
+    public void shutdown(Application app) {
+        // release resources not owned by the container
+    }
 }
 ```
 
 - `provider.register(app)` -- called first. Only bind things; don't use resolved services.
 - `provider.boot(app)` -- called after all providers have registered. Safe to resolve services.
+- `provider.dependsOn()` -- provider classes that must register first; used by `app.registerProviders(...)` and by config-loaded providers via `ProviderLoader`.
+- `provider.order()` -- tie-breaker for independent providers (default `0`, lower first).
+- `provider.shutdown(app)` -- called by `app.shutdown()` in reverse registration order.
+
+`app.register(provider)` keeps its original immediate behavior. Use `app.registerProviders(list)` when ordering matters; dependencies on providers outside the batch are assumed already registered, while cycles and duplicate provider types inside the batch are rejected with an exception.
 
 ## HttpKernel
 

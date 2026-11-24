@@ -181,7 +181,9 @@ Providers are booted in the same order they were registered. The starter registe
 8. `JavelinStarterServiceProvider` — workspace defaults + validation rules
 9. `ProviderLoader` — loads config-listed providers from `config["providers"]`
 
-If your module's `boot()` depends on another module's service being registered, register your provider after it.
+If your module's `boot()` depends on another module's service being registered, register your provider after it, or declare `dependsOn()` and load the batch with `app.registerProviders(...)`. Config-listed providers are already loaded as a batch by `ProviderLoader`, so their `dependsOn()` and `order()` declarations are respected. Cycles between providers are rejected at registration.
+
+For teardown, override `provider.shutdown(app)`. The runtime's shutdown hook calls `app.shutdown()`, which closes container-owned `AutoCloseable` instances in reverse order and then calls provider shutdown hooks in reverse registration order.
 
 ---
 

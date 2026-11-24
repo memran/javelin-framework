@@ -23,7 +23,7 @@ public final class ServeCommand extends AbstractCommand {
         Application app = context.requireApplication();
         app.boot();
         HttpServerAdapter server = app.make(HttpServerAdapter.class);
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> server.stop(1)));
+        Runtime.getRuntime().addShutdownHook(new Thread(app::shutdown));
         server.start();
         String host = app.config().getString("server.host", "127.0.0.1");
         int actualPort = app.config().getInt("server.port", 8080);

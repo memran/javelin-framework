@@ -1,10 +1,15 @@
 package io.javelin.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class ProviderLoader {
     public void load(Application app) {
+        List<ServiceProvider> providers = new ArrayList<>();
         for (String className : app.config().getStringList("providers")) {
-            app.register(instantiate(className));
+            providers.add(instantiate(className));
         }
+        app.registerProviders(providers);
     }
 
     private ServiceProvider instantiate(String className) {

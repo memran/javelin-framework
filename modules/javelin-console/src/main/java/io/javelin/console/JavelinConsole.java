@@ -25,7 +25,7 @@ public final class JavelinConsole implements ConsoleKernel {
     static void start(Application app) {
         app.boot();
         HttpServerAdapter server = app.make(HttpServerAdapter.class);
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> server.stop(1)));
+        Runtime.getRuntime().addShutdownHook(new Thread(app::shutdown));
         server.start();
         System.out.printf("Javelin running at http://%s:%d%n",
                 app.config().getString("server.host", "127.0.0.1"),
