@@ -133,13 +133,15 @@ java \
 
 `javelin new` generates a ready-to-use `docker-compose.yml` and multi-stage `Dockerfile`: the first stage builds Tailwind CSS and Alpine.js assets with npm, the second packages the Java jar, and the runtime stage serves the jar with PostgreSQL. Compose also starts **Valkey** (Redis-compatible cache) and **NATS with JetStream** (durable queue), each with a health check, persistent volume and loopback-only host ports. Run it with `docker compose up --build` and override `DB_PASSWORD` in `.env` if needed.
 
-The generated `config/app.yaml` carries `cache` and `queue` settings (`CACHE_DRIVER`, `VALKEY_URL`, `QUEUE_DRIVER`, `NATS_URL`, `NATS_JETSTREAM`, `NATS_STREAM`) so an application can bind matching adapters. The framework currently ships only `InMemoryCache` and placeholder queue commands — no Valkey or NATS adapter is bundled yet, so the services are provisioned but not consumed until you bind your own implementations.
+The generated `config/app.yaml` carries `cache` and `queue` settings (`CACHE_DRIVER`, `VALKEY_URL`, `QUEUE_DRIVER`, `NATS_URL`, `NATS_JETSTREAM`, `NATS_STREAM`) and lists `ValkeyCacheServiceProvider` and `NatsQueueServiceProvider` explicitly. The Compose environment selects `valkey` and `nats`, so the [`javelin-cache-valkey`](modules/cache-valkey.md) and [`javelin-queue-nats`](modules/queue-nats.md) adapters bind automatically in the container. Locally the defaults are `memory` / `none`, so no servers are needed. The queue CLI commands remain placeholders; applications register handlers with `Queue.subscribe(...)`.
 
 The `demo-app` in this repository mirrors that stack for local testing. It has its own `docker-compose.yml`, `Dockerfile`, `package.json` (Tailwind + Alpine), `resources/assets/`, and a non-filtered `docker-app.yaml` for container config. Because `demo-app` is a Maven module, the Compose build context is the repository root:
 
 ```bash
 docker compose -f demo-app/docker-compose.yml up --build
 ```
+
+The demo app includes endpoints for exercising the adapters against the Compose services: `GET /cache/set?value=hello`, `GET /cache/get`, and `GET /queue/publish?message=hi` (add `&failFirst=true` to force one failed delivery and verify retries). Its `AppServiceProvider` registers a `demo.message` subscriber that appends each delivered job to `storage/queue-received.txt`. These routes fall back to the in-memory cache and skip the subscriber when the drivers are not selected, so local defaults remain server-free.
 
 Both Dockerfiles call `build.sh` during image build: the asset stage runs `sh build.sh assets`, and the jar stage runs `sh build.sh java`. The asset stage copies `resources/views` and `app/views` as well as `resources/assets` — Tailwind's `@source` rules scan those templates, so omitting them produces a stylesheet with base styles but no utility classes. The same script is used locally, so container and local builds take the same path:
 

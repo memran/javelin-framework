@@ -24,6 +24,8 @@ This folder documents the public API of each Javelin module with small usage exa
 - [Console](modules/console.md) — CLI commands, JavelinConsole, CommandRegistry, generator helpers, AI commands
 - [Security](modules/security.md) — PasswordHasher, SecureHeadersMiddleware, RequestSizeLimitMiddleware, RateLimitMiddleware, trusted proxies (Bearer auth lives in [Core](modules/core.md#bearer-authentication-and-authorization))
 - [Cache](modules/cache.md) — Cache interface, InMemoryCache, CacheServiceProvider, TTL-based storage
+- [Cache Valkey](modules/cache-valkey.md) — Lettuce-backed Valkey cache provider and config keys
+- [Queue NATS](modules/queue-nats.md) — Job/RetryPolicy contracts, JetStream publish/subscribe and provider config
 - [Support](modules/support.md) — Collection, Input, Validation, ValidationRule, Str, Arr, File, Image, Http, Ai, Date, Obj, Html, Security
 
 ## Reading Order

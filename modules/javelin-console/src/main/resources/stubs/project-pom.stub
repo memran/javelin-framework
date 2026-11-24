@@ -27,6 +27,17 @@
             <artifactId>javelin-http-netty</artifactId>
             <version>${javelin.version}</version>
         </dependency>
+        <!-- Explicit service providers for the cache and queue backends. -->
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-cache-valkey</artifactId>
+            <version>${javelin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-queue-nats</artifactId>
+            <version>${javelin.version}</version>
+        </dependency>
         <!-- Add workspace-specific application libraries below this line. -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>

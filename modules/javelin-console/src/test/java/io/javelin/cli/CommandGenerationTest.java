@@ -193,10 +193,14 @@ final class CommandGenerationTest {
         assertTrue(appYaml.contains("driver: ${CACHE_DRIVER:memory}"));
         assertTrue(appYaml.contains("url: ${VALKEY_URL:}"));
         assertTrue(appYaml.contains("jetstream: ${NATS_JETSTREAM:false}"));
+        assertTrue(appYaml.contains("ValkeyCacheServiceProvider"));
+        assertTrue(appYaml.contains("NatsQueueServiceProvider"));
 
         String generatedPom = Files.readString(project.resolve("pom.xml"));
         assertTrue(generatedPom.contains("maven-shade-plugin"));
         assertTrue(generatedPom.contains("javelin-http-netty"));
+        assertTrue(generatedPom.contains("javelin-cache-valkey"));
+        assertTrue(generatedPom.contains("javelin-queue-nats"));
         assertTrue(Files.exists(project.resolve("logback.xml")));
         String buildScript = Files.readString(project.resolve("build.sh"));
         assertTrue(buildScript.contains("command -v bun"));

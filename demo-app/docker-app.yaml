@@ -39,6 +39,8 @@ security:
 
 providers:
   - app.providers.AppServiceProvider
+  - io.javelin.cache.valkey.ValkeyCacheServiceProvider
+  - io.javelin.queue.nats.NatsQueueServiceProvider
 
 javelin:
   starter:

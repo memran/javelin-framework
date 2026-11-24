@@ -625,7 +625,28 @@ logger.error("Payment processing failed", paymentException);
 ```java
 JsonResponse ok = Json.ok(Map.of("message", "success"));
 JsonResponse err = Json.error("validation failed", 422);
+
+String json = Json.stringify(Map.of("id", 1));
+Map<?, ?> data = Json.parse(json, Map.class);
+User user = Json.convert(data, User.class);
 ```
+
+## Queue contracts
+
+`io.javelin.core.queue` holds the queue contracts. Backends live in adapter modules.
+
+```java
+Job job = Job.of("emails.welcome", Map.of("to", "ada@example.com"));
+Job restored = Job.parse(Json.stringify(job));
+Map<?, ?> payload = restored.payload(Map.class);
+
+RetryPolicy retry = new RetryPolicy(5, Duration.ofSeconds(2));
+```
+
+- `Job` is an immutable `id` / `subject` / JSON `payload` / `attempts` record with `of`, `parse`, `withAttempts` and typed `payload(Class<T>)`.
+- `RetryPolicy` validates `maxAttempts >= 1` and a non-negative `backoff`; `RetryPolicy.DEFAULT` is 3 attempts / 1 second.
+- `JobHandler.handle(Job)` is the handler contract; throwing signals a retry.
+- `Queue` exposes `publish(Job)`, `subscribe(subject, handler, retryPolicy)` and `close()`.
 
 ## HttpMethod
 
