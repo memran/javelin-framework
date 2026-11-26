@@ -1,0 +1,12 @@
+package {{ package }};
+
+import io.javelin.core.Application;
+import io.javelin.core.ServiceProvider;
+
+/** Generated provider. Register it in config/app.yaml or ship it as a module. */
+public final class {{ class }} implements ServiceProvider {
+    @Override
+    public void register(Application app) {
+        // Bind services here: app.singleton(MyService.class, MyService::new);
+    }
+}

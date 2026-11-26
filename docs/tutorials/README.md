@@ -7,5 +7,6 @@ Step-by-step guides for building with Javelin:
 - [Reliable background jobs](background-jobs.md) — dispatch, delayed jobs, workers, retries and failed-job replay without Redis or RabbitMQ.
 - [Scheduling and events](scheduling-and-events.md) — cron/interval schedules, queue dispatch, locks and event listeners.
 - [Sending mail](mail.md) — templates, attachments, SMTP transports and queued delivery.
+- [Distributing providers](provider-distribution.md) — manifests, generators, install and diagnostics.
 
 All tutorials use the runnable `demo-app` in this repository, so you can follow along without creating a project first. For command details see the [CLI Reference](../cli-reference.md); for module APIs see the [Module Index](../README.md).

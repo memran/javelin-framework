@@ -1,0 +1,13 @@
+package {{ package }};
+
+import io.javelin.core.Middleware;
+import io.javelin.core.Request;
+import io.javelin.core.Response;
+
+/** Generated middleware. Register it with app.router().middleware(new {{ class }}()). */
+public final class {{ class }} implements Middleware {
+    @Override
+    public Response handle(Request request, Next next) throws Exception {
+        return next.handle(request);
+    }
+}

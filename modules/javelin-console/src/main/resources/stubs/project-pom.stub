@@ -121,6 +121,12 @@
             <artifactId>javelin-mail</artifactId>
             <version>${javelin.version}</version>
         </dependency>
+        <!-- Provider manifests, compatibility checks and conflict reports. -->
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-provider-loader</artifactId>
+            <version>${javelin.version}</version>
+        </dependency>
         <!-- Add workspace-specific application libraries below this line. -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>

@@ -227,40 +227,63 @@ public final class PaymentService {
 
 ## make:provider — Generate a service provider
 
-Scaffolds a service provider for wiring custom services.
+Scaffolds a service provider and a versioned manifest for distribution.
 
 ```bash
-javelin make:provider CacheProvider
+javelin make:provider Billing
 ```
 
-```
-Created: src/main/java/app/providers/CacheProvider.java
-```
+Creates:
+
+- `app/providers/BillingProvider.java`
+- `modules/billing/provider.json` with name, class, version and compatibility bounds
 
 ```java
 package app.providers;
 
-import io.javelin.core.*;
+import io.javelin.core.Application;
+import io.javelin.core.ServiceProvider;
 
-public final class CacheProvider implements ServiceProvider {
+public final class BillingProvider implements ServiceProvider {
     @Override
     public void register(Application app) {
-        // app.singleton(MyService.class, MyService::new);
-    }
-
-    @Override
-    public void boot(Application app) {
-        // app.router().middleware(new MyMiddleware());
+        // app.singleton(InvoiceService.class, InvoiceService::new);
     }
 }
 ```
 
-Register it in `config/app.yaml`:
+Register it in `config/app.yaml` or enable its manifest through `provider.enabled`.
 
-```yaml
-providers:
-  - app.providers.CacheProvider
+---
+
+## make:middleware — Generate middleware
+
+```bash
+javelin make:middleware Audit
 ```
+
+Creates `app/middleware/AuditMiddleware.java` implementing `Middleware`. Register it with `app.router().middleware(new AuditMiddleware())`.
+
+---
+
+## provider:install — Install a provider
+
+```bash
+javelin provider:install billing                       # local modules/billing
+javelin provider:install com.example:billing:1.2.0     # jar from ~/.m2
+```
+
+For Maven coordinates the command copies the jar into `modules/<artifact>/`, reads `META-INF/javelin/provider.json`, adds a POM dependency and enables the provider class in `config/app.yaml`.
+
+---
+
+## provider:list — Inspect providers
+
+```bash
+javelin provider:list
+```
+
+Prints each discovered provider with version, status, class and dependencies, plus any conflicts (duplicates, incompatible versions, missing dependencies or cycles).
 
 ---
 
@@ -427,7 +450,7 @@ DELETE /users/{id}      (2 middleware)
 Total routes: 7
 ```
 
-The middleware count includes global middleware (e.g., `SecureHeadersMiddleware`, `RequestSizeLimitMiddleware`) plus any route-specific middleware.
+The middleware count includes global middleware (e.g., `SecureHeadersMiddleware`, `RequestSizeLimitMiddleware`) plus any route-specific middleware. `route:list` is an alias of `routes:list`.
 
 ---
 
@@ -759,11 +782,14 @@ javelin migrate -Ddatabase.url=jdbc:postgresql://prod-host:5432/myapp
 | `new` | Create a new workspace |
 | `serve` | Start production server |
 | `dev` | Start dev server with hot reload |
-| `routes:list` | List all registered routes |
+| `routes:list` / `route:list` | List all registered routes |
 | `make:controller` | Scaffold a controller |
 | `make:service` | Scaffold a service |
 | `make:model` | Scaffold a model |
-| `make:provider` | Scaffold a service provider |
+| `make:provider` | Scaffold a service provider and manifest |
+| `make:middleware` | Scaffold HTTP middleware |
+| `provider:install` | Install a local or Maven provider |
+| `provider:list` | List providers and conflicts |
 | `make:module` | Scaffold a module |
 | `make:migration` | Scaffold a YAML migration |
 | `migrate` | Run pending migrations |

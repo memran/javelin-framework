@@ -4,6 +4,7 @@ This folder documents the public API of each Javelin module with small usage exa
 
 - [Installation](installation.md) — Prerequisites, CLI install, local artifacts, Docker, troubleshooting
 - [Quick Start](quick-start.md) — Create, build and run your first Javelin app
+- [Provider Loader](modules/provider-loader.md) — manifests, compatibility checks, conflict reports and install
 - [Tutorials](tutorials/README.md) — Step-by-step guides, starting with a secure web app and API
 - [Architecture](architecture.md) — Module dependency graph, design principles, module boundaries, core abstractions
 - [Application Flow](application-flow.md) — Boot sequence, HTTP request lifecycle, middleware pipeline, console command flow, container resolution

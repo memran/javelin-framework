@@ -176,6 +176,12 @@ scheduler:
   history: memory
   lock: memory
 
+provider:
+  directory: modules
+  strict: false
+  enabled: []
+  disabled: []
+
 providers:
   - app.providers.AppServiceProvider
   - io.javelin.json.jackson.JacksonJsonServiceProvider
@@ -192,6 +198,7 @@ providers:
   - io.javelin.events.EventServiceProvider
   - io.javelin.scheduler.SchedulerServiceProvider
   - io.javelin.mail.MailServiceProvider
+  - io.javelin.providers.ProviderRegistryServiceProvider
   - io.javelin.queue.QueueServiceProvider
   - io.javelin.queue.file.FileQueueServiceProvider
   - io.javelin.queue.database.DatabaseQueueServiceProvider

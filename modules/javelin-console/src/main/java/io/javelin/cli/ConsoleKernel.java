@@ -10,6 +10,8 @@ import io.javelin.cli.commands.ConfigCacheCommand;
 import io.javelin.cli.commands.DevCommand;
 import io.javelin.cli.commands.DoctorCommand;
 import io.javelin.cli.commands.MakeControllerCommand;
+import io.javelin.cli.commands.MakeMiddlewareCommand;
+import io.javelin.cli.commands.MakeProviderCommand;
 import io.javelin.cli.commands.MakeMigrationCommand;
 import io.javelin.cli.commands.MakeModelCommand;
 import io.javelin.cli.commands.MakeModuleCommand;
@@ -18,6 +20,8 @@ import io.javelin.cli.commands.MigrateCommand;
 import io.javelin.cli.commands.MigrateRollbackCommand;
 import io.javelin.cli.commands.NativeCommand;
 import io.javelin.cli.commands.NewCommand;
+import io.javelin.cli.commands.ProviderInstallCommand;
+import io.javelin.cli.commands.ProviderListCommand;
 import io.javelin.cli.commands.QueueStatusCommand;
 import io.javelin.cli.commands.QueueWorkCommand;
 import io.javelin.cli.commands.RoutesListCommand;
@@ -84,6 +88,11 @@ public final class ConsoleKernel implements Runnable {
                 .register("serve", () -> new ServeCommand(context))
                 .register("dev", () -> new DevCommand(context))
                 .register("routes:list", () -> new RoutesListCommand(context))
+                .register("route:list", () -> new RoutesListCommand(context))
+                .register("make:provider", () -> new MakeProviderCommand(context))
+                .register("make:middleware", () -> new MakeMiddlewareCommand(context))
+                .register("provider:install", () -> new ProviderInstallCommand(context))
+                .register("provider:list", () -> new ProviderListCommand(context))
                 .register("make:controller", () -> new MakeControllerCommand(context))
                 .register("make:service", () -> new MakeServiceCommand(context))
                 .register("make:model", () -> new MakeModelCommand(context))

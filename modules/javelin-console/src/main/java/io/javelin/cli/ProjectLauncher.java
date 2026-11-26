@@ -14,6 +14,7 @@ final class ProjectLauncher {
             "serve",
             "dev",
             "routes:list",
+            "route:list",
             "migrate",
             "migrate:rollback",
             "seed",

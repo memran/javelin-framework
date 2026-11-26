@@ -1,12 +1,16 @@
 package io.javelin.cli;
 
 import io.javelin.cli.output.ConsoleOutput;
+import io.javelin.core.Application;
+import io.javelin.core.Config;
 import org.junit.jupiter.api.Test;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,6 +18,39 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class CommandGenerationTest {
+    @Test
+    void createsProviderAndMiddlewareFromTemplates() throws Exception {
+        Path root = Files.createTempDirectory("javelin-provider-cli");
+        CommandContext context = new CommandContext(null, root,
+                new ConsoleOutput(new PrintWriter(new StringWriter(), true), false));
+        ConsoleKernel kernel = new ConsoleKernel(context);
+
+        assertEquals(0, kernel.run(new String[]{"make:provider", "Billing"}));
+        assertEquals(0, kernel.run(new String[]{"make:middleware", "Audit"}));
+
+        Path provider = root.resolve("app/providers/BillingProvider.java");
+        Path manifest = root.resolve("modules/billing/provider.json");
+        Path middleware = root.resolve("app/middleware/AuditMiddleware.java");
+        assertTrue(Files.exists(provider));
+        assertTrue(Files.exists(middleware));
+        assertTrue(Files.readString(manifest).contains("app.providers.BillingProvider"));
+        assertTrue(Files.readString(manifest).contains("\"name\": \"billing\""));
+    }
+
+    @Test
+    void routeListAliasIsAvailable() throws Exception {
+        Path root = Files.createTempDirectory("javelin-route-alias");
+        Config config = new Config() {
+            @Override public Optional<String> getString(String key) { return Optional.empty(); }
+            @Override public Optional<Integer> getInt(String key) { return Optional.empty(); }
+            @Override public Optional<Boolean> getBoolean(String key) { return Optional.empty(); }
+            @Override public List<String> getStringList(String key) { return List.of(); }
+        };
+        CommandContext context = new CommandContext(new Application(config, key -> Optional.empty()), root,
+                new ConsoleOutput(new PrintWriter(new StringWriter(), true), false));
+        assertEquals(0, new ConsoleKernel(context).run(new String[]{"route:list"}));
+    }
+
     @Test
     void createsControllerFromTemplate() throws Exception {
         Path root = Files.createTempDirectory("javelin-cli");
@@ -239,6 +276,8 @@ final class CommandGenerationTest {
         assertTrue(appYaml.contains("poll_interval_ms: 1000"));
         assertTrue(appYaml.contains("MailServiceProvider"));
         assertTrue(appYaml.contains("driver: test"));
+        assertTrue(appYaml.contains("provider:\n  directory: modules"));
+        assertTrue(appYaml.contains("ProviderRegistryServiceProvider"));
         assertTrue(Files.exists(project.resolve("resources/views/emails/welcome.peb")));
         assertEquals(1, appYaml.split("(?m)^storage:", -1).length - 1);
         assertTrue(appYaml.contains("request_logging: true"));
@@ -262,6 +301,7 @@ final class CommandGenerationTest {
         assertTrue(generatedPom.contains("javelin-scheduler"));
         assertTrue(generatedPom.contains("javelin-events"));
         assertTrue(generatedPom.contains("javelin-mail"));
+        assertTrue(generatedPom.contains("javelin-provider-loader"));
         assertTrue(generatedPom.contains("<include>errors/**</include>"));
         assertTrue(Files.exists(project.resolve("logback.xml")));
         assertTrue(Files.exists(project.resolve("logback-prod.xml")));

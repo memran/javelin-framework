@@ -37,7 +37,7 @@ It is deliberately *not* Spring Boot and deliberately *not* an ORM. If you need 
 - **JSON and web responses** — a configurable Jackson mapper behind `Json`/`JsonResponse`, HTML/JSON/redirect/file/stream responses, secure static assets, cookies, opt-in sessions, and 422 validation-error rendering for both HTML and JSON clients.
 - **Caching** — a small `Cache` contract with an in-memory TTL implementation and a Lettuce-backed Valkey adapter for distributed caching.
 - **Queues** — a `JobQueue` contract with immediate and delayed dispatch, a background worker with bounded concurrency, timeouts and exponential backoff, atomic leases, failed-job replay, and adapters for file, database, Valkey/Redis, RabbitMQ and NATS — no broker required by default.
-- **CLI and generators** — Picocli commands to scaffold apps, controllers, models, migrations, and validation rules. Generated projects include Docker Compose, a multi-stage Dockerfile, Tailwind CSS, Alpine.js, npm/bun scripts with auto-detection, build scripts, and opt-in Nginx/Caddy proxy configs.
+- **CLI and generators** — Picocli commands to scaffold apps, controllers, models, providers, middleware, migrations and validation rules, plus route listing, diagnostics and worker commands. Providers can be distributed as versioned JARs with manifests, compatibility checks, conflict reporting and `provider:install`. Generated projects include Docker Compose, a multi-stage Dockerfile, Tailwind CSS, Alpine.js, npm/bun scripts with auto-detection, build scripts, and opt-in Nginx/Caddy proxy configs.
 - **Support helpers** — small, stateless facades for strings, arrays, dates, files, images, HTTP client, AI client, objects, validation, HTML, and security.
 
 ## Architecture at a glance
@@ -76,6 +76,7 @@ Core owns the contracts; adapters implement them; the starter wires defaults; ap
 - `modules/javelin-view-pebble` - Pebble template renderer, layouts, components, escaping, caching
 - `modules/javelin-json-jackson` - configurable Jackson mapper for JSON responses and parsing
 - `modules/javelin-console` - Picocli command kernel and generators
+- `modules/javelin-provider-loader` - provider manifests, compatibility checks, conflict reports and install
 - `modules/javelin-security` - secure headers, HSTS/CSP, CORS, CSRF, sessions, session auth, JWT, PBKDF2/BCrypt, rate limiting
 - `modules/javelin-validation` - explicit string-rule Validator for HTML and JSON input
 - `modules/javelin-scheduler` - interval/cron/daily/weekly/monthly schedules, locks and execution history
@@ -100,7 +101,7 @@ Core owns the contracts; adapters implement them; the starter wires defaults; ap
 - [Architecture](docs/architecture.md) — design principles and module dependency graph
 - [Exception handling](docs/modules/exception.md) — global handler, error pages and redaction
 - [Security](docs/modules/security.md) — CORS, CSRF, sessions, JWT and password strategies
-- [Tutorials](docs/tutorials/README.md) — secure web apps, files/cache, jobs, scheduling, events and mail
+- [Tutorials](docs/tutorials/README.md) — secure web apps, files/cache, jobs, scheduling, events, mail and providers
 - [Application Flow](docs/application-flow.md) — boot sequence and request lifecycle
 - [Deployment](docs/deployment.md) — production tuning, Docker Compose, proxies, health checks, benchmarks
 - [CLI Reference](docs/cli-reference.md) — every `javelin` command
