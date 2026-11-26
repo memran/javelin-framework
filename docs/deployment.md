@@ -601,3 +601,5 @@ hey -z 10s -c 50 http://127.0.0.1:8080/
 ```
 
 Record the hardware, JVM flags, middleware set, and client tool alongside any numbers you publish.
+
+For continuous regression coverage, `mvn verify` runs the automated performance suite described in [modules/deployment.md](modules/deployment.md#performance-regression-suite). It uses conservative throughput floors and writes machine-readable results to `modules/javelin-deployment/target/performance-*.json`; it is a regression guard, not a replacement for these manual production-sizing measurements.

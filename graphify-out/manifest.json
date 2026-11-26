@@ -1044,9 +1044,9 @@
     "semantic_hash": ""
   },
   "docs/deployment.md": {
-    "mtime": 1795549635.1889844,
-    "seen": 1795549878.1682012,
-    "ast_hash": "5ef1fc4488cbb99ea45c0f95f17f0002",
+    "mtime": 1795720940.8652341,
+    "seen": 1795721033.043151,
+    "ast_hash": "05a22b4ddd1ed342fb6d715dd43db056",
     "semantic_hash": ""
   },
   "docs/module-authoring.md": {
@@ -2784,9 +2784,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-deployment/pom.xml": {
-    "mtime": 1795709827.1578095,
-    "seen": 1795710968.7047822,
-    "ast_hash": "3845ee4d31a5f5f4f6c7faf8c9b1a59d",
+    "mtime": 1795720855.5860493,
+    "seen": 1795721033.042845,
+    "ast_hash": "9145dd81f04620b042bcd122fa5687ae",
     "semantic_hash": ""
   },
   "modules/javelin-deployment/src/main/java/io/javelin/deployment/BenchmarkRunner.java": {
@@ -2934,9 +2934,9 @@
     "semantic_hash": ""
   },
   "docs/modules/deployment.md": {
-    "mtime": 1795710552.304009,
-    "seen": 1795710968.7050893,
-    "ast_hash": "cb8aee76ef6fbd44b29b81b998092f9f",
+    "mtime": 1795720935.529454,
+    "seen": 1795721033.0431643,
+    "ast_hash": "8c7199a66358bdea12ae6396bd08081e",
     "semantic_hash": ""
   },
   "docs/modules/observability.md": {
@@ -2949,6 +2949,24 @@
     "mtime": 1795710571.9961226,
     "seen": 1795710968.705124,
     "ast_hash": "55001ec209c76fc3f0c1c7e8f47473ae",
+    "semantic_hash": ""
+  },
+  "modules/javelin-deployment/src/test/java/io/javelin/deployment/perf/CorePerformanceRegressionTest.java": {
+    "mtime": 1795720840.3731165,
+    "seen": 1795721033.0428543,
+    "ast_hash": "07b140417e0b7695e8e96606095d326d",
+    "semantic_hash": ""
+  },
+  "modules/javelin-deployment/src/test/java/io/javelin/deployment/perf/HttpThroughputRegressionTest.java": {
+    "mtime": 1795720892.6218717,
+    "seen": 1795721033.0428557,
+    "ast_hash": "f222ad330afec399275dabcb4a330c17",
+    "semantic_hash": ""
+  },
+  "modules/javelin-deployment/src/test/java/io/javelin/deployment/perf/PerformanceReport.java": {
+    "mtime": 1795720828.1128616,
+    "seen": 1795721033.0428567,
+    "ast_hash": "fc7a6e787f4dc003fa610b7a3665b460",
     "semantic_hash": ""
   }
 }
