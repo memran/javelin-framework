@@ -150,6 +150,23 @@ cors:
 secrets:
   dir: secrets
 
+mail:
+  driver: test
+  from: no-reply@example.com
+  test:
+    dir: storage/mail
+  smtp:
+    default:
+      host: ${SMTP_HOST:}
+      port: 587
+      username: ${SMTP_USERNAME:}
+      password: ${SMTP_PASSWORD:}
+      auth: true
+      starttls: true
+  retry:
+    max_attempts: 3
+    backoff_ms: 1000
+
 scheduler:
   enabled: true
   poll_interval_ms: 1000
@@ -174,6 +191,7 @@ providers:
   - io.javelin.cache.valkey.ValkeyCacheServiceProvider
   - io.javelin.events.EventServiceProvider
   - io.javelin.scheduler.SchedulerServiceProvider
+  - io.javelin.mail.MailServiceProvider
   - io.javelin.queue.QueueServiceProvider
   - io.javelin.queue.file.FileQueueServiceProvider
   - io.javelin.queue.database.DatabaseQueueServiceProvider

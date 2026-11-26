@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Welcome to {{ project }}</title></head>
+<body>
+<h1>Welcome, {{ name }}!</h1>
+<p>Thanks for joining {{ project }}.</p>
+</body>
+</html>

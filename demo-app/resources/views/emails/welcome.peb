@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Welcome to Javelin</title></head>
+<body>
+<h1>Welcome, {{ name }}!</h1>
+<p>This message was rendered by a Pebble template and delivered through the mail transport.</p>
+</body>
+</html>

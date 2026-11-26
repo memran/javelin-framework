@@ -115,6 +115,12 @@
             <artifactId>javelin-events</artifactId>
             <version>${javelin.version}</version>
         </dependency>
+        <!-- SMTP and template-based mail delivery. -->
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-mail</artifactId>
+            <version>${javelin.version}</version>
+        </dependency>
         <!-- Add workspace-specific application libraries below this line. -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>

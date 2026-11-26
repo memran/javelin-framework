@@ -6,6 +6,8 @@ import io.javelin.core.Json;
 import io.javelin.core.JsonResponse;
 import io.javelin.core.Request;
 import io.javelin.events.Events;
+import io.javelin.mail.Attachment;
+import io.javelin.mails.Mail;
 import io.javelin.scheduler.Schedules;
 import io.javelin.scheduler.TaskDefinition;
 import io.javelin.schedules.Schedule;
@@ -23,6 +25,16 @@ public final class AutomationExampleController {
                 new Schedules.Interval(Duration.ZERO), new DemoScheduleJob(), false));
         int started = Schedule.active().runDue();
         return Json.ok(Map.of("started", started, "history", Schedule.history(5).size()));
+    }
+
+    public JsonResponse mail(Request request) {
+        String user = request.query("to").orElse("alice@example.com");
+        Mail.to(user)
+                .subject("Welcome")
+                .view("emails/welcome", Map.of("name", user))
+                .attach(Attachment.file("notes.txt", "text/plain", "demo".getBytes(StandardCharsets.UTF_8)))
+                .queue();
+        return Json.ok(Map.of("queued", user));
     }
 
     public JsonResponse event(Request request) {

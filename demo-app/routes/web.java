@@ -57,5 +57,6 @@ public final class web {
         add(app.router(), get("/demo/queue/status", jobs::status));
         add(app.router(), get("/demo/automation/schedule", automation::schedule));
         add(app.router(), get("/demo/automation/events", automation::event));
+        add(app.router(), get("/demo/automation/mail", automation::mail));
     }
 }

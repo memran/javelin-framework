@@ -36,9 +36,9 @@
     "semantic_hash": ""
   },
   "demo-app/config/app.yaml": {
-    "mtime": 1795679680.8014584,
-    "seen": 1795680273.0424964,
-    "ast_hash": "3d8906273edb728d92b7247d1cd1ae39",
+    "mtime": 1795681129.1400135,
+    "seen": 1795681611.6115527,
+    "ast_hash": "f486634eb285c52078d9ce06c131762e",
     "semantic_hash": ""
   },
   "demo-app/config/view.yml": {
@@ -48,15 +48,15 @@
     "semantic_hash": ""
   },
   "demo-app/pom.xml": {
-    "mtime": 1795679736.9021978,
-    "seen": 1795680273.0425043,
-    "ast_hash": "72b3b6782d5d5be940a81e7216317e59",
+    "mtime": 1795681171.1354263,
+    "seen": 1795681611.6115596,
+    "ast_hash": "527a3b555170f19b330d0699998f6ed8",
     "semantic_hash": ""
   },
   "demo-app/routes/web.java": {
-    "mtime": 1795679821.7900023,
-    "seen": 1795680273.042507,
-    "ast_hash": "56d642ae24216589c5e0de9051cc2901",
+    "mtime": 1795681228.1141639,
+    "seen": 1795681611.611562,
+    "ast_hash": "298651e32e90ce2eea13bb228d265a3a",
     "semantic_hash": ""
   },
   "install.ps1": {
@@ -294,9 +294,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-console/src/main/java/io/javelin/cli/commands/NewCommand.java": {
-    "mtime": 1795550987.8760724,
-    "seen": 1795551484.486185,
-    "ast_hash": "14cfda940673bd0c2e1dbc427df6e0d9",
+    "mtime": 1795681097.737111,
+    "seen": 1795681611.6116333,
+    "ast_hash": "8fe95f728f7f7971d4c5bca726aa7f42",
     "semantic_hash": ""
   },
   "modules/javelin-console/src/main/java/io/javelin/cli/commands/QueueStatusCommand.java": {
@@ -432,9 +432,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-console/src/test/java/io/javelin/cli/CommandGenerationTest.java": {
-    "mtime": 1795679853.9250064,
-    "seen": 1795680273.0426135,
-    "ast_hash": "a235faa46e7f217bd7e5382475af7cac",
+    "mtime": 1795681254.4987793,
+    "seen": 1795681611.6116598,
+    "ast_hash": "a59cacd6d938cd090f56d15d05c5542e",
     "semantic_hash": ""
   },
   "modules/javelin-console/src/test/java/io/javelin/cli/commands/MigrationCommandTest.java": {
@@ -804,9 +804,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-starter/pom.xml": {
-    "mtime": 1795679475.5810144,
-    "seen": 1795680273.0429761,
-    "ast_hash": "23e5e2fc9e7bd19464efe0d8d67ced23",
+    "mtime": 1795680948.3867748,
+    "seen": 1795681611.6119242,
+    "ast_hash": "09d50f55a1d5663aabb5e8005c69c851",
     "semantic_hash": ""
   },
   "modules/javelin-starter/src/main/java/io/javelin/starter/Javelin.java": {
@@ -1002,15 +1002,15 @@
     "semantic_hash": ""
   },
   "pom.xml": {
-    "mtime": 1795679457.937493,
-    "seen": 1795680273.0430377,
-    "ast_hash": "b552b117356b836742e1d75caf589839",
+    "mtime": 1795680933.0289419,
+    "seen": 1795681611.6119804,
+    "ast_hash": "e7a6ad35985dafdef24c4e2170e6ec69",
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1795680075.282251,
-    "seen": 1795680273.0430386,
-    "ast_hash": "6840e1cc69983dea1e4903b3b8cd296c",
+    "mtime": 1795681424.521736,
+    "seen": 1795681611.6119816,
+    "ast_hash": "b7c0ffc501d3247911b23ba77964c39d",
     "semantic_hash": ""
   },
   "agents.md": {
@@ -1020,9 +1020,9 @@
     "semantic_hash": ""
   },
   "docs/README.md": {
-    "mtime": 1795679989.8322484,
-    "seen": 1795680273.043042,
-    "ast_hash": "8331c8b89c2cbe975b48d8237b455d24",
+    "mtime": 1795681364.7156236,
+    "seen": 1795681611.611985,
+    "ast_hash": "1a29cc5a59bf62ae9d521b9002c5c776",
     "semantic_hash": ""
   },
   "docs/application-flow.md": {
@@ -1362,9 +1362,9 @@
     "semantic_hash": ""
   },
   "demo-app/docker-app.yaml": {
-    "mtime": 1795679723.4680371,
-    "seen": 1795680273.0425005,
-    "ast_hash": "c062b15484d2f97cb5eb8005c99da463",
+    "mtime": 1795681155.5029366,
+    "seen": 1795681611.611556,
+    "ast_hash": "8aef8ef4e30e6990f90034f30d7b5485",
     "semantic_hash": ""
   },
   "demo-app/docker-compose.yml": {
@@ -2052,9 +2052,9 @@
     "semantic_hash": ""
   },
   "docs/tutorials/README.md": {
-    "mtime": 1795680002.1483798,
-    "seen": 1795680273.043083,
-    "ast_hash": "2ac802568c3fdf93e48d751257e218ae",
+    "mtime": 1795681380.6526642,
+    "seen": 1795681611.6120253,
+    "ast_hash": "538830e203cfb11bd0c6f23d0f96c722",
     "semantic_hash": ""
   },
   "docs/tutorials/secure-web-app.md": {
@@ -2376,9 +2376,9 @@
     "semantic_hash": ""
   },
   "demo-app/app/controllers/AutomationExampleController.java": {
-    "mtime": 1795679778.4551835,
-    "seen": 1795680273.0424623,
-    "ast_hash": "05af67b70449630b4f28db6b0892fbf3",
+    "mtime": 1795681212.0671606,
+    "seen": 1795681611.611525,
+    "ast_hash": "a0f26037c454ca06baaccf1df02dbc25",
     "semantic_hash": ""
   },
   "demo-app/app/events/UserRegisteredEvent.java": {
@@ -2565,6 +2565,102 @@
     "mtime": 1795679977.1177766,
     "seen": 1795680273.043087,
     "ast_hash": "d0940b29a9b545ad97aa68b11288435a",
+    "semantic_hash": ""
+  },
+  "modules/javelin-mail/pom.xml": {
+    "mtime": 1795680709.9225738,
+    "seen": 1795681611.611827,
+    "ast_hash": "adf2d81d131bccfc38915f350ed21e33",
+    "semantic_hash": ""
+  },
+  "modules/javelin-mail/src/main/java/io/javelin/mail/Attachment.java": {
+    "mtime": 1795680737.4412272,
+    "seen": 1795681611.6118279,
+    "ast_hash": "be918bc1e921c30447ec37a3b54c92f3",
+    "semantic_hash": ""
+  },
+  "modules/javelin-mail/src/main/java/io/javelin/mail/EmailAddress.java": {
+    "mtime": 1795680868.8014996,
+    "seen": 1795681611.6118293,
+    "ast_hash": "16268e2e0b51fa21d8b57e020be9d1ab",
+    "semantic_hash": ""
+  },
+  "modules/javelin-mail/src/main/java/io/javelin/mail/MailManager.java": {
+    "mtime": 1795680851.9245975,
+    "seen": 1795681611.6118302,
+    "ast_hash": "2d5d4f90a459c0b2a223eebca17b5294",
+    "semantic_hash": ""
+  },
+  "modules/javelin-mail/src/main/java/io/javelin/mail/MailMessage.java": {
+    "mtime": 1795680751.3662634,
+    "seen": 1795681611.6118312,
+    "ast_hash": "6f7a3253f94c36bea5ff7fa9445b2de6",
+    "semantic_hash": ""
+  },
+  "modules/javelin-mail/src/main/java/io/javelin/mail/MailServiceProvider.java": {
+    "mtime": 1795681590.5298936,
+    "seen": 1795681611.6118321,
+    "ast_hash": "a0e377bed7c1f3422a925d412d0ee434",
+    "semantic_hash": ""
+  },
+  "modules/javelin-mail/src/main/java/io/javelin/mail/MailSubmissionLogger.java": {
+    "mtime": 1795680835.6538546,
+    "seen": 1795681611.6118329,
+    "ast_hash": "780b521e690239374076c68591b6fe3a",
+    "semantic_hash": ""
+  },
+  "modules/javelin-mail/src/main/java/io/javelin/mail/MailTransport.java": {
+    "mtime": 1795680783.63472,
+    "seen": 1795681611.6118336,
+    "ast_hash": "07ed1eee20755855e601ba72d83ea567",
+    "semantic_hash": ""
+  },
+  "modules/javelin-mail/src/main/java/io/javelin/mail/SmtpConfig.java": {
+    "mtime": 1795680771.0606477,
+    "seen": 1795681611.6118345,
+    "ast_hash": "df855a94641aca5e2af2713bdcdc0e7b",
+    "semantic_hash": ""
+  },
+  "modules/javelin-mail/src/main/java/io/javelin/mail/SmtpTransport.java": {
+    "mtime": 1795680805.5307367,
+    "seen": 1795681611.6118355,
+    "ast_hash": "f6c1de02683616caeaa54a552b4a1f29",
+    "semantic_hash": ""
+  },
+  "modules/javelin-mail/src/main/java/io/javelin/mail/TestMailTransport.java": {
+    "mtime": 1795681576.0054288,
+    "seen": 1795681611.6118364,
+    "ast_hash": "c2846e3f579614a7db66c6f62e28a0b4",
+    "semantic_hash": ""
+  },
+  "modules/javelin-mail/src/main/java/io/javelin/mails/Mail.java": {
+    "mtime": 1795680903.1929357,
+    "seen": 1795681611.6118371,
+    "ast_hash": "8482144756d2f2a3e03f480ecf8ad857",
+    "semantic_hash": ""
+  },
+  "modules/javelin-mail/src/main/java/io/javelin/mails/MailComposer.java": {
+    "mtime": 1795680886.9650505,
+    "seen": 1795681611.6118379,
+    "ast_hash": "a433d3faa5a94fafd8fda1eb12725ba5",
+    "semantic_hash": ""
+  },
+  "modules/javelin-mail/src/test/java/io/javelin/mail/MailTest.java": {
+    "mtime": 1795680998.0530174,
+    "seen": 1795681611.6118388,
+    "ast_hash": "162cb70c31332610d846895e457f9df2",
+    "semantic_hash": ""
+  },
+  "docs/modules/mail.md": {
+    "mtime": 1795681335.2962732,
+    "seen": 1795681611.61201,
+    "ast_hash": "81798b4cf1d7e132ac65af39efff092f",
+    "semantic_hash": ""
+  },
+  "docs/tutorials/mail.md": {
+    "mtime": 1795681353.027144,
+    "seen": 1795681611.6120286,
+    "ast_hash": "f901185ee14f81a0ed650b32cceeeadb",
     "semantic_hash": ""
   }
 }

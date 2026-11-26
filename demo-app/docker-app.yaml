@@ -137,6 +137,15 @@ cors:
 secrets:
   dir: secrets
 
+mail:
+  driver: test
+  from: no-reply@javelin.local
+  test:
+    dir: storage/mail
+  retry:
+    max_attempts: 3
+    backoff_ms: 1000
+
 scheduler:
   enabled: true
   poll_interval_ms: 1000
@@ -162,6 +171,7 @@ providers:
   - io.javelin.cache.valkey.ValkeyCacheServiceProvider
   - io.javelin.events.EventServiceProvider
   - io.javelin.scheduler.SchedulerServiceProvider
+  - io.javelin.mail.MailServiceProvider
   - io.javelin.queue.QueueServiceProvider
   - io.javelin.queue.file.FileQueueServiceProvider
   - io.javelin.queue.database.DatabaseQueueServiceProvider
