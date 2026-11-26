@@ -338,6 +338,46 @@ final class CommandGenerationTest {
     }
 
     @Test
+    void generatedAndDemoConfigsKeepDocumentedDefaults() throws Exception {
+        Path root = Files.createTempDirectory("javelin-config-defaults");
+        CommandContext context = new CommandContext(null, root,
+                new ConsoleOutput(new PrintWriter(new StringWriter(), true), false));
+
+        assertEquals(0, new ConsoleKernel(context).run(new String[]{"new", "crm-app"}));
+
+        String generated = Files.readString(root.resolve("crm-app/config/app.yaml"));
+        Path demoConfig = Path.of("..", "..", "demo-app", "config", "app.yaml").toAbsolutePath().normalize();
+        assertTrue(Files.exists(demoConfig), "demo-app config should be present in the repository");
+        String demo = Files.readString(demoConfig);
+
+        for (String expected : List.of(
+                "driver: ${CACHE_DRIVER:memory}",
+                "driver: ${QUEUE_DRIVER:file}",
+                "url: ${NATS_URL:nats://localhost:4222}",
+                "stream: ${NATS_STREAM:JAVELIN}",
+                "poll_interval_ms: 500",
+                "lease_seconds: 60",
+                "backoff: exponential",
+                "health_path: /health",
+                "ready_path: /ready",
+                "metrics_path: /metrics",
+                "driver: test",
+                "directory: modules")) {
+            assertTrue(generated.contains(expected), "generated config missing: " + expected);
+        }
+        for (String expected : List.of(
+                "history: memory",
+                "lock: memory",
+                "health_path: /health",
+                "ready_path: /ready",
+                "metrics_path: /metrics",
+                "driver: test",
+                "directory: modules")) {
+            assertTrue(demo.contains(expected), "demo config missing: " + expected);
+        }
+    }
+
+    @Test
     void createsProjectSkeletonWithCustomValidationRule() throws Exception {
         Path root = Files.createTempDirectory("javelin-new-custom-rule");
         CommandContext context = new CommandContext(null, root, new ConsoleOutput(new PrintWriter(new StringWriter(), true), false));

@@ -164,6 +164,8 @@ Request → [global middleware] → [route middleware] → RouteHandler → Resp
                               each middleware can short-circuit
 ```
 
+Static fallback is consulted before routing and runs global middleware only. A matching file therefore shadows a route at the same path and bypasses route-level middleware (for example authentication), so avoid overlapping static and route paths.
+
 Middleware is a `@FunctionalInterface` following chain-of-responsibility:
 
 ```java

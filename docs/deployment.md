@@ -122,7 +122,7 @@ javelin native
 ./target/javelin-app  # native binary, starts in ~20ms
 ```
 
-Native images use less memory (typically 30-50 MB RSS) and eliminate JIT warmup time.
+Native images use less memory (typically 30-50 MB RSS) and eliminate JIT warmup time. Run `javelin deploy:native-config` first; its metadata is a starter for Javelin's own reflection and resources, so extend it for application-specific classes and templates.
 
 ### JMX monitoring
 

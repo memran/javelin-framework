@@ -4,12 +4,12 @@ import io.javelin.core.Request;
 import io.javelin.core.Response;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.HexFormat;
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -63,8 +63,18 @@ public final class StaticAssetResolver {
                 return Optional.empty();
             }
 
-            byte[] content = Files.readAllBytes(real);
-            String etag = etagOf(content);
+            Optional<String> conditional = header.apply("If-None-Match");
+            Optional<String> rangeHeader = upperMethod.equals("GET") ? header.apply("Range") : Optional.empty();
+            byte[] content = null;
+            String etag;
+            if (upperMethod.equals("GET") && conditional.isEmpty() && rangeHeader.isEmpty()) {
+                content = Files.readAllBytes(real);
+                etag = etagOf(content);
+            } else {
+                // Conditional, range and HEAD requests digest the file without buffering it.
+                etag = etagOf(real);
+            }
+            long size = Files.size(real);
             Map<String, String> headers = new LinkedHashMap<>();
             headers.put("Content-Type", contentTypeOf(real));
             headers.put("Cache-Control", cachePolicy.headerValue());
@@ -72,33 +82,33 @@ public final class StaticAssetResolver {
             headers.put("Accept-Ranges", "bytes");
             headers.put("X-Content-Type-Options", "nosniff");
 
-            if (header.apply("If-None-Match").filter(value -> matchesEtag(value, etag)).isPresent()) {
+            if (conditional.filter(value -> matchesEtag(value, etag)).isPresent()) {
                 return Optional.of(new Response(304, Map.of(
                         "Cache-Control", cachePolicy.headerValue(),
                         "ETag", etag
                 ), new byte[0]));
             }
 
-            if (upperMethod.equals("GET")) {
-                Optional<ByteRange> range = header.apply("Range")
-                        .flatMap(value -> parseRange(value, content.length));
+            if (rangeHeader.isPresent()) {
+                Optional<ByteRange> range = rangeHeader.flatMap(value -> parseRange(value, size));
                 if (range.isPresent()) {
                     ByteRange selected = range.get();
                     if (selected.equals(UNSATISFIABLE)) {
                         return Optional.of(new Response(416, Map.of(
-                                "Content-Range", "bytes */" + content.length,
+                                "Content-Range", "bytes */" + size,
                                 "Accept-Ranges", "bytes",
                                 "X-Content-Type-Options", "nosniff"
                         ), "Range Not Satisfiable".getBytes(StandardCharsets.UTF_8)));
                     }
                     headers.put("Content-Range",
-                            "bytes " + selected.start() + "-" + selected.end() + "/" + content.length);
-                    return Optional.of(new Response(206, headers,
-                            Arrays.copyOfRange(content, selected.start(), selected.end() + 1)));
+                            "bytes " + selected.start() + "-" + selected.end() + "/" + size);
+                    return Optional.of(new Response(206, headers, readRange(real, selected)));
                 }
             }
 
-            byte[] body = upperMethod.equals("HEAD") ? new byte[0] : content;
+            byte[] body = upperMethod.equals("HEAD")
+                    ? new byte[0]
+                    : (content != null ? content : Files.readAllBytes(real));
             return Optional.of(new Response(200, headers, body));
         } catch (IOException exception) {
             throw new IllegalStateException("Unable to read static asset " + candidate, exception);
@@ -108,6 +118,9 @@ public final class StaticAssetResolver {
     private static boolean matchesEtag(String headerValue, String etag) {
         for (String token : headerValue.split(",")) {
             String value = token.trim();
+            if (value.startsWith("W/")) {
+                value = value.substring(2).trim();
+            }
             if ("*".equals(value) || value.equals(etag)) {
                 return true;
             }
@@ -134,7 +147,7 @@ public final class StaticAssetResolver {
                 if (start >= length) {
                     return Optional.of(UNSATISFIABLE);
                 }
-                return Optional.of(new ByteRange((int) start, (int) length - 1));
+                return Optional.of(bounded(start, length - 1));
             }
             long start = Long.parseLong(spec.substring(0, dash));
             String endText = spec.substring(dash + 1);
@@ -142,10 +155,15 @@ public final class StaticAssetResolver {
             if (start < 0 || start >= length || end < start) {
                 return Optional.of(UNSATISFIABLE);
             }
-            return Optional.of(new ByteRange((int) start, (int) Math.min(end, length - 1)));
+            return Optional.of(bounded(start, Math.min(end, length - 1)));
         } catch (NumberFormatException exception) {
             return Optional.empty();
         }
+    }
+
+    /** Response bodies are byte arrays, so a single range cannot exceed the array limit. */
+    private static ByteRange bounded(long start, long end) {
+        return new ByteRange(start, Math.min(end, start + Integer.MAX_VALUE - 1L));
     }
 
     private static String etagOf(byte[] content) {
@@ -154,6 +172,42 @@ public final class StaticAssetResolver {
             return "\"" + HexFormat.of().formatHex(digest) + "\"";
         } catch (NoSuchAlgorithmException exception) {
             throw new IllegalStateException("SHA-256 is unavailable", exception);
+        }
+    }
+
+    /** Digests a file in constant memory so conditional requests never buffer large assets. */
+    private static String etagOf(Path path) throws IOException {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            try (InputStream stream = Files.newInputStream(path)) {
+                byte[] buffer = new byte[8192];
+                int read;
+                while ((read = stream.read(buffer)) != -1) {
+                    digest.update(buffer, 0, read);
+                }
+            }
+            return "\"" + HexFormat.of().formatHex(digest.digest()) + "\"";
+        } catch (NoSuchAlgorithmException exception) {
+            throw new IllegalStateException("SHA-256 is unavailable", exception);
+        }
+    }
+
+    /** Reads only the requested bytes; a range response never buffers the whole file. */
+    private static byte[] readRange(Path path, ByteRange range) throws IOException {
+        int length = Math.toIntExact(range.end() - range.start() + 1);
+        try (InputStream stream = Files.newInputStream(path)) {
+            long remaining = range.start();
+            while (remaining > 0) {
+                long skipped = stream.skip(remaining);
+                if (skipped == 0) {
+                    if (stream.read() == -1) {
+                        break;
+                    }
+                    skipped = 1;
+                }
+                remaining -= skipped;
+            }
+            return stream.readNBytes(length);
         }
     }
 
@@ -239,6 +293,6 @@ public final class StaticAssetResolver {
         return "application/octet-stream";
     }
 
-    private record ByteRange(int start, int end) {
+    private record ByteRange(long start, long end) {
     }
 }

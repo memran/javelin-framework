@@ -1,6 +1,7 @@
 package io.javelin.core;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InaccessibleObjectException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +14,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public final class Container {
     private static final ThreadLocal<Deque<Class<?>>> RESOLUTION = ThreadLocal.withInitial(ArrayDeque::new);
@@ -101,12 +103,14 @@ public final class Container {
     private <T> T construct(Class<T> type) {
         try {
             Constructor<?> constructor = Arrays.stream(type.getDeclaredConstructors())
-                    .max(Comparator.comparingInt(Constructor::getParameterCount))
+                    .max(Comparator.comparingInt((Constructor<?> c) -> c.getParameterCount())
+                            .thenComparing(c -> Arrays.stream(c.getParameterTypes())
+                                    .map(Class::getName).collect(Collectors.joining(","))))
                     .orElseThrow();
             constructor.setAccessible(true);
             Object[] arguments = Arrays.stream(constructor.getParameterTypes()).map(this::make).toArray();
             return type.cast(constructor.newInstance(arguments));
-        } catch (ReflectiveOperationException exception) {
+        } catch (ReflectiveOperationException | InaccessibleObjectException | SecurityException exception) {
             throw new IllegalStateException("Unable to resolve " + type.getName(), exception);
         }
     }

@@ -70,11 +70,11 @@ Javelin is not Spring Boot. Keep behavior explicit, modular, and cheap to start.
 
 ## Next Useful Work
 
-- Stream large static assets for range/conditional requests and accept weak `W/` ETags.
-- Document the OTel SDK/exporter requirement and narrow the GraalVM metadata claim to starter coverage.
-- Align RabbitMQ/NATS failed-job behavior with docs (unused durable queue, adapter table, replay API).
-- Make container constructor selection deterministic and handle reflective runtime failures.
-- Document static-asset-vs-route precedence in the kernel, and broaden generated-config-vs-docs drift tests.
+- Add a streaming `Response` body contract so full-file static GETs no longer need a `byte[]`.
+- Add an OTel SDK/exporter example to the demo app and verify exported spans end to end.
+- Extend GraalVM metadata with demo-app-specific providers, DTOs and templates.
+- Add broker-backed RabbitMQ/NATS integration tests for failure, replay and delayed delivery.
+- Make static-asset precedence configurable and publish aggregated performance history in CI.
 
 ## Do / Don’t
 

@@ -65,6 +65,53 @@ final class ContainerTest {
         assertEquals(1, container.closeables().size());
     }
 
+    @Test
+    void selectsTheSameConstructorWhenSeveralHaveTheSameArity() {
+        Container container = new Container();
+        container.instance(Alpha.class, new Alpha());
+        container.instance(Zeta.class, new Zeta());
+
+        assertEquals("zeta", container.make(Ambiguous.class).selected());
+        assertEquals("zeta", container.make(Ambiguous.class).selected());
+    }
+
+    @Test
+    void wrapsFailuresFromConstructorsWithTheRequestedType() {
+        Container container = new Container();
+
+        IllegalStateException error = assertThrows(IllegalStateException.class, () -> container.make(Failing.class));
+
+        assertTrue(error.getMessage().contains(Failing.class.getName()));
+    }
+
+    static final class Alpha {
+    }
+
+    static final class Zeta {
+    }
+
+    static final class Ambiguous {
+        private final String selected;
+
+        Ambiguous(Alpha alpha) {
+            this.selected = "alpha";
+        }
+
+        Ambiguous(Zeta zeta) {
+            this.selected = "zeta";
+        }
+
+        String selected() {
+            return selected;
+        }
+    }
+
+    static final class Failing {
+        Failing() {
+            throw new IllegalStateException("boom");
+        }
+    }
+
     static final class CircularA {
         CircularA(CircularB b) {
         }

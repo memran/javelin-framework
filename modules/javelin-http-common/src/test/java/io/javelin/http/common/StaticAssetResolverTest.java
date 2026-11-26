@@ -8,9 +8,11 @@ import org.junit.jupiter.api.Test;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -59,12 +61,17 @@ final class StaticAssetResolverTest {
         String etag = resolver.resolve("GET", "/app.css").orElseThrow().headers().get("ETag");
 
         Response notModified = resolver.resolve(request("/app.css", "If-None-Match", etag)).orElseThrow();
+        Response weak = resolver.resolve(request("/app.css", "If-None-Match", "W/" + etag)).orElseThrow();
+        Response weakInList = resolver.resolve(request("/app.css", "If-None-Match", "\"stale\", W/" + etag))
+                .orElseThrow();
         Response wildcard = resolver.resolve(request("/app.css", "If-None-Match", "*")).orElseThrow();
         Response changed = resolver.resolve(request("/app.css", "If-None-Match", "\"stale\"")).orElseThrow();
 
         assertEquals(304, notModified.status());
         assertEquals(0, notModified.body().length);
         assertEquals(etag, notModified.headers().get("ETag"));
+        assertEquals(304, weak.status());
+        assertEquals(304, weakInList.status());
         assertEquals(304, wildcard.status());
         assertEquals(200, changed.status());
     }
@@ -94,6 +101,33 @@ final class StaticAssetResolverTest {
         assertEquals(416, invalid.status());
         assertEquals("bytes */" + css.length(), invalid.headers().get("Content-Range"));
         assertEquals(200, malformed.status());
+    }
+
+    @Test
+    void servesRangesAndConditionalRequestsForLargeFiles() throws Exception {
+        Path root = Files.createTempDirectory("javelin-static-large");
+        byte[] content = new byte[2 * 1024 * 1024];
+        for (int index = 0; index < content.length; index++) {
+            content[index] = (byte) (index % 251);
+        }
+        Files.write(root.resolve("large.bin"), content);
+        StaticAssetResolver resolver = new StaticAssetResolver(root);
+        String etag = resolver.resolve("HEAD", "/large.bin").orElseThrow().headers().get("ETag");
+
+        Response head = resolver.resolve("HEAD", "/large.bin").orElseThrow();
+        Response conditional = resolver.resolve(request("/large.bin", "If-None-Match", "W/" + etag)).orElseThrow();
+        Response range = resolver.resolve(request("/large.bin", "Range", "bytes=100-199")).orElseThrow();
+        Response suffix = resolver.resolve(request("/large.bin", "Range", "bytes=-4")).orElseThrow();
+
+        assertEquals(0, head.body().length);
+        assertEquals(etag, head.headers().get("ETag"));
+        assertEquals(304, conditional.status());
+        assertEquals(0, conditional.body().length);
+        assertEquals(206, range.status());
+        assertEquals("bytes 100-199/" + content.length, range.headers().get("Content-Range"));
+        assertArrayEquals(Arrays.copyOfRange(content, 100, 200), range.body());
+        assertEquals(206, suffix.status());
+        assertArrayEquals(Arrays.copyOfRange(content, content.length - 4, content.length), suffix.body());
     }
 
     @Test

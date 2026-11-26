@@ -44,7 +44,7 @@ queue:
   stream: JAVELIN
 ```
 
-The original push-consumer adapter. Handlers are registered through `Queue.subscribe(subject, handler, retryPolicy)` and retries are configured on the JetStream consumer. `later()` publishes immediately because JetStream push consumers have no native scheduled delivery; use the database or file adapter for durable delays.
+The original push-consumer adapter. Handlers are registered through `Queue.subscribe(subject, handler, retryPolicy)` and retries are configured on the JetStream consumer. `later()` publishes immediately because JetStream push consumers have no native scheduled delivery; use the database or file adapter for durable delays. `fail()`, `failedJobs()`, `replay()` and `pendingCount()` are no-ops: unacknowledged messages are retained by JetStream, and there is no separate failed-job store.
 
 ## Choosing an adapter
 
@@ -54,4 +54,4 @@ The original push-consumer adapter. Handlers are registered through `Queue.subsc
 | `database` | existing database | table | yes |
 | `valkey` / `redis` | Valkey/Redis | list | yes (sorted set) |
 | `rabbitmq` | RabbitMQ | in-memory | TTL queue |
-| `nats` | NATS JetStream | JetStream | immediate |
+| `nats` | NATS JetStream | JetStream redelivery (no failed-job store or replay API) | immediate |

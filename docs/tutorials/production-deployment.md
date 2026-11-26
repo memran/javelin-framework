@@ -56,4 +56,4 @@ javelin deploy:native-config
 javelin native
 ```
 
-The generated metadata makes reflection-based provider loading and resource loading native-image friendly.
+The generated metadata is a starter: it covers Javelin's provider loader, `Application` and common resource paths. Add `reflect-config.json` / `resource-config.json` entries for application-specific providers, reflected DTOs and templates before building a native binary.

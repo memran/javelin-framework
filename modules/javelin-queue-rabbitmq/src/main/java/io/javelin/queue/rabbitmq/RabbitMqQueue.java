@@ -23,7 +23,6 @@ import java.util.Optional;
 public final class RabbitMqQueue implements JobQueue {
     private static final String MAIN = "javelin.jobs";
     private static final String DELAY = "javelin.jobs.delay";
-    private static final String FAILED = "javelin.jobs.failed";
 
     private final Connection connection;
     private final Channel channel;
@@ -37,7 +36,6 @@ public final class RabbitMqQueue implements JobQueue {
             this.connection = factory.newConnection();
             this.channel = connection.createChannel();
             channel.queueDeclare(MAIN, true, false, false, Map.of());
-            channel.queueDeclare(FAILED, true, false, false, Map.of());
             channel.queueDeclare(DELAY, true, false, false, Map.of(
                     "x-dead-letter-exchange", "",
                     "x-dead-letter-routing-key", MAIN));
@@ -118,6 +116,7 @@ public final class RabbitMqQueue implements JobQueue {
         }
     }
 
+    /** Failed jobs are held in memory for this adapter instance, not in a broker queue. */
     @Override
     public List<Job> failedJobs() {
         synchronized (failedJobs) {

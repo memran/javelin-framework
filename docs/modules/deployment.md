@@ -35,7 +35,7 @@ Generates `deploy/billing.service` with `WorkingDirectory`, `EnvironmentFile`, `
 javelin deploy:native-config
 ```
 
-Generates starter `reflect-config.json` and `resource-config.json` under `resources/META-INF/native-image/javelin/`. Combine with `javelin native` (which runs `mvn -Pnative native:compile`).
+Generates starter `reflect-config.json` and `resource-config.json` under `resources/META-INF/native-image/javelin/`. Combine with `javelin native` (which runs `mvn -Pnative native:compile`). The starter covers Javelin's own provider loading and common resources only; add entries for application-specific providers, reflected DTOs and templates before shipping a native binary.
 
 ## Benchmarks
 

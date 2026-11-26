@@ -64,4 +64,4 @@ Observability.tracer().span("import.users", () -> importer.run());
 - `log` — logs span durations through the structured logger,
 - `otel` — uses OpenTelemetry's global tracer when `opentelemetry-api` is present.
 
-The OTel API dependency is optional, so applications that do not use tracing do not pay for it.
+The OTel API dependency is optional, so applications that do not use tracing do not pay for it. Javelin does **not** install an OTel SDK or exporter: `tracing: otel` alone records spans into `GlobalOpenTelemetry` but exports nothing. Applications must add `opentelemetry-sdk` plus an exporter (for example OTLP or Jaeger) and initialize `GlobalOpenTelemetry` during their own bootstrap, before Javelin providers boot. Without that setup, use `tracing: log` to see span durations in the structured logs.
