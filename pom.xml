@@ -35,6 +35,8 @@
         <module>modules/javelin-scheduler</module>
         <module>modules/javelin-mail</module>
         <module>modules/javelin-provider-loader</module>
+        <module>modules/javelin-observability</module>
+        <module>modules/javelin-deployment</module>
         <module>modules/javelin-queue-rabbitmq</module>
         <module>modules/javelin-queue-valkey</module>
         <module>modules/javelin-queue-file</module>

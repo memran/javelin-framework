@@ -84,6 +84,16 @@
             <artifactId>javelin-provider-loader</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-observability</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-deployment</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <sourceDirectory>.</sourceDirectory>

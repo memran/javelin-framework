@@ -24,6 +24,7 @@ final class ProjectLauncher {
             "cache:clear",
             "config:cache",
             "doctor",
+            "deploy:validate",
             "build"
     );
 

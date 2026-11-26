@@ -2,6 +2,8 @@ package io.javelin.cli.commands;
 
 import io.javelin.cli.AbstractCommand;
 import io.javelin.cli.CommandContext;
+import io.javelin.deployment.ProductionValidator;
+import io.javelin.deployment.ValidationIssue;
 import picocli.CommandLine;
 
 import java.nio.file.Files;
@@ -18,6 +20,12 @@ public final class DoctorCommand extends AbstractCommand {
         context.output().line("Java: " + Runtime.version());
         for (String path : List.of("pom.xml", "config/app.yaml", ".env", "storage")) {
             context.output().line((Files.exists(context.workingDirectory().resolve(path)) ? "OK   " : "MISS ") + path);
+        }
+        if (context.application().isPresent()) {
+            var app = context.application().get();
+            for (ValidationIssue issue : new ProductionValidator().validate(app.config(), app.env())) {
+                context.output().line(issue.toString());
+            }
         }
     }
 }

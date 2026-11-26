@@ -4,6 +4,8 @@ This folder documents the public API of each Javelin module with small usage exa
 
 - [Installation](installation.md) — Prerequisites, CLI install, local artifacts, Docker, troubleshooting
 - [Quick Start](quick-start.md) — Create, build and run your first Javelin app
+- [Observability](modules/observability.md) — health, readiness, metrics, tracing and pool monitoring
+- [Deployment](deployment.md) — production tuning, Docker, proxies, health checks, benchmarks
 - [Provider Loader](modules/provider-loader.md) — manifests, compatibility checks, conflict reports and install
 - [Tutorials](tutorials/README.md) — Step-by-step guides, starting with a secure web app and API
 - [Architecture](architecture.md) — Module dependency graph, design principles, module boundaries, core abstractions
@@ -38,6 +40,8 @@ This folder documents the public API of each Javelin module with small usage exa
 - [Scheduler](modules/scheduler.md) — intervals, cron, daily/weekly/monthly, locks, history and queue dispatch
 - [Events](modules/events.md) — synchronous and queued listeners
 - [Mail](modules/mail.md) — SMTP, Pebble templates, attachments, queued delivery and test transport
+- [Observability](modules/observability.md) — health, readiness, metrics and tracing
+- [Deployment](modules/deployment.md) — config validation, systemd, GraalVM metadata and benchmarks (see also the [deployment guide](deployment.md))
 - [Queue](modules/queue.md) — JobQueue contract, handler registry, worker, dispatch/later facade, retry and shutdown
 - [Queue Database](modules/queue-database.md) — broker-free durable queue using the existing database
 - [Queue Adapters](modules/queue-adapters.md) — file, Valkey/Redis, RabbitMQ and NATS backends

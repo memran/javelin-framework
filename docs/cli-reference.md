@@ -804,6 +804,10 @@ javelin migrate -Ddatabase.url=jdbc:postgresql://prod-host:5432/myapp
 | `cache:clear` | Clear application cache |
 | `config:cache` | Cache configuration |
 | `doctor` | System diagnostics |
+| `deploy:validate` | Validate production configuration |
+| `deploy:service` | Generate a systemd unit |
+| `deploy:native-config` | Generate GraalVM reachability metadata |
+| `bench` | Run a small HTTP load test |
 | `version` | Show version |
 | `ai:install` | Configure AI provider |
 | `ai:chat` | Chat with AI |

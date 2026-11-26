@@ -38,6 +38,21 @@ final class CommandGenerationTest {
     }
 
     @Test
+    void createsDeploymentArtifacts() throws Exception {
+        Path root = Files.createTempDirectory("javelin-deploy-cli");
+        CommandContext context = new CommandContext(null, root,
+                new ConsoleOutput(new PrintWriter(new StringWriter(), true), false));
+        ConsoleKernel kernel = new ConsoleKernel(context);
+
+        assertEquals(0, kernel.run(new String[]{"deploy:service"}));
+        assertEquals(0, kernel.run(new String[]{"deploy:native-config"}));
+
+        assertTrue(Files.readString(root.resolve("deploy/javelin.service")).contains("Restart=on-failure"));
+        assertTrue(Files.exists(root.resolve("resources/META-INF/native-image/javelin/reflect-config.json")));
+        assertTrue(Files.exists(root.resolve("resources/META-INF/native-image/javelin/resource-config.json")));
+    }
+
+    @Test
     void routeListAliasIsAvailable() throws Exception {
         Path root = Files.createTempDirectory("javelin-route-alias");
         Config config = new Config() {
@@ -278,6 +293,8 @@ final class CommandGenerationTest {
         assertTrue(appYaml.contains("driver: test"));
         assertTrue(appYaml.contains("provider:\n  directory: modules"));
         assertTrue(appYaml.contains("ProviderRegistryServiceProvider"));
+        assertTrue(appYaml.contains("metrics_path: /metrics"));
+        assertTrue(appYaml.contains("ObservabilityServiceProvider"));
         assertTrue(Files.exists(project.resolve("resources/views/emails/welcome.peb")));
         assertEquals(1, appYaml.split("(?m)^storage:", -1).length - 1);
         assertTrue(appYaml.contains("request_logging: true"));
@@ -302,6 +319,8 @@ final class CommandGenerationTest {
         assertTrue(generatedPom.contains("javelin-events"));
         assertTrue(generatedPom.contains("javelin-mail"));
         assertTrue(generatedPom.contains("javelin-provider-loader"));
+        assertTrue(generatedPom.contains("javelin-observability"));
+        assertTrue(generatedPom.contains("javelin-deployment"));
         assertTrue(generatedPom.contains("<include>errors/**</include>"));
         assertTrue(Files.exists(project.resolve("logback.xml")));
         assertTrue(Files.exists(project.resolve("logback-prod.xml")));

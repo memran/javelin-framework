@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+      - name: Verify reactor
+        run: mvn -B clean verify
+      - name: Build demo application
+        run: mvn -B -pl demo-app -am package -DskipTests
+      - name: Upload demo jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: javelin-demo-app
+          path: demo-app/target/javelin-demo-app-*.jar

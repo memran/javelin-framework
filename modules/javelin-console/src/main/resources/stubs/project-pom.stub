@@ -127,6 +127,17 @@
             <artifactId>javelin-provider-loader</artifactId>
             <version>${javelin.version}</version>
         </dependency>
+        <!-- Observability endpoints and deployment tooling. -->
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-observability</artifactId>
+            <version>${javelin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-deployment</artifactId>
+            <version>${javelin.version}</version>
+        </dependency>
         <!-- Add workspace-specific application libraries below this line. -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>

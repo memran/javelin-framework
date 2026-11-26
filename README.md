@@ -77,6 +77,8 @@ Core owns the contracts; adapters implement them; the starter wires defaults; ap
 - `modules/javelin-json-jackson` - configurable Jackson mapper for JSON responses and parsing
 - `modules/javelin-console` - Picocli command kernel and generators
 - `modules/javelin-provider-loader` - provider manifests, compatibility checks, conflict reports and install
+- `modules/javelin-observability` - health, readiness, metrics and OpenTelemetry adapter
+- `modules/javelin-deployment` - config validation, systemd units, GraalVM metadata and benchmarks
 - `modules/javelin-security` - secure headers, HSTS/CSP, CORS, CSRF, sessions, session auth, JWT, PBKDF2/BCrypt, rate limiting
 - `modules/javelin-validation` - explicit string-rule Validator for HTML and JSON input
 - `modules/javelin-scheduler` - interval/cron/daily/weekly/monthly schedules, locks and execution history
@@ -101,7 +103,7 @@ Core owns the contracts; adapters implement them; the starter wires defaults; ap
 - [Architecture](docs/architecture.md) — design principles and module dependency graph
 - [Exception handling](docs/modules/exception.md) — global handler, error pages and redaction
 - [Security](docs/modules/security.md) — CORS, CSRF, sessions, JWT and password strategies
-- [Tutorials](docs/tutorials/README.md) — secure web apps, files/cache, jobs, scheduling, events, mail and providers
+- [Tutorials](docs/tutorials/README.md) — secure web apps, files/cache, jobs, scheduling, events, mail, providers and production deployment
 - [Application Flow](docs/application-flow.md) — boot sequence and request lifecycle
 - [Deployment](docs/deployment.md) — production tuning, Docker Compose, proxies, health checks, benchmarks
 - [CLI Reference](docs/cli-reference.md) — every `javelin` command

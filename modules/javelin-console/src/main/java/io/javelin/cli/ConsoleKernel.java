@@ -4,9 +4,13 @@ import io.javelin.cli.commands.AiChatCommand;
 import io.javelin.cli.commands.AiExplainCommand;
 import io.javelin.cli.commands.AiGenerateModuleCommand;
 import io.javelin.cli.commands.AiInstallCommand;
+import io.javelin.cli.commands.BenchCommand;
 import io.javelin.cli.commands.BuildCommand;
 import io.javelin.cli.commands.CacheClearCommand;
 import io.javelin.cli.commands.ConfigCacheCommand;
+import io.javelin.cli.commands.DeployNativeConfigCommand;
+import io.javelin.cli.commands.DeployServiceCommand;
+import io.javelin.cli.commands.DeployValidateCommand;
 import io.javelin.cli.commands.DevCommand;
 import io.javelin.cli.commands.DoctorCommand;
 import io.javelin.cli.commands.MakeControllerCommand;
@@ -110,6 +114,10 @@ public final class ConsoleKernel implements Runnable {
                 .register("cache:clear", () -> new CacheClearCommand(context))
                 .register("config:cache", () -> new ConfigCacheCommand(context))
                 .register("doctor", () -> new DoctorCommand(context))
+                .register("deploy:validate", () -> new DeployValidateCommand(context))
+                .register("deploy:service", () -> new DeployServiceCommand(context))
+                .register("deploy:native-config", () -> new DeployNativeConfigCommand(context))
+                .register("bench", () -> new BenchCommand(context))
                 .register("version", () -> new VersionCommand(context))
                 .register("ai:install", () -> new AiInstallCommand(context))
                 .register("ai:chat", () -> new AiChatCommand(context))

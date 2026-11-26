@@ -155,6 +155,13 @@ scheduler:
   history: database
   lock: database
 
+observability:
+  enabled: true
+  health_path: /health
+  ready_path: /ready
+  metrics_path: /metrics
+  tracing: none
+
 provider:
   directory: modules
   strict: false
@@ -179,6 +186,7 @@ providers:
   - io.javelin.scheduler.SchedulerServiceProvider
   - io.javelin.mail.MailServiceProvider
   - io.javelin.providers.ProviderRegistryServiceProvider
+  - io.javelin.observability.ObservabilityServiceProvider
   - io.javelin.queue.QueueServiceProvider
   - io.javelin.queue.file.FileQueueServiceProvider
   - io.javelin.queue.database.DatabaseQueueServiceProvider

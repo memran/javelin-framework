@@ -8,5 +8,6 @@ Step-by-step guides for building with Javelin:
 - [Scheduling and events](scheduling-and-events.md) — cron/interval schedules, queue dispatch, locks and event listeners.
 - [Sending mail](mail.md) — templates, attachments, SMTP transports and queued delivery.
 - [Distributing providers](provider-distribution.md) — manifests, generators, install and diagnostics.
+- [Production deployment](production-deployment.md) — observability, validation, service packaging and benchmarking.
 
 All tutorials use the runnable `demo-app` in this repository, so you can follow along without creating a project first. For command details see the [CLI Reference](../cli-reference.md); for module APIs see the [Module Index](../README.md).
