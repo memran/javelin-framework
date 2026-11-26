@@ -28,7 +28,7 @@ Optional<Response> response = resolver.resolve(method, path);
 - Blocks path traversal (`..`), paths that normalize outside the root, and symlinks that resolve outside it.
 - Returns `Optional.empty()` when no file matches, so the adapter falls through to the router.
 - Adds `Cache-Control`, a content-based `ETag` computed with a streaming digest, `Accept-Ranges: bytes` and `X-Content-Type-Options: nosniff` to static responses.
-- Full `GET` and `HEAD` responses stream from `Response.file(...)`: the file is never buffered in a `byte[]`. Range responses buffer only the requested bytes; conditional requests read no body at all.
+- Full `GET` and `HEAD` responses stream from `Response.file(...)`; satisfiable ranges stream from `Response.fileRange(...)`. Neither buffers file bytes in a `byte[]`, and conditional requests read no body at all.
 - `If-None-Match` (including `*` and weak `W/` ETags) produces a 304; `Range: bytes=start-end`, `bytes=start-` and `bytes=-suffix` produce a 206 with `Content-Range`, while an unsatisfiable range produces 416. Adapters pass request headers through via `resolve(Request request)`.
 
 ### StaticCachePolicy

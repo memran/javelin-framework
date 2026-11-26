@@ -11,6 +11,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class ResponseTest {
@@ -96,6 +97,24 @@ final class ResponseTest {
         assertEquals("text/plain; charset=utf-8", withAllow.headers().get("Content-Type"));
         assertEquals("ok", new String(withAllow.body(), StandardCharsets.UTF_8));
         assertFalse(original.headers().containsKey("Allow"));
+    }
+
+    @Test
+    void fileRangesStreamOnlyTheRequestedSlice() throws Exception {
+        Path file = Files.createTempFile("javelin-range", ".txt");
+        Files.writeString(file, "0123456789");
+        Response slice = Response.fileRange(file, 3, 6, 206, Map.of("Content-Range", "bytes 3-6/10"));
+
+        assertEquals(206, slice.status());
+        assertEquals("bytes 3-6/10", slice.headers().get("Content-Range"));
+        assertEquals(4, slice.contentLength());
+        assertEquals(0, slice.body().length);
+        assertTrue(slice.bodyStream().isPresent());
+        try (InputStream input = slice.bodyStream().orElseThrow()) {
+            assertEquals("3456", new String(input.readAllBytes(), StandardCharsets.UTF_8));
+        }
+        assertThrows(IllegalArgumentException.class,
+                () -> Response.fileRange(file, 6, 3, 206, Map.of()));
     }
 
     @Test

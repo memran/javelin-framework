@@ -70,7 +70,7 @@ Javelin is not Spring Boot. Keep behavior explicit, modular, and cheap to start.
 
 ## Next Useful Work
 
-- Stream satisfiable byte ranges too, so very large `Range` responses also avoid a `byte[]` buffer.
+- Cache static-asset ETags by size and last-modified time so unchanged files are not re-digested on every request.
 - Add an OTel SDK/exporter example to the demo app and verify exported spans end to end.
 - Extend GraalVM metadata with demo-app-specific providers, DTOs and templates.
 - Add broker-backed RabbitMQ/NATS integration tests for failure, replay and delayed delivery.

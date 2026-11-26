@@ -1,5 +1,6 @@
 package io.javelin.core;
 
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -52,6 +53,44 @@ public class Response {
             return Files.newInputStream(path);
         } catch (IOException exception) {
             throw new UncheckedIOException("Unable to open file " + path, exception);
+        }
+    }
+
+    /**
+     * Streams an inclusive slice of a file with the given status (typically {@code 206}).
+     * The stream stops exactly at {@code end}, so large ranges never need a {@code byte[]}.
+     */
+    public static Response fileRange(Path path, long start, long end, int status, Map<String, String> headers) {
+        Objects.requireNonNull(path, "path");
+        if (start < 0 || end < start) {
+            throw new IllegalArgumentException("Invalid byte range: " + start + "-" + end);
+        }
+        long length = end - start + 1;
+        return new Response(status, headers, new byte[0], () -> openRange(path, start, length), length);
+    }
+
+    private static InputStream openRange(Path path, long start, long length) {
+        InputStream raw = open(path);
+        try {
+            long remaining = start;
+            while (remaining > 0) {
+                long skipped = raw.skip(remaining);
+                if (skipped == 0) {
+                    if (raw.read() == -1) {
+                        break;
+                    }
+                    skipped = 1;
+                }
+                remaining -= skipped;
+            }
+            return new LimitedInputStream(raw, length);
+        } catch (IOException exception) {
+            try {
+                raw.close();
+            } catch (IOException ignored) {
+                // Keep the original failure.
+            }
+            throw new UncheckedIOException("Unable to seek within file " + path, exception);
         }
     }
 
@@ -241,5 +280,50 @@ public class Response {
 
     public byte[] body() {
         return body.clone();
+    }
+
+    private static final class LimitedInputStream extends FilterInputStream {
+        private long remaining;
+
+        LimitedInputStream(InputStream source, long remaining) {
+            super(source);
+            this.remaining = remaining;
+        }
+
+        @Override
+        public int read() throws IOException {
+            if (remaining == 0) {
+                return -1;
+            }
+            int value = super.read();
+            if (value != -1) {
+                remaining--;
+            }
+            return value;
+        }
+
+        @Override
+        public int read(byte[] target, int offset, int length) throws IOException {
+            if (remaining == 0) {
+                return -1;
+            }
+            int count = super.read(target, offset, (int) Math.min(length, remaining));
+            if (count > 0) {
+                remaining -= count;
+            }
+            return count;
+        }
+
+        @Override
+        public long skip(long count) throws IOException {
+            long skipped = super.skip(Math.min(count, remaining));
+            remaining -= skipped;
+            return skipped;
+        }
+
+        @Override
+        public int available() throws IOException {
+            return (int) Math.min(super.available(), remaining);
+        }
     }
 }

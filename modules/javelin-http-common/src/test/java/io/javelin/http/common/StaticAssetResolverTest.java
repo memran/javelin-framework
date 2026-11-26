@@ -94,14 +94,16 @@ final class StaticAssetResolverTest {
         Response malformed = resolver.resolve(request("/app.css", "Range", "bytes=abc")).orElseThrow();
 
         assertEquals(206, first.status());
+        assertTrue(first.bodyStream().isPresent());
+        assertEquals(6, first.contentLength());
         assertEquals("bytes 0-5/" + css.length(), first.headers().get("Content-Range"));
-        assertEquals("body {", new String(first.body(), StandardCharsets.UTF_8));
+        assertEquals("body {", new String(bodyOf(first), StandardCharsets.UTF_8));
         assertEquals(206, suffix.status());
         assertEquals("bytes " + (css.length() - 4) + "-" + (css.length() - 1) + "/" + css.length(),
                 suffix.headers().get("Content-Range"));
-        assertEquals("1; }", new String(suffix.body(), StandardCharsets.UTF_8));
+        assertEquals("1; }", new String(bodyOf(suffix), StandardCharsets.UTF_8));
         assertEquals(206, openEnded.status());
-        assertEquals("color: #111; }", new String(openEnded.body(), StandardCharsets.UTF_8));
+        assertEquals("color: #111; }", new String(bodyOf(openEnded), StandardCharsets.UTF_8));
         assertEquals(416, invalid.status());
         assertEquals("bytes */" + css.length(), invalid.headers().get("Content-Range"));
         assertEquals(200, malformed.status());
@@ -128,10 +130,11 @@ final class StaticAssetResolverTest {
         assertEquals(304, conditional.status());
         assertEquals(0, conditional.body().length);
         assertEquals(206, range.status());
+        assertTrue(range.bodyStream().isPresent());
         assertEquals("bytes 100-199/" + content.length, range.headers().get("Content-Range"));
-        assertArrayEquals(Arrays.copyOfRange(content, 100, 200), range.body());
+        assertArrayEquals(Arrays.copyOfRange(content, 100, 200), bodyOf(range));
         assertEquals(206, suffix.status());
-        assertArrayEquals(Arrays.copyOfRange(content, content.length - 4, content.length), suffix.body());
+        assertArrayEquals(Arrays.copyOfRange(content, content.length - 4, content.length), bodyOf(suffix));
     }
 
     @Test

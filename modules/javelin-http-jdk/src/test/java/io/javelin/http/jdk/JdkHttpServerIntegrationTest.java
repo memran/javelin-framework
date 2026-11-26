@@ -76,6 +76,11 @@ final class JdkHttpServerIntegrationTest {
             HttpResponse<String> response = get(server, "/large.bin");
             assertEquals(200, response.statusCode());
             assertEquals(content.length, response.body().length());
+
+            HttpResponse<String> partial = get(server, "/large.bin", Map.of("Range", "bytes=100-2099"));
+            assertEquals(206, partial.statusCode());
+            assertEquals("bytes 100-2099/" + content.length, header(partial, "Content-Range"));
+            assertEquals(2000, partial.body().length());
         }
     }
 

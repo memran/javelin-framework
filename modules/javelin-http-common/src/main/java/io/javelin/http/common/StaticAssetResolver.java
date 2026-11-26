@@ -94,7 +94,7 @@ public final class StaticAssetResolver {
                     }
                     headers.put("Content-Range",
                             "bytes " + selected.start() + "-" + selected.end() + "/" + size);
-                    return Optional.of(new Response(206, headers, readRange(real, selected)));
+                    return Optional.of(Response.fileRange(real, selected.start(), selected.end(), 206, headers));
                 }
             }
 
@@ -137,7 +137,7 @@ public final class StaticAssetResolver {
                 if (start >= length) {
                     return Optional.of(UNSATISFIABLE);
                 }
-                return Optional.of(bounded(start, length - 1));
+                return Optional.of(new ByteRange(start, length - 1));
             }
             long start = Long.parseLong(spec.substring(0, dash));
             String endText = spec.substring(dash + 1);
@@ -145,15 +145,10 @@ public final class StaticAssetResolver {
             if (start < 0 || start >= length || end < start) {
                 return Optional.of(UNSATISFIABLE);
             }
-            return Optional.of(bounded(start, Math.min(end, length - 1)));
+            return Optional.of(new ByteRange(start, Math.min(end, length - 1)));
         } catch (NumberFormatException exception) {
             return Optional.empty();
         }
-    }
-
-    /** Response bodies are byte arrays, so a single range cannot exceed the array limit. */
-    private static ByteRange bounded(long start, long end) {
-        return new ByteRange(start, Math.min(end, start + Integer.MAX_VALUE - 1L));
     }
 
     /** Digests a file in constant memory so conditional requests never buffer large assets. */
@@ -170,25 +165,6 @@ public final class StaticAssetResolver {
             return "\"" + HexFormat.of().formatHex(digest.digest()) + "\"";
         } catch (NoSuchAlgorithmException exception) {
             throw new IllegalStateException("SHA-256 is unavailable", exception);
-        }
-    }
-
-    /** Reads only the requested bytes; a range response never buffers the whole file. */
-    private static byte[] readRange(Path path, ByteRange range) throws IOException {
-        int length = Math.toIntExact(range.end() - range.start() + 1);
-        try (InputStream stream = Files.newInputStream(path)) {
-            long remaining = range.start();
-            while (remaining > 0) {
-                long skipped = stream.skip(remaining);
-                if (skipped == 0) {
-                    if (stream.read() == -1) {
-                        break;
-                    }
-                    skipped = 1;
-                }
-                remaining -= skipped;
-            }
-            return stream.readNBytes(length);
         }
     }
 

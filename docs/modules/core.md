@@ -275,12 +275,13 @@ Response.stream(inputStream, "text/plain");       // buffered: reads the stream 
 Response.stream(inputStream, "application/json", 200);
 
 Response.file(Path.of("public/report.pdf"), Map.of("Content-Type", "application/pdf")); // streamed
+Response.fileRange(path, 0, 4095, 206, Map.of("Content-Range", "bytes 0-4095/10000"));
 
 Response.noContent();
 Response.noContent(201);
 ```
 
-`Response.file(...)` streams from disk without buffering the whole file. Its `body()` is empty; adapters call `bodyStream()` instead and copy the bytes to the client. Use `withHeader(...)` or `withHeaders(...)` to rewrite headers on a streaming response — constructing a new `Response` from `body()` would drop the stream.
+`Response.file(...)` and `Response.fileRange(...)` stream from disk without buffering the whole file; the range variant emits an inclusive slice with the caller's status (usually 206). Their `body()` is empty; adapters call `bodyStream()` instead and copy the bytes to the client. Use `withHeader(...)` or `withHeaders(...)` to rewrite headers on a streaming response — constructing a new `Response` from `body()` would drop the stream.
 
 ### HtmlResponse, JsonResponse, RedirectResponse
 
