@@ -139,6 +139,32 @@ hey -z 10s -c 50 http://127.0.0.1:8080/
 
 See [Performance Benchmarks](docs/deployment.md#performance-benchmarks) for the full methodology.
 
+### Built-in `bench` CLI and regression suite
+
+`javelin bench` and the `mvn verify` performance tests give repeatable numbers without external tooling. Measured on the same machine against `GET /health` with a 5-second run per concurrency level (November 2026):
+
+| Concurrency | Logging on | Logging off | p50 / p95 (off) | Failures |
+|---:|---:|---:|---:|---:|
+| 1 | 202 req/s | 207 req/s | 3 / 9 ms | 0 |
+| 10 | 708 req/s | 694 req/s | 13 / 27 ms | 0 |
+| 50 | 1,832 req/s | 2,059 req/s | 21 / 44 ms | 0 |
+
+Request logging cost roughly 10% at high concurrency. These are client-inclusive numbers from JDK `HttpClient` on virtual threads, so they are not comparable with the `hey` figures above and are not a server ceiling.
+
+The automated suite (median of three timed rounds) measured these core hot paths, all above their conservative floors:
+
+| Path | Measured |
+|---|---:|
+| Static route lookup | 2.9–4.9M ops/s |
+| Kernel dispatch | 3.4M ops/s |
+| Middleware pipeline (5 layers) | 5.3M ops/s |
+| Parameterized route matching | 1.2M ops/s |
+| Container instance / singleton / factory | 4.6M / 3.9M / 9.0M ops/s |
+| Constructor auto-wiring | 401k ops/s |
+| HTTP loopback (`JdkHttpServer`) | 1,361 req/s |
+
+See the [performance regression suite](docs/modules/deployment.md#performance-regression-suite) for floors and JSON report output.
+
 ## Maven Split
 
 Javelin is designed as two cooperating pieces:
