@@ -65,15 +65,7 @@ public final class StaticAssetResolver {
 
             Optional<String> conditional = header.apply("If-None-Match");
             Optional<String> rangeHeader = upperMethod.equals("GET") ? header.apply("Range") : Optional.empty();
-            byte[] content = null;
-            String etag;
-            if (upperMethod.equals("GET") && conditional.isEmpty() && rangeHeader.isEmpty()) {
-                content = Files.readAllBytes(real);
-                etag = etagOf(content);
-            } else {
-                // Conditional, range and HEAD requests digest the file without buffering it.
-                etag = etagOf(real);
-            }
+            String etag = etagOf(real);
             long size = Files.size(real);
             Map<String, String> headers = new LinkedHashMap<>();
             headers.put("Content-Type", contentTypeOf(real));
@@ -106,10 +98,8 @@ public final class StaticAssetResolver {
                 }
             }
 
-            byte[] body = upperMethod.equals("HEAD")
-                    ? new byte[0]
-                    : (content != null ? content : Files.readAllBytes(real));
-            return Optional.of(new Response(200, headers, body));
+            // GET streams the file; HEAD carries the same length but opens no stream.
+            return Optional.of(Response.file(real, headers));
         } catch (IOException exception) {
             throw new IllegalStateException("Unable to read static asset " + candidate, exception);
         }
@@ -164,15 +154,6 @@ public final class StaticAssetResolver {
     /** Response bodies are byte arrays, so a single range cannot exceed the array limit. */
     private static ByteRange bounded(long start, long end) {
         return new ByteRange(start, Math.min(end, start + Integer.MAX_VALUE - 1L));
-    }
-
-    private static String etagOf(byte[] content) {
-        try {
-            byte[] digest = MessageDigest.getInstance("SHA-256").digest(content);
-            return "\"" + HexFormat.of().formatHex(digest) + "\"";
-        } catch (NoSuchAlgorithmException exception) {
-            throw new IllegalStateException("SHA-256 is unavailable", exception);
-        }
     }
 
     /** Digests a file in constant memory so conditional requests never buffer large assets. */

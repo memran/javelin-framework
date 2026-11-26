@@ -70,7 +70,7 @@ Javelin is not Spring Boot. Keep behavior explicit, modular, and cheap to start.
 
 ## Next Useful Work
 
-- Add a streaming `Response` body contract so full-file static GETs no longer need a `byte[]`.
+- Stream satisfiable byte ranges too, so very large `Range` responses also avoid a `byte[]` buffer.
 - Add an OTel SDK/exporter example to the demo app and verify exported spans end to end.
 - Extend GraalVM metadata with demo-app-specific providers, DTOs and templates.
 - Add broker-backed RabbitMQ/NATS integration tests for failure, replay and delayed delivery.

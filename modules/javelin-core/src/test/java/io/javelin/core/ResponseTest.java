@@ -3,7 +3,10 @@ package io.javelin.core;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -93,5 +96,26 @@ final class ResponseTest {
         assertEquals("text/plain; charset=utf-8", withAllow.headers().get("Content-Type"));
         assertEquals("ok", new String(withAllow.body(), StandardCharsets.UTF_8));
         assertFalse(original.headers().containsKey("Allow"));
+    }
+
+    @Test
+    void fileResponsesStreamWithoutBufferingAndKeepTheirStreamThroughHeaderRewrites() throws Exception {
+        Path file = Files.createTempFile("javelin-response", ".txt");
+        Files.writeString(file, "streamed from disk");
+        Response response = Response.file(file, Map.of("Content-Type", "text/plain"));
+
+        assertTrue(response.bodyStream().isPresent());
+        assertEquals(0, response.body().length);
+        assertEquals(Files.size(file), response.contentLength());
+
+        Response rewritten = response.withHeader("X-Test", "yes").withHeaders(Map.of("X-Only", "1"));
+        assertTrue(rewritten.bodyStream().isPresent());
+        assertEquals("1", rewritten.headers().get("X-Only"));
+        assertEquals(Files.size(file), rewritten.contentLength());
+        for (int attempt = 0; attempt < 2; attempt++) {
+            try (InputStream input = rewritten.bodyStream().orElseThrow()) {
+                assertEquals("streamed from disk", new String(input.readAllBytes(), StandardCharsets.UTF_8));
+            }
+        }
     }
 }

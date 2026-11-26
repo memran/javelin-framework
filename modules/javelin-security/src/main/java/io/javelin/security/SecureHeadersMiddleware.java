@@ -40,6 +40,6 @@ public final class SecureHeadersMiddleware implements Middleware {
         if (!csp.isBlank()) {
             headers.putIfAbsent("Content-Security-Policy", csp);
         }
-        return new Response(response.status(), headers, response.body());
+        return response.withHeaders(headers);
     }
 }

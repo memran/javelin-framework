@@ -15,10 +15,12 @@ import io.javelin.http.common.TrustedProxyResolver;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -134,10 +136,19 @@ public final class JdkHttpServer implements HttpServerAdapter {
         Headers headers = exchange.getResponseHeaders();
         response.headers().forEach(headers::set);
         boolean head = exchange.getRequestMethod().equalsIgnoreCase("HEAD");
-        byte[] body = head ? new byte[0] : response.body();
-        exchange.sendResponseHeaders(response.status(), body.length == 0 ? -1 : body.length);
-        if (body.length > 0) {
-            exchange.getResponseBody().write(body);
+        Optional<InputStream> stream = head ? Optional.empty() : response.bodyStream();
+        if (stream.isPresent()) {
+            long length = response.contentLength();
+            exchange.sendResponseHeaders(response.status(), length == 0 ? -1 : length);
+            try (InputStream input = stream.get(); OutputStream output = exchange.getResponseBody()) {
+                input.transferTo(output);
+            }
+        } else {
+            byte[] body = head ? new byte[0] : response.body();
+            exchange.sendResponseHeaders(response.status(), body.length == 0 ? -1 : body.length);
+            if (body.length > 0) {
+                exchange.getResponseBody().write(body);
+            }
         }
         exchange.close();
     }

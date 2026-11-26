@@ -17,6 +17,8 @@ import io.undertow.util.HeaderValues;
 import io.undertow.util.HttpString;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -24,6 +26,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public final class UndertowHttpServer implements HttpServerAdapter {
     private final String host;
@@ -134,12 +137,20 @@ public final class UndertowHttpServer implements HttpServerAdapter {
         }
 
         boolean head = exchange.getRequestMethod().toString().equalsIgnoreCase("HEAD");
-        byte[] responseBody = head ? new byte[0] : response.body();
+        Optional<InputStream> stream = head ? Optional.empty() : response.bodyStream();
         exchange.setStatusCode(response.status());
         response.headers().forEach((name, value) -> exchange.getResponseHeaders().put(new HttpString(name), value));
-        exchange.setResponseContentLength(responseBody.length);
-        if (responseBody.length > 0) {
-            exchange.getOutputStream().write(responseBody);
+        if (stream.isPresent()) {
+            exchange.setResponseContentLength(response.contentLength());
+            try (InputStream input = stream.get(); OutputStream output = exchange.getOutputStream()) {
+                input.transferTo(output);
+            }
+        } else {
+            byte[] responseBody = head ? new byte[0] : response.body();
+            exchange.setResponseContentLength(responseBody.length);
+            if (responseBody.length > 0) {
+                exchange.getOutputStream().write(responseBody);
+            }
         }
         exchange.endExchange();
     }

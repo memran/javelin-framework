@@ -2,20 +2,67 @@ package io.javelin.core;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 public class Response {
     private final int status;
     private final Map<String, String> headers;
     private final byte[] body;
+    private final Supplier<InputStream> streamSource;
+    private final long streamLength;
 
     public Response(int status, Map<String, String> headers, byte[] body) {
+        this(status, headers, body, null, -1);
+    }
+
+    private Response(int status, Map<String, String> headers, byte[] body,
+                     Supplier<InputStream> streamSource, long streamLength) {
         this.status = status;
         this.headers = new LinkedHashMap<>(headers);
         this.body = body == null ? new byte[0] : body.clone();
+        this.streamSource = streamSource;
+        this.streamLength = streamLength;
+    }
+
+    /**
+     * Streams a file without buffering it. Adapters should prefer {@link #bodyStream()}
+     * over {@link #body()} when a stream is present; {@code body()} is empty for these responses.
+     */
+    public static Response file(Path path, Map<String, String> headers) {
+        Objects.requireNonNull(path, "path");
+        long length;
+        try {
+            length = Files.size(path);
+        } catch (IOException exception) {
+            throw new UncheckedIOException("Unable to stat file " + path, exception);
+        }
+        return new Response(200, headers, new byte[0], () -> open(path), length);
+    }
+
+    private static InputStream open(Path path) {
+        try {
+            return Files.newInputStream(path);
+        } catch (IOException exception) {
+            throw new UncheckedIOException("Unable to open file " + path, exception);
+        }
+    }
+
+    /** Opens a fresh stream for a streaming response, or empty for a buffered response. */
+    public Optional<InputStream> bodyStream() {
+        return streamSource == null ? Optional.empty() : Optional.of(streamSource.get());
+    }
+
+    /** Content length in bytes; {@code -1} for buffered responses without a known length. */
+    public long contentLength() {
+        return streamSource == null ? body.length : streamLength;
     }
 
     public static Response text(String body) {
@@ -169,7 +216,13 @@ public class Response {
         Objects.requireNonNull(value, "value");
         Map<String, String> updated = new LinkedHashMap<>(headers);
         updated.put(name, value);
-        return new Response(status, updated, body);
+        return new Response(status, updated, body, streamSource, streamLength);
+    }
+
+    /** Replaces all headers while preserving a streaming body, for middleware that rewrites headers. */
+    public Response withHeaders(Map<String, String> replacement) {
+        Objects.requireNonNull(replacement, "replacement");
+        return new Response(status, replacement, body, streamSource, streamLength);
     }
 
     /** Adds a Set-Cookie header. Multiple cookies are joined with ", " in this header. */

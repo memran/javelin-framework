@@ -51,6 +51,20 @@ final class NettyHttpServerIntegrationTest {
     }
 
     @Test
+    void streamsLargeStaticAssetsWithoutBuffering() throws Exception {
+        Path root = Files.createTempDirectory("javelin-netty-large");
+        byte[] content = "x".repeat(2 * 1024 * 1024).getBytes(StandardCharsets.UTF_8);
+        Files.write(root.resolve("large.bin"), content);
+        HttpKernel kernel = new HttpKernel(new Router(), new DefaultExceptionHandler());
+
+        try (RunningServer server = startServer(kernel, root, 1_048_576)) {
+            HttpResponse<String> response = get(server, "/large.bin");
+            assertEquals(200, response.statusCode());
+            assertEquals(content.length, response.body().length());
+        }
+    }
+
+    @Test
     void headRequestsFallBackToGetRoutes() throws Exception {
         Router router = new Router();
         router.get("/dynamic", request -> Response.text("hello"));

@@ -271,12 +271,16 @@ Response.download(csvBytes, "report.csv");
 Response.download(pdfBytes, "report.pdf", "application/pdf");
 Response.download(content, "file.bin", "application/octet-stream", 200);
 
-Response.stream(inputStream, "text/plain");
+Response.stream(inputStream, "text/plain");       // buffered: reads the stream into a byte[]
 Response.stream(inputStream, "application/json", 200);
+
+Response.file(Path.of("public/report.pdf"), Map.of("Content-Type", "application/pdf")); // streamed
 
 Response.noContent();
 Response.noContent(201);
 ```
+
+`Response.file(...)` streams from disk without buffering the whole file. Its `body()` is empty; adapters call `bodyStream()` instead and copy the bytes to the client. Use `withHeader(...)` or `withHeaders(...)` to rewrite headers on a streaming response — constructing a new `Response` from `body()` would drop the stream.
 
 ### HtmlResponse, JsonResponse, RedirectResponse
 
@@ -300,7 +304,13 @@ int status = res.status();
 Map<String, String> headers = res.headers();
 byte[] body = res.body();
 Response withAllow = res.withHeader("Allow", "GET, HEAD"); // returns a copy
+Response replaced = res.withHeaders(Map.of("X-Only", "1")); // returns a copy, preserves streams
+
+Optional<InputStream> stream = res.bodyStream(); // present only for streaming responses
+long length = res.contentLength();
 ```
+
+`bodyStream()` opens a fresh stream each time and must be closed by the caller. `contentLength()` is the known byte length for streaming responses and the buffered body length otherwise. Middleware should prefer `withHeader` / `withHeaders` over `new Response(...)` so streaming bodies survive the pipeline.
 
 ## Middleware
 

@@ -14,6 +14,6 @@ public final class DevProfileMiddleware implements Middleware {
         Map<String, String> headers = new LinkedHashMap<>(response.headers());
         headers.put("X-Javelin-Profile", "dev");
         headers.put("Cache-Control", "no-store");
-        return new Response(response.status(), headers, response.body());
+        return response.withHeaders(headers);
     }
 }

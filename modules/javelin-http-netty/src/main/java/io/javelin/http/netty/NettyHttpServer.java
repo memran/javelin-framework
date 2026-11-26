@@ -29,15 +29,22 @@ import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.handler.timeout.ReadTimeoutException;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.DefaultHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http.LastHttpContent;
+import io.netty.handler.stream.ChunkedStream;
+import io.netty.handler.stream.ChunkedWriteHandler;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -47,6 +54,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 public final class NettyHttpServer implements HttpServerAdapter {
@@ -126,6 +134,7 @@ public final class NettyHttpServer implements HttpServerAdapter {
                                 .addLast(new ReadTimeoutHandler(timeouts.request().toSeconds(), TimeUnit.SECONDS))
                                 .addLast(new IdleStateHandler(0, 0, timeouts.idle().toSeconds(), TimeUnit.SECONDS))
                                 .addLast(new HttpObjectAggregator(maxRequestBytes + HEADER_SLACK))
+                                .addLast(new ChunkedWriteHandler())
                                 .addLast(new RequestHandler());
                     }
                 });
@@ -223,8 +232,40 @@ public final class NettyHttpServer implements HttpServerAdapter {
         }
 
         boolean head = message.method().name().equalsIgnoreCase("HEAD");
+        Optional<InputStream> stream = head ? Optional.empty() : response.bodyStream();
+        if (stream.isPresent()) {
+            writeStream(ctx, message, response, stream.get());
+            return;
+        }
         byte[] body = head ? new byte[0] : response.body();
         write(ctx, message, response.status(), body, response.headers());
+    }
+
+    private ChannelFuture writeStream(ChannelHandlerContext ctx, FullHttpRequest message,
+                                      Response response, InputStream input) {
+        boolean keepAlive = message != null && HttpUtil.isKeepAlive(message);
+        HttpResponse outgoing = new DefaultHttpResponse(HttpVersion.HTTP_1_1,
+                HttpResponseStatus.valueOf(response.status()));
+        response.headers().forEach((name, value) -> outgoing.headers().set(name, value));
+        long length = response.contentLength();
+        if (length >= 0) {
+            outgoing.headers().set(HttpHeaderNames.CONTENT_LENGTH, length);
+        }
+        HttpUtil.setKeepAlive(outgoing, keepAlive);
+        ctx.write(outgoing);
+        ctx.write(new ChunkedStream(input, 8192));
+        ChannelFuture last = ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
+        last.addListener(ignored -> {
+            try {
+                input.close();
+            } catch (IOException exception) {
+                // The stream may already be closed by the chunked writer.
+            }
+        });
+        if (!keepAlive) {
+            last.addListener(ChannelFutureListener.CLOSE);
+        }
+        return last;
     }
 
     private ChannelFuture send(ChannelHandlerContext ctx, int status, String text, boolean keepAlive) {

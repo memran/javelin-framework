@@ -5,6 +5,8 @@ import io.javelin.core.Request;
 import io.javelin.core.Response;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,11 +33,13 @@ final class StaticAssetResolverTest {
         Response head = resolver.resolve("HEAD", "/css/app.css").orElseThrow();
 
         assertEquals(200, index.status());
-        assertEquals("<h1>Hello</h1>", new String(index.body(), StandardCharsets.UTF_8));
+        assertTrue(index.bodyStream().isPresent());
+        assertEquals("<h1>Hello</h1>", new String(bodyOf(index), StandardCharsets.UTF_8));
         assertEquals("text/html; charset=utf-8", index.headers().get("Content-Type"));
         assertEquals("text/css; charset=utf-8", stylesheet.headers().get("Content-Type"));
-        assertEquals("body { color: #111; }", new String(stylesheet.body(), StandardCharsets.UTF_8));
+        assertEquals("body { color: #111; }", new String(bodyOf(stylesheet), StandardCharsets.UTF_8));
         assertEquals(0, head.body().length);
+        assertEquals(21, head.contentLength());
         assertTrue(resolver.resolve("GET", "/../secret.txt").isEmpty());
         assertTrue(resolver.resolve("POST", "/css/app.css").isEmpty());
     }
@@ -139,6 +143,15 @@ final class StaticAssetResolverTest {
                 .resolve("GET", "/app.css").orElseThrow();
 
         assertEquals("public, max-age=31536000, immutable", response.headers().get("Cache-Control"));
+    }
+
+    private static byte[] bodyOf(Response response) throws IOException {
+        if (response.bodyStream().isEmpty()) {
+            return response.body();
+        }
+        try (InputStream input = response.bodyStream().orElseThrow()) {
+            return input.readAllBytes();
+        }
     }
 
     private static Request request(String path, String header, String value) {

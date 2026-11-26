@@ -66,6 +66,20 @@ final class JdkHttpServerIntegrationTest {
     }
 
     @Test
+    void streamsLargeStaticAssetsWithoutBuffering() throws Exception {
+        Path root = Files.createTempDirectory("javelin-http-large");
+        byte[] content = "x".repeat(2 * 1024 * 1024).getBytes(StandardCharsets.UTF_8);
+        Files.write(root.resolve("large.bin"), content);
+        HttpKernel kernel = new HttpKernel(new Router(), new DefaultExceptionHandler());
+
+        try (RunningServer server = startServer(kernel, List.of(), root)) {
+            HttpResponse<String> response = get(server, "/large.bin");
+            assertEquals(200, response.statusCode());
+            assertEquals(content.length, response.body().length());
+        }
+    }
+
+    @Test
     void parsesMultipartRequestsAndSavesUploadedFilesOnARealServer() throws Exception {
         Path root = Files.createTempDirectory("javelin-http-multipart");
         Path uploads = root.resolve("uploads");
@@ -209,10 +223,7 @@ final class JdkHttpServerIntegrationTest {
         Path root = Files.createTempDirectory("javelin-http-static-middleware");
         Files.writeString(root.resolve("asset.txt"), "asset", StandardCharsets.UTF_8);
         Router router = new Router();
-        router.middleware((request, next) -> {
-            Response response = next.handle(request);
-            return new Response(response.status(), Map.of("X-Middleware", "yes"), response.body());
-        });
+        router.middleware((request, next) -> next.handle(request).withHeader("X-Middleware", "yes"));
         HttpKernel kernel = new HttpKernel(router, new DefaultExceptionHandler());
 
         try (RunningServer server = startServer(kernel, List.of(), root)) {
