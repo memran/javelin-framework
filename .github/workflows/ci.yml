@@ -26,10 +26,15 @@ jobs:
         with:
           name: javelin-demo-app
           path: demo-app/target/javelin-demo-app-*.jar
+      - name: Aggregate performance reports
+        if: always()
+        run: python scripts/aggregate-performance.py
       - name: Upload performance reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: javelin-performance-reports
-          path: modules/javelin-deployment/target/performance-*.json
+          path: |
+            modules/javelin-deployment/target/performance-*.json
+            target/performance-report.json
           if-no-files-found: warn

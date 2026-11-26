@@ -35,7 +35,13 @@ Generates `deploy/billing.service` with `WorkingDirectory`, `EnvironmentFile`, `
 javelin deploy:native-config
 ```
 
-Generates starter `reflect-config.json` and `resource-config.json` under `resources/META-INF/native-image/javelin/`. Combine with `javelin native` (which runs `mvn -Pnative native:compile`). The starter covers Javelin's own provider loading and common resources only; add entries for application-specific providers, reflected DTOs and templates before shipping a native binary.
+Generates starter `reflect-config.json` and `resource-config.json` under `resources/META-INF/native-image/javelin/`. Combine with `javelin native` (which runs `mvn -Pnative native:compile`). The starter covers Javelin's own provider loading and common resources only. Add application classes and resource patterns explicitly:
+
+```bash
+javelin deploy:native-config --class app.providers.BillingProvider --resource 'errors/.*'
+```
+
+`demo-app/resources/META-INF/native-image/demo/` shows a committed example covering the demo controllers, providers, jobs, DTOs, templates and error pages.
 
 ## Benchmarks
 
@@ -56,7 +62,7 @@ javelin bench --url http://127.0.0.1:8080/health --concurrency 20 --seconds 10
 
 Each suite warms up, takes the median of three timed rounds (one round for the HTTP load test), and asserts conservative throughput floors. Floors are deliberately well below typical local results so CI hardware variance does not cause flakes; they catch order-of-magnitude regressions, not micro-optimizations.
 
-Results print as `[PERF] ...` lines and are written as JSON to `modules/javelin-deployment/target/performance-core.json` and `performance-http-jdk.json` for dashboards. GitHub Actions publishes those files as the `javelin-performance-reports` artifact on every CI run. Run on quiet hardware for comparable numbers; use `javelin bench` or the longer manual tests in [deployment.md](../deployment.md) for production-sizing figures.
+Results print as `[PERF] ...` lines and are written as JSON to `modules/javelin-deployment/target/performance-core.json` and `performance-http-jdk.json` for dashboards. `python scripts/aggregate-performance.py` combines them into `target/performance-report.json`; GitHub Actions runs it and publishes all three files as the `javelin-performance-reports` artifact on every CI run. Run on quiet hardware for comparable numbers; use `javelin bench` or the longer manual tests in [deployment.md](../deployment.md) for production-sizing figures.
 
 ## CI/CD
 

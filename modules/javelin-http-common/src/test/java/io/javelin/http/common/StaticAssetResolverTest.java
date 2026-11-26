@@ -10,12 +10,15 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class StaticAssetResolverTest {
@@ -78,6 +81,23 @@ final class StaticAssetResolverTest {
         assertEquals(304, weakInList.status());
         assertEquals(304, wildcard.status());
         assertEquals(200, changed.status());
+    }
+
+    @Test
+    void reusesEtagsUntilAFileChanges() throws Exception {
+        Path root = Files.createTempDirectory("javelin-static-etag-cache");
+        Path file = root.resolve("app.css");
+        Files.writeString(file, "body { color: #111; }");
+        StaticAssetResolver resolver = new StaticAssetResolver(root);
+
+        String first = resolver.resolve("GET", "/app.css").orElseThrow().headers().get("ETag");
+        String cached = resolver.resolve("GET", "/app.css").orElseThrow().headers().get("ETag");
+        assertEquals(first, cached);
+
+        Files.writeString(file, "body { color: #222; }");
+        Files.setLastModifiedTime(file, FileTime.from(Instant.now().plusSeconds(1)));
+        String changed = resolver.resolve("GET", "/app.css").orElseThrow().headers().get("ETag");
+        assertNotEquals(first, changed);
     }
 
     @Test

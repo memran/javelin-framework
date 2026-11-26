@@ -1,0 +1,9 @@
+{
+  "resources": [
+    {"pattern": "errors/.*"},
+    {"pattern": "resources/views/.*"},
+    {"pattern": "resources/assets/.*"},
+    {"pattern": "app/views/.*"},
+    {"pattern": "config/.*"}
+  ]
+}

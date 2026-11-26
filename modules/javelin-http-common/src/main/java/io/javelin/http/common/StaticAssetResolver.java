@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HexFormat;
@@ -16,14 +17,17 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 /** Resolves static files under a fixed public root, with caching, conditional and range support. */
 public final class StaticAssetResolver {
     private static final ByteRange UNSATISFIABLE = new ByteRange(-1, -1);
+    private static final int MAX_ETAG_ENTRIES = 1024;
 
     private final Path rootDirectory;
     private final StaticCachePolicy cachePolicy;
+    private final Map<Path, EtagEntry> etagCache = new ConcurrentHashMap<>();
 
     public StaticAssetResolver(Path rootDirectory) {
         this(rootDirectory, StaticCachePolicy.DEFAULT);
@@ -151,8 +155,27 @@ public final class StaticAssetResolver {
         }
     }
 
+    /**
+     * Reuses a content digest while a file's size and last-modified time are unchanged.
+     * A cheap stat avoids re-reading an unchanged asset on every request.
+     */
+    private String etagOf(Path path) throws IOException {
+        long size = Files.size(path);
+        FileTime modified = Files.getLastModifiedTime(path);
+        EtagEntry cached = etagCache.get(path);
+        if (cached != null && cached.size() == size && cached.modified().equals(modified)) {
+            return cached.etag();
+        }
+        String etag = digest(path);
+        if (etagCache.size() >= MAX_ETAG_ENTRIES) {
+            etagCache.clear();
+        }
+        etagCache.put(path, new EtagEntry(size, modified, etag));
+        return etag;
+    }
+
     /** Digests a file in constant memory so conditional requests never buffer large assets. */
-    private static String etagOf(Path path) throws IOException {
+    private static String digest(Path path) throws IOException {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             try (InputStream stream = Files.newInputStream(path)) {
@@ -166,6 +189,9 @@ public final class StaticAssetResolver {
         } catch (NoSuchAlgorithmException exception) {
             throw new IllegalStateException("SHA-256 is unavailable", exception);
         }
+    }
+
+    private record EtagEntry(long size, FileTime modified, String etag) {
     }
 
     private String contentTypeOf(Path path) throws IOException {

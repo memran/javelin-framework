@@ -54,6 +54,19 @@ final class DeploymentTest {
     }
 
     @Test
+    void graalvmConfigIncludesExplicitApplicationEntries(@TempDir Path dir) throws Exception {
+        List<Path> files = new GraalvmConfigGenerator().write(dir,
+                List.of("app.providers.BillingProvider"), List.of("errors/.*"));
+
+        String reflect = Files.readString(files.get(0));
+        String resources = Files.readString(files.get(1));
+        assertTrue(reflect.contains("io.javelin.core.Application"));
+        assertTrue(reflect.contains("app.providers.BillingProvider"));
+        assertTrue(resources.contains("config/.*"));
+        assertTrue(resources.contains("errors/.*"));
+    }
+
+    @Test
     void benchmarkRunnerReportsThroughput() throws Exception {
         HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
         server.createContext("/health", exchange -> {

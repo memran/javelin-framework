@@ -45,11 +45,16 @@ final class CommandGenerationTest {
         ConsoleKernel kernel = new ConsoleKernel(context);
 
         assertEquals(0, kernel.run(new String[]{"deploy:service"}));
-        assertEquals(0, kernel.run(new String[]{"deploy:native-config"}));
+        assertEquals(0, kernel.run(new String[]{"deploy:native-config",
+                "--class", "app.providers.BillingProvider", "--resource", "errors/.*"}));
 
         assertTrue(Files.readString(root.resolve("deploy/javelin.service")).contains("Restart=on-failure"));
-        assertTrue(Files.exists(root.resolve("resources/META-INF/native-image/javelin/reflect-config.json")));
-        assertTrue(Files.exists(root.resolve("resources/META-INF/native-image/javelin/resource-config.json")));
+        Path reflect = root.resolve("resources/META-INF/native-image/javelin/reflect-config.json");
+        Path resources = root.resolve("resources/META-INF/native-image/javelin/resource-config.json");
+        assertTrue(Files.exists(reflect));
+        assertTrue(Files.exists(resources));
+        assertTrue(Files.readString(reflect).contains("app.providers.BillingProvider"));
+        assertTrue(Files.readString(resources).contains("errors/.*"));
     }
 
     @Test

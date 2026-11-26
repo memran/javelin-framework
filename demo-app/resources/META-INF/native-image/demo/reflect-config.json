@@ -1,0 +1,18 @@
+[
+  {"name": "Main", "allDeclaredMethods": true, "allDeclaredConstructors": true},
+  {"name": "routes.web", "allDeclaredMethods": true, "allDeclaredConstructors": true},
+  {"name": "app.providers.AppServiceProvider", "allDeclaredMethods": true, "allDeclaredConstructors": true},
+  {"name": "app.views.JavelinViewExtension", "allDeclaredMethods": true, "allDeclaredConstructors": true},
+  {"name": "app.validation.AdultAgeRule", "allDeclaredMethods": true, "allDeclaredConstructors": true},
+  {"name": "app.events.UserRegisteredEvent", "allDeclaredMethods": true, "allDeclaredConstructors": true},
+  {"name": "app.controllers.UserController", "allDeclaredMethods": true, "allDeclaredConstructors": true},
+  {"name": "app.controllers.BackendController", "allDeclaredMethods": true, "allDeclaredConstructors": true},
+  {"name": "app.controllers.AutomationExampleController", "allDeclaredMethods": true, "allDeclaredConstructors": true},
+  {"name": "app.controllers.HomeController", "allDeclaredMethods": true, "allDeclaredConstructors": true},
+  {"name": "app.controllers.QueueExampleController", "allDeclaredMethods": true, "allDeclaredConstructors": true},
+  {"name": "app.controllers.SecurityExampleController", "allDeclaredMethods": true, "allDeclaredConstructors": true},
+  {"name": "app.controllers.StorageExampleController", "allDeclaredMethods": true, "allDeclaredConstructors": true},
+  {"name": "app.jobs.InvoiceJob", "allDeclaredMethods": true, "allDeclaredConstructors": true},
+  {"name": "app.jobs.SendEmailJob", "allDeclaredMethods": true, "allDeclaredConstructors": true},
+  {"name": "app.jobs.DemoScheduleJob", "allDeclaredMethods": true, "allDeclaredConstructors": true}
+]
