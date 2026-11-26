@@ -137,6 +137,15 @@ cors:
 secrets:
   dir: secrets
 
+scheduler:
+  enabled: true
+  poll_interval_ms: 1000
+  lock_ttl_seconds: 120
+  timezone: UTC
+  owner: ${HOSTNAME:demo}
+  history: database
+  lock: database
+
 providers:
   - app.providers.AppServiceProvider
   - io.javelin.json.jackson.JacksonJsonServiceProvider
@@ -151,6 +160,8 @@ providers:
   - io.javelin.storage.StorageServiceProvider
   - io.javelin.cache.caffeine.CaffeineCacheServiceProvider
   - io.javelin.cache.valkey.ValkeyCacheServiceProvider
+  - io.javelin.events.EventServiceProvider
+  - io.javelin.scheduler.SchedulerServiceProvider
   - io.javelin.queue.QueueServiceProvider
   - io.javelin.queue.file.FileQueueServiceProvider
   - io.javelin.queue.database.DatabaseQueueServiceProvider

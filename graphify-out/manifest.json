@@ -36,9 +36,9 @@
     "semantic_hash": ""
   },
   "demo-app/config/app.yaml": {
-    "mtime": 1795677281.3028893,
-    "seen": 1795678109.7740247,
-    "ast_hash": "7887b2fafbff0905c49877ee62d34d9f",
+    "mtime": 1795679680.8014584,
+    "seen": 1795680273.0424964,
+    "ast_hash": "3d8906273edb728d92b7247d1cd1ae39",
     "semantic_hash": ""
   },
   "demo-app/config/view.yml": {
@@ -48,15 +48,15 @@
     "semantic_hash": ""
   },
   "demo-app/pom.xml": {
-    "mtime": 1795677371.1147873,
-    "seen": 1795678109.7740352,
-    "ast_hash": "176da1e1d6ab677c2169de3c31b5e965",
+    "mtime": 1795679736.9021978,
+    "seen": 1795680273.0425043,
+    "ast_hash": "72b3b6782d5d5be940a81e7216317e59",
     "semantic_hash": ""
   },
   "demo-app/routes/web.java": {
-    "mtime": 1795677580.1821582,
-    "seen": 1795678109.7740395,
-    "ast_hash": "9b03360656c9e2c53912e41a6d5b3e3b",
+    "mtime": 1795679821.7900023,
+    "seen": 1795680273.042507,
+    "ast_hash": "56d642ae24216589c5e0de9051cc2901",
     "semantic_hash": ""
   },
   "install.ps1": {
@@ -132,9 +132,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-console/pom.xml": {
-    "mtime": 1795676922.6456592,
-    "seen": 1795678109.7740958,
-    "ast_hash": "e04fd0248b0662c220b1053369ab4cdd",
+    "mtime": 1795679582.284347,
+    "seen": 1795680273.0425546,
+    "ast_hash": "4561e72b5e8c6cf598777f43abef9675",
     "semantic_hash": ""
   },
   "modules/javelin-console/src/main/java/io/javelin/cli/AbstractCommand.java": {
@@ -318,9 +318,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-console/src/main/java/io/javelin/cli/commands/ScheduleRunCommand.java": {
-    "mtime": 1777240177.9607906,
-    "seen": 1795452651.0134284,
-    "ast_hash": "acae23c031c833bb57260c0a8888b7ba",
+    "mtime": 1795679599.2499897,
+    "seen": 1795680273.0425913,
+    "ast_hash": "bb8a89aef470426801edbf46cb930525",
     "semantic_hash": ""
   },
   "modules/javelin-console/src/main/java/io/javelin/cli/commands/SeedCommand.java": {
@@ -432,9 +432,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-console/src/test/java/io/javelin/cli/CommandGenerationTest.java": {
-    "mtime": 1795677398.1679025,
-    "seen": 1795678109.774168,
-    "ast_hash": "ea8fac2b892a29d7d26550a85c620657",
+    "mtime": 1795679853.9250064,
+    "seen": 1795680273.0426135,
+    "ast_hash": "a235faa46e7f217bd7e5382475af7cac",
     "semantic_hash": ""
   },
   "modules/javelin-console/src/test/java/io/javelin/cli/commands/MigrationCommandTest.java": {
@@ -804,9 +804,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-starter/pom.xml": {
-    "mtime": 1795676820.5707114,
-    "seen": 1795678109.7744162,
-    "ast_hash": "3ffa5f7e41a003765e19ef8434a1f719",
+    "mtime": 1795679475.5810144,
+    "seen": 1795680273.0429761,
+    "ast_hash": "23e5e2fc9e7bd19464efe0d8d67ced23",
     "semantic_hash": ""
   },
   "modules/javelin-starter/src/main/java/io/javelin/starter/Javelin.java": {
@@ -1002,15 +1002,15 @@
     "semantic_hash": ""
   },
   "pom.xml": {
-    "mtime": 1795676806.9299126,
-    "seen": 1795678109.7744799,
-    "ast_hash": "53d78b765f764a566ec95e54aecdc574",
+    "mtime": 1795679457.937493,
+    "seen": 1795680273.0430377,
+    "ast_hash": "b552b117356b836742e1d75caf589839",
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1795678090.7569897,
-    "seen": 1795678109.7744808,
-    "ast_hash": "11c647d2892cc81e89ab4b7f4b141a7f",
+    "mtime": 1795680075.282251,
+    "seen": 1795680273.0430386,
+    "ast_hash": "6840e1cc69983dea1e4903b3b8cd296c",
     "semantic_hash": ""
   },
   "agents.md": {
@@ -1020,9 +1020,9 @@
     "semantic_hash": ""
   },
   "docs/README.md": {
-    "mtime": 1795677669.8071084,
-    "seen": 1795678109.7744849,
-    "ast_hash": "a6121e3633f4ed5c3a5e4a3b2d4e4330",
+    "mtime": 1795679989.8322484,
+    "seen": 1795680273.043042,
+    "ast_hash": "8331c8b89c2cbe975b48d8237b455d24",
     "semantic_hash": ""
   },
   "docs/application-flow.md": {
@@ -1362,9 +1362,9 @@
     "semantic_hash": ""
   },
   "demo-app/docker-app.yaml": {
-    "mtime": 1795677358.2887323,
-    "seen": 1795678109.7740295,
-    "ast_hash": "c113a5461bc15d758ec33cd6478f0f1e",
+    "mtime": 1795679723.4680371,
+    "seen": 1795680273.0425005,
+    "ast_hash": "c062b15484d2f97cb5eb8005c99da463",
     "semantic_hash": ""
   },
   "demo-app/docker-compose.yml": {
@@ -2052,9 +2052,9 @@
     "semantic_hash": ""
   },
   "docs/tutorials/README.md": {
-    "mtime": 1795677684.0649602,
-    "seen": 1795678109.7745268,
-    "ast_hash": "243eeb05d7b140cee15d754ab04219f2",
+    "mtime": 1795680002.1483798,
+    "seen": 1795680273.043083,
+    "ast_hash": "2ac802568c3fdf93e48d751257e218ae",
     "semantic_hash": ""
   },
   "docs/tutorials/secure-web-app.md": {
@@ -2373,6 +2373,198 @@
     "mtime": 1795677653.610162,
     "seen": 1795678109.774528,
     "ast_hash": "cb38501e7d72d6a638edd22c26d8210c",
+    "semantic_hash": ""
+  },
+  "demo-app/app/controllers/AutomationExampleController.java": {
+    "mtime": 1795679778.4551835,
+    "seen": 1795680273.0424623,
+    "ast_hash": "05af67b70449630b4f28db6b0892fbf3",
+    "semantic_hash": ""
+  },
+  "demo-app/app/events/UserRegisteredEvent.java": {
+    "mtime": 1795679764.905104,
+    "seen": 1795680273.0424812,
+    "ast_hash": "a01ad4ab3720195f0c34bdebb4657da2",
+    "semantic_hash": ""
+  },
+  "demo-app/app/jobs/DemoScheduleJob.java": {
+    "mtime": 1795679750.7715032,
+    "seen": 1795680273.0424829,
+    "ast_hash": "9b9b64a2c5ded8dcfc05b8533bc5f080",
+    "semantic_hash": ""
+  },
+  "modules/javelin-events/pom.xml": {
+    "mtime": 1795679048.585544,
+    "seen": 1795680273.0428026,
+    "ast_hash": "98ed36435d1ea0dec81c4e79df5dd684",
+    "semantic_hash": ""
+  },
+  "modules/javelin-events/src/main/java/io/javelin/events/DefaultEventDispatcher.java": {
+    "mtime": 1795679105.2743127,
+    "seen": 1795680273.0428052,
+    "ast_hash": "0f92056b8ec846dea394238ef76695f4",
+    "semantic_hash": ""
+  },
+  "modules/javelin-events/src/main/java/io/javelin/events/EventDispatcher.java": {
+    "mtime": 1795679077.7594666,
+    "seen": 1795680273.0428076,
+    "ast_hash": "97aee6600dabd304fc0286714b68ce0b",
+    "semantic_hash": ""
+  },
+  "modules/javelin-events/src/main/java/io/javelin/events/EventListener.java": {
+    "mtime": 1795679065.2233832,
+    "seen": 1795680273.0428102,
+    "ast_hash": "7a38c36b0720c7dbe169b752caff9b65",
+    "semantic_hash": ""
+  },
+  "modules/javelin-events/src/main/java/io/javelin/events/EventServiceProvider.java": {
+    "mtime": 1795679132.071798,
+    "seen": 1795680273.0428112,
+    "ast_hash": "dfc9d9093e9eaf72b57c7cadc7781248",
+    "semantic_hash": ""
+  },
+  "modules/javelin-events/src/main/java/io/javelin/events/Events.java": {
+    "mtime": 1795679118.183434,
+    "seen": 1795680273.0428119,
+    "ast_hash": "23d7ce231ff57b87b3b3a7c2ba09caf7",
+    "semantic_hash": ""
+  },
+  "modules/javelin-events/src/main/java/io/javelin/events/QueuedEvent.java": {
+    "mtime": 1795679090.861126,
+    "seen": 1795680273.0428133,
+    "ast_hash": "9eb93069ba9a92ed5280f10cf6621d26",
+    "semantic_hash": ""
+  },
+  "modules/javelin-events/src/test/java/io/javelin/events/EventDispatcherTest.java": {
+    "mtime": 1795679510.9447515,
+    "seen": 1795680273.042814,
+    "ast_hash": "da3b3e6b00dbd3845702809da57cbdad",
+    "semantic_hash": ""
+  },
+  "modules/javelin-scheduler/pom.xml": {
+    "mtime": 1795679178.1178553,
+    "seen": 1795680273.0429225,
+    "ast_hash": "500a3ec334a0043189577e529b6f0434",
+    "semantic_hash": ""
+  },
+  "modules/javelin-scheduler/src/main/java/io/javelin/scheduler/CronExpression.java": {
+    "mtime": 1795679242.59181,
+    "seen": 1795680273.0429237,
+    "ast_hash": "14a0d37d798cb966089ec36930de395a",
+    "semantic_hash": ""
+  },
+  "modules/javelin-scheduler/src/main/java/io/javelin/scheduler/DatabaseExecutionHistory.java": {
+    "mtime": 1795679326.4320598,
+    "seen": 1795680273.042925,
+    "ast_hash": "a079fb47d533ac520e68f58c9ed743aa",
+    "semantic_hash": ""
+  },
+  "modules/javelin-scheduler/src/main/java/io/javelin/scheduler/DatabaseSchedulerLock.java": {
+    "mtime": 1795679372.4729748,
+    "seen": 1795680273.0429256,
+    "ast_hash": "903ed2d51a4e5afdb8a091b0c69850aa",
+    "semantic_hash": ""
+  },
+  "modules/javelin-scheduler/src/main/java/io/javelin/scheduler/ExecutionHistory.java": {
+    "mtime": 1795679292.1595123,
+    "seen": 1795680273.0429263,
+    "ast_hash": "eedda721c2acf714cf910fbc8118704a",
+    "semantic_hash": ""
+  },
+  "modules/javelin-scheduler/src/main/java/io/javelin/scheduler/ExecutionRecord.java": {
+    "mtime": 1795679277.035855,
+    "seen": 1795680273.0429273,
+    "ast_hash": "890b7f7fb227d42eaee564b2f8304202",
+    "semantic_hash": ""
+  },
+  "modules/javelin-scheduler/src/main/java/io/javelin/scheduler/InMemoryExecutionHistory.java": {
+    "mtime": 1795679308.4135623,
+    "seen": 1795680273.0429282,
+    "ast_hash": "f7fafc47c76b498ac783408fade217c1",
+    "semantic_hash": ""
+  },
+  "modules/javelin-scheduler/src/main/java/io/javelin/scheduler/InMemorySchedulerLock.java": {
+    "mtime": 1795679355.2022815,
+    "seen": 1795680273.0429292,
+    "ast_hash": "058d329396fa489597f140ec2f7864e1",
+    "semantic_hash": ""
+  },
+  "modules/javelin-scheduler/src/main/java/io/javelin/scheduler/ScheduleSpec.java": {
+    "mtime": 1795679205.8103366,
+    "seen": 1795680273.04293,
+    "ast_hash": "816222130c041247ded45a59cdd20b14",
+    "semantic_hash": ""
+  },
+  "modules/javelin-scheduler/src/main/java/io/javelin/scheduler/ScheduledTask.java": {
+    "mtime": 1795679192.9234703,
+    "seen": 1795680273.0429306,
+    "ast_hash": "97ec27af724f0fd31d849fd8836a323a",
+    "semantic_hash": ""
+  },
+  "modules/javelin-scheduler/src/main/java/io/javelin/scheduler/Scheduler.java": {
+    "mtime": 1795679407.3673122,
+    "seen": 1795680273.0429318,
+    "ast_hash": "937d29289f27db8c7e68f35fcd289c39",
+    "semantic_hash": ""
+  },
+  "modules/javelin-scheduler/src/main/java/io/javelin/scheduler/SchedulerConfig.java": {
+    "mtime": 1795679388.0546215,
+    "seen": 1795680273.0429325,
+    "ast_hash": "801ff4c599fe8ddc09df305ea07c1207",
+    "semantic_hash": ""
+  },
+  "modules/javelin-scheduler/src/main/java/io/javelin/scheduler/SchedulerLock.java": {
+    "mtime": 1795679339.0333562,
+    "seen": 1795680273.0429332,
+    "ast_hash": "59b4d28b9150aed5ab47671cb215e52e",
+    "semantic_hash": ""
+  },
+  "modules/javelin-scheduler/src/main/java/io/javelin/scheduler/SchedulerServiceProvider.java": {
+    "mtime": 1795679443.0547283,
+    "seen": 1795680273.042935,
+    "ast_hash": "33dca246f3758758df8160fb1f30d00c",
+    "semantic_hash": ""
+  },
+  "modules/javelin-scheduler/src/main/java/io/javelin/scheduler/Schedules.java": {
+    "mtime": 1795679222.5981388,
+    "seen": 1795680273.0429356,
+    "ast_hash": "51d430f674f52838c4672076cf3906e2",
+    "semantic_hash": ""
+  },
+  "modules/javelin-scheduler/src/main/java/io/javelin/scheduler/TaskDefinition.java": {
+    "mtime": 1795679260.752379,
+    "seen": 1795680273.0429363,
+    "ast_hash": "40edada155a1e9108c1e1f7a5b1d00cb",
+    "semantic_hash": ""
+  },
+  "modules/javelin-scheduler/src/main/java/io/javelin/schedules/Schedule.java": {
+    "mtime": 1795679425.784011,
+    "seen": 1795680273.0429375,
+    "ast_hash": "db714ac035a68dcdecb50ea4de7c29a1",
+    "semantic_hash": ""
+  },
+  "modules/javelin-scheduler/src/test/java/io/javelin/scheduler/SchedulerTest.java": {
+    "mtime": 1795679494.8313444,
+    "seen": 1795680273.0429385,
+    "ast_hash": "12608da68e633c66b0ab912c785c46c5",
+    "semantic_hash": ""
+  },
+  "docs/modules/events.md": {
+    "mtime": 1795679960.598031,
+    "seen": 1795680273.0430593,
+    "ast_hash": "494b30fc21db7f85c88f0f08386888ba",
+    "semantic_hash": ""
+  },
+  "docs/modules/scheduler.md": {
+    "mtime": 1795679941.5700893,
+    "seen": 1795680273.0430744,
+    "ast_hash": "454fe304694764283363f8b1132996cd",
+    "semantic_hash": ""
+  },
+  "docs/tutorials/scheduling-and-events.md": {
+    "mtime": 1795679977.1177766,
+    "seen": 1795680273.043087,
+    "ast_hash": "d0940b29a9b545ad97aa68b11288435a",
     "semantic_hash": ""
   }
 }

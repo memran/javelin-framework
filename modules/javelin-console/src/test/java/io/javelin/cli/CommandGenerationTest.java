@@ -234,6 +234,9 @@ final class CommandGenerationTest {
         assertTrue(appYaml.contains("worker:"));
         assertTrue(appYaml.contains("backoff: exponential"));
         assertTrue(appYaml.contains("QueueServiceProvider"));
+        assertTrue(appYaml.contains("SchedulerServiceProvider"));
+        assertTrue(appYaml.contains("EventServiceProvider"));
+        assertTrue(appYaml.contains("poll_interval_ms: 1000"));
         assertEquals(1, appYaml.split("(?m)^storage:", -1).length - 1);
         assertTrue(appYaml.contains("request_logging: true"));
         assertTrue(appYaml.contains("correlation_id_header: X-Correlation-ID"));
@@ -253,6 +256,8 @@ final class CommandGenerationTest {
         assertTrue(generatedPom.contains("META-INF/*.SF"));
         assertTrue(generatedPom.contains("javelin-queue"));
         assertTrue(generatedPom.contains("javelin-queue-file"));
+        assertTrue(generatedPom.contains("javelin-scheduler"));
+        assertTrue(generatedPom.contains("javelin-events"));
         assertTrue(generatedPom.contains("<include>errors/**</include>"));
         assertTrue(Files.exists(project.resolve("logback.xml")));
         assertTrue(Files.exists(project.resolve("logback-prod.xml")));

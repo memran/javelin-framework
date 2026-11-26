@@ -104,6 +104,17 @@
             <artifactId>javelin-queue-nats</artifactId>
             <version>${javelin.version}</version>
         </dependency>
+        <!-- Scheduler and event dispatcher. -->
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-scheduler</artifactId>
+            <version>${javelin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-events</artifactId>
+            <version>${javelin.version}</version>
+        </dependency>
         <!-- Add workspace-specific application libraries below this line. -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>

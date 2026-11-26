@@ -78,6 +78,8 @@ Core owns the contracts; adapters implement them; the starter wires defaults; ap
 - `modules/javelin-console` - Picocli command kernel and generators
 - `modules/javelin-security` - secure headers, HSTS/CSP, CORS, CSRF, sessions, session auth, JWT, PBKDF2/BCrypt, rate limiting
 - `modules/javelin-validation` - explicit string-rule Validator for HTML and JSON input
+- `modules/javelin-scheduler` - interval/cron/daily/weekly/monthly schedules, locks and execution history
+- `modules/javelin-events` - event dispatcher with synchronous and queued listeners
 - `modules/javelin-support` - short Laravel-style helper facades for strings, dates, arrays, files, images, HTTP client, AI client, objects, validation, HTML, and security
 - `modules/javelin-cache` - simple in-memory cache contract and implementation
 - `modules/javelin-cache-valkey` - Lettuce-backed Valkey cache adapter
@@ -97,7 +99,7 @@ Core owns the contracts; adapters implement them; the starter wires defaults; ap
 - [Architecture](docs/architecture.md) — design principles and module dependency graph
 - [Exception handling](docs/modules/exception.md) — global handler, error pages and redaction
 - [Security](docs/modules/security.md) — CORS, CSRF, sessions, JWT and password strategies
-- [Tutorials](docs/tutorials/README.md) — build a secure web app and API step by step
+- [Tutorials](docs/tutorials/README.md) — secure web apps, files/cache, background jobs, scheduling and events
 - [Application Flow](docs/application-flow.md) — boot sequence and request lifecycle
 - [Deployment](docs/deployment.md) — production tuning, Docker Compose, proxies, health checks, benchmarks
 - [CLI Reference](docs/cli-reference.md) — every `javelin` command
@@ -337,6 +339,15 @@ io.javelin.caches.Cache.put("users_count", 100, Duration.ofMinutes(5));
 ```
 
 - `javelin-queue-database` is the durable broker-free default option; `javelin-queue-file` needs no service at all, and `javelin-queue-valkey` / `javelin-queue-rabbitmq` / `javelin-queue-nats` are opt-in. See [Queue](docs/modules/queue.md).
+
+## Scheduling and events
+
+```java
+Schedule.dailyAt("02:00", BackupJob.class);
+Events.dispatch(new UserRegisteredEvent(userId));
+```
+
+See [Scheduler](docs/modules/scheduler.md) and [Events](docs/modules/events.md).
 
 ## Storage
 

@@ -1,5 +1,6 @@
 package routes;
 
+import app.controllers.AutomationExampleController;
 import app.controllers.BackendController;
 import app.controllers.HomeController;
 import app.controllers.QueueExampleController;
@@ -26,6 +27,7 @@ public final class web {
         SecurityExampleController security = app.make(SecurityExampleController.class);
         StorageExampleController files = app.make(StorageExampleController.class);
         QueueExampleController jobs = app.make(QueueExampleController.class);
+        AutomationExampleController automation = app.make(AutomationExampleController.class);
 
         add(app.router(), get("/", home::index));
         add(app.router(), get("/health", home::health));
@@ -53,5 +55,7 @@ public final class web {
         add(app.router(), get("/demo/queue/dispatch", jobs::dispatch));
         add(app.router(), get("/demo/queue/later", jobs::later));
         add(app.router(), get("/demo/queue/status", jobs::status));
+        add(app.router(), get("/demo/automation/schedule", automation::schedule));
+        add(app.router(), get("/demo/automation/events", automation::event));
     }
 }

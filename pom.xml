@@ -31,6 +31,8 @@
         <module>modules/javelin-cache-valkey</module>
         <module>modules/javelin-cache-caffeine</module>
         <module>modules/javelin-queue</module>
+        <module>modules/javelin-events</module>
+        <module>modules/javelin-scheduler</module>
         <module>modules/javelin-queue-rabbitmq</module>
         <module>modules/javelin-queue-valkey</module>
         <module>modules/javelin-queue-file</module>
