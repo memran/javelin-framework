@@ -47,10 +47,29 @@ final class RabbitMqQueueIntegrationTest {
         }
     }
 
+    @Test
+    void expiredLeasesAreRequeued() throws Exception {
+        try (RabbitMqQueue queue = new RabbitMqQueue(System.getenv("JAVELIN_RABBITMQ_URI"))) {
+            Job job = Job.of("test.lease." + UUID.randomUUID().toString().substring(0, 8),
+                    Map.of("tag", "lease"));
+            queue.dispatch(job);
+
+            JobQueue.ClaimedJob first = claimById(queue, job.id(), Duration.ofMillis(500));
+            JobQueue.ClaimedJob again = claimById(queue, job.id(), Duration.ofSeconds(5));
+            assertEquals(first.job().id(), again.job().id());
+            queue.ack(again.id(), again.leaseToken());
+        }
+    }
+
     private static JobQueue.ClaimedJob claimById(RabbitMqQueue queue, String id) throws InterruptedException {
+        return claimById(queue, id, Duration.ofSeconds(5));
+    }
+
+    private static JobQueue.ClaimedJob claimById(RabbitMqQueue queue, String id, Duration lease)
+            throws InterruptedException {
         long deadline = System.nanoTime() + Duration.ofSeconds(10).toNanos();
         while (System.nanoTime() < deadline) {
-            Optional<JobQueue.ClaimedJob> claimed = queue.claim("integration", Duration.ofSeconds(5));
+            Optional<JobQueue.ClaimedJob> claimed = queue.claim("integration", lease);
             if (claimed.isPresent()) {
                 if (claimed.get().job().id().equals(id)) {
                     return claimed.get();

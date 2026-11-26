@@ -56,4 +56,4 @@ javelin deploy:native-config
 javelin native
 ```
 
-The generated metadata is a starter: it covers Javelin's provider loader, `Application` and common resource paths. Add application entries with `javelin deploy:native-config --class ... --resource ...`, or commit them under `resources/META-INF/native-image/<app>/`. The demo app's `resources/META-INF/native-image/demo/` files list its controllers, providers, jobs, DTOs, templates and error pages as a concrete example.
+The generated metadata is a starter: it covers Javelin's provider loader, `Application` and common resource paths. Add application entries to `config/native-image.txt` (one `class: ...` or `resource: ...` per line) or pass `javelin deploy:native-config --class ... --resource ...`. The demo app's `config/native-image.txt` and `resources/META-INF/native-image/demo/` files list its controllers, providers, jobs, DTOs, templates and error pages as a concrete example.

@@ -101,6 +101,21 @@ final class StaticAssetResolverTest {
     }
 
     @Test
+    void reportsEtagCacheHitRate() throws Exception {
+        Path root = Files.createTempDirectory("javelin-static-etag-stats");
+        Files.writeString(root.resolve("app.css"), "body { color: #111; }");
+        StaticAssetResolver resolver = new StaticAssetResolver(root);
+
+        resolver.resolve("GET", "/app.css");
+        resolver.resolve("GET", "/app.css");
+        StaticAssetResolver.EtagStats stats = resolver.etagStats();
+
+        assertEquals(1, stats.hits());
+        assertEquals(1, stats.misses());
+        assertEquals(0.5, stats.hitRate());
+    }
+
+    @Test
     void servesSatisfiableByteRangesAndRejectsUnsatisfiableOnes() throws Exception {
         Path root = Files.createTempDirectory("javelin-static-range");
         String css = "body { color: #111; }";

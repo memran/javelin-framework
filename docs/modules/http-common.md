@@ -30,6 +30,7 @@ Optional<Response> response = resolver.resolve(method, path);
 - Adds `Cache-Control`, a content-based `ETag` computed with a streaming digest, `Accept-Ranges: bytes` and `X-Content-Type-Options: nosniff` to static responses.
 - Full `GET` and `HEAD` responses stream from `Response.file(...)`; satisfiable ranges stream from `Response.fileRange(...)`. Neither buffers file bytes in a `byte[]`, and conditional requests read no body at all.
 - `If-None-Match` (including `*` and weak `W/` ETags) produces a 304; `Range: bytes=start-end`, `bytes=start-` and `bytes=-suffix` produce a 206 with `Content-Range`, while an unsatisfiable range produces 416. Adapters pass request headers through via `resolve(Request request)`.
+- Digests are cached by size and last-modified time for at most one minute and at most 1024 files. `resolver.etagStats()` returns hits, misses and `hitRate()`; wire it into your metrics registry with `Observability.metrics().gauge("static.etag.hit_rate", resolver.etagStats().hitRate())`.
 
 ### StaticCachePolicy
 

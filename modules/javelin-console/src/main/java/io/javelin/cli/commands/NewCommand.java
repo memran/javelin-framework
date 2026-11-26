@@ -60,6 +60,7 @@ public final class NewCommand extends AbstractCommand {
         files.write(root.resolve(".env"), "env.stub", values, force);
         files.write(root.resolve("Main.java"), "main.stub", values, force);
         files.write(root.resolve("config/app.yaml"), "app-yaml.stub", values, force);
+        files.write(root.resolve("config/native-image.txt"), "native-image-config.stub", values, force);
         files.write(root.resolve("config/view.yml"), "view-yml.stub", values, force);
         files.write(root.resolve("errors/500.html"), "error-500-html.stub", values, force);
         files.write(root.resolve("logback.xml"), "logback-xml.stub", values, force);
@@ -69,6 +70,7 @@ public final class NewCommand extends AbstractCommand {
         files.write(root.resolve("build.sh"), "build-sh.stub", values, force);
         files.write(root.resolve("build.ps1"), "build-ps1.stub", values, force);
         files.write(root.resolve("docker-compose.yml"), "docker-compose.yml.stub", values, force);
+        files.write(root.resolve("otel-collector-config.yml"), "otel-collector-config.stub", values, force);
         files.write(root.resolve("nginx.conf"), "nginx-conf.stub", values, force);
         files.write(root.resolve("Caddyfile"), "caddyfile.stub", values, force);
         files.write(root.resolve("Dockerfile"), "dockerfile.stub", values, force);

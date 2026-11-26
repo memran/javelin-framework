@@ -185,6 +185,8 @@ final class CommandGenerationTest {
         assertTrue(Files.exists(project.resolve("app/views")));
         assertTrue(Files.exists(project.resolve("config/app.yaml")));
         assertTrue(Files.exists(project.resolve("config/view.yml")));
+        assertTrue(Files.exists(project.resolve("config/native-image.txt")));
+        assertTrue(Files.exists(project.resolve("otel-collector-config.yml")));
         assertTrue(Files.exists(project.resolve("routes/web.java")));
         assertTrue(Files.exists(project.resolve("database/migrations")));
         assertTrue(Files.exists(project.resolve("modules")));
@@ -212,6 +214,9 @@ final class CommandGenerationTest {
         assertTrue(compose.contains("\"-js\""));
         assertTrue(compose.contains("NATS_STREAM: JAVELIN"));
         assertFalse(compose.contains("NATS_JETSTREAM"));
+        assertTrue(compose.contains("otel-collector:"));
+        assertTrue(compose.contains("OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317"));
+        assertTrue(Files.exists(project.resolve("otel-collector-config.yml")));
         assertTrue(compose.contains("profiles: [\"nginx\"]"));
         assertTrue(compose.contains("profiles: [\"caddy\"]"));
         assertTrue(compose.contains("./nginx.conf:/etc/nginx/conf.d/default.conf:ro"));
@@ -265,6 +270,8 @@ final class CommandGenerationTest {
         assertTrue(appYaml.contains("slow_ms: 100"));
         assertTrue(appYaml.contains("static_cache_seconds: 3600"));
         assertTrue(appYaml.contains("static_after_routes: false"));
+        assertTrue(Files.readString(project.resolve("config/native-image.txt"))
+                .contains("class: app.providers.AppServiceProvider"));
         assertTrue(appYaml.contains("request_timeout_seconds: 30"));
         assertTrue(appYaml.contains("idle_timeout_seconds: 60"));
         assertTrue(appYaml.contains("172.16.0.0/12"));

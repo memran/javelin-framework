@@ -1,0 +1,11 @@
+# Extra entries for javelin deploy:native-config.
+# The demo app also ships resources/META-INF/native-image/demo/ as a worked example.
+
+class: app.providers.AppServiceProvider
+class: app.providers.TracingProvider
+class: app.controllers.HomeController
+class: app.jobs.InvoiceJob
+class: app.events.UserRegisteredEvent
+resource: errors/.*
+resource: resources/views/.*
+resource: resources/assets/.*

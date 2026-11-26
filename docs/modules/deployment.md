@@ -41,7 +41,7 @@ Generates starter `reflect-config.json` and `resource-config.json` under `resour
 javelin deploy:native-config --class app.providers.BillingProvider --resource 'errors/.*'
 ```
 
-`demo-app/resources/META-INF/native-image/demo/` shows a committed example covering the demo controllers, providers, jobs, DTOs, templates and error pages.
+For a repeatable setup, list the same entries in `config/native-image.txt` (created by `javelin new`), one `class: ...` or `resource: ...` per line. `deploy:native-config` reads that file automatically and merges it with any CLI flags. `demo-app/config/native-image.txt` and `demo-app/resources/META-INF/native-image/demo/` show committed examples covering the demo controllers, providers, jobs, DTOs, templates and error pages.
 
 ## Benchmarks
 

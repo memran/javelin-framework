@@ -18,8 +18,25 @@ public final class GraalvmConfigGenerator {
             "resources/views/.*",
             "META-INF/javelin/provider.json");
 
+    /** Reads optional extras from {@code config/native-image.txt} before writing the metadata. */
     public List<Path> write(Path root) throws IOException {
-        return write(root, List.of(), List.of());
+        List<String> classes = new ArrayList<>();
+        List<String> resources = new ArrayList<>();
+        Path config = root.resolve("config").resolve("native-image.txt");
+        if (Files.exists(config)) {
+            for (String line : Files.readAllLines(config, StandardCharsets.UTF_8)) {
+                String value = line.trim();
+                if (value.isEmpty() || value.startsWith("#")) {
+                    continue;
+                }
+                if (value.startsWith("class:")) {
+                    classes.add(value.substring("class:".length()).trim());
+                } else if (value.startsWith("resource:")) {
+                    resources.add(value.substring("resource:".length()).trim());
+                }
+            }
+        }
+        return write(root, classes, resources);
     }
 
     /** Writes metadata with additional application classes and resource patterns. */

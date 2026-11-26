@@ -1,0 +1,9 @@
+# Extra entries for javelin deploy:native-config.
+# One "class: fully.qualified.Name" or "resource: regex" per line.
+# Javelin never scans the classpath; add your own reflected classes explicitly.
+
+class: app.providers.AppServiceProvider
+class: app.controllers.HomeController
+class: app.jobs.InvoiceJob
+resource: errors/.*
+resource: resources/views/.*

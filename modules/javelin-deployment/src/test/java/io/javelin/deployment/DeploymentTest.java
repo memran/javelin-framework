@@ -67,6 +67,21 @@ final class DeploymentTest {
     }
 
     @Test
+    void graalvmConfigReadsApplicationEntriesFromFile(@TempDir Path dir) throws Exception {
+        Files.createDirectories(dir.resolve("config"));
+        Files.writeString(dir.resolve("config/native-image.txt"), """
+                # generated config
+                class: app.providers.BillingProvider
+                resource: errors/.*
+                """);
+
+        List<Path> files = new GraalvmConfigGenerator().write(dir);
+
+        assertTrue(Files.readString(files.get(0)).contains("app.providers.BillingProvider"));
+        assertTrue(Files.readString(files.get(1)).contains("errors/.*"));
+    }
+
+    @Test
     void benchmarkRunnerReportsThroughput() throws Exception {
         HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
         server.createContext("/health", exchange -> {

@@ -1,23 +1,23 @@
 # Graph Report - javelin-framework  (2026-11-27)
 
 ## Corpus Check
-- 502 files · ~117,943 words
+- 503 files · ~118,656 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 57 file(s) not represented in the graph (top: .stub 41, (none) 9, .xml 2)
+- Unclassified: 59 file(s) not represented in the graph (top: .stub 43, (none) 9, .xml 2)
 
 ## Summary
-- 4978 nodes · 12511 edges · 289 communities (168 shown, 121 thin omitted)
-- Extraction: 86% EXTRACTED · 14% INFERRED · 0% AMBIGUOUS · INFERRED: 1812 edges (avg confidence: 0.87)
+- 5021 nodes · 12579 edges · 283 communities (168 shown, 115 thin omitted)
+- Extraction: 86% EXTRACTED · 14% INFERRED · 0% AMBIGUOUS · INFERRED: 1817 edges (avg confidence: 0.87)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `1554f2aa`
+- Built from commit: `2b09a4af`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- Override
-- locale
+- Application
+- supplier
 - Override
 - cli/ConsoleKernel.java
 - CommandContext
@@ -28,7 +28,7 @@
 - .from
 - .handle
 - Javelin.java
-- Response
+- Request
 - DatabaseQueue
 - Model
 - CLI Reference
@@ -43,13 +43,14 @@
 - MigrationRunner
 - Build a secure web app and API
 - JdkHttpServerIntegrationTest
-- HtmlResponse
+- Response
 - Support Module
 - NettyHttpServer
 - Handle
 - Input
 - app.yaml
-- XFileDisk
+- map
+- StorageServiceProvider
 - Container
 - Console Module
 - PasswordHashStrategy
@@ -66,11 +67,10 @@
 - Json
 - Override
 - pebble
-- docs/README.md
 - Agent Notes
 - .write
 - ValidationRule
-- java.util.regex.Pattern
+- .handle
 - Validator
 - JdbcDatabase
 - JdbcQueryBuilder
@@ -85,19 +85,19 @@
 - FileQueue
 - Module Authoring
 - nginx
-- list
-- JobQueue
+- duration
+- otel-collector-config.yml
 - Str
 - environment
 - Docker Compose
-- InMemoryQueue
+- JobQueue
 - Database JDBC Module
 - VersionCommand
-- Authenticated
+- Files and caching
 - .stringify
 - locale
 - Env
-- Application
+- .of
 - AdultAgeRule
 - Quick Start
 - WorkspaceStarterRule
@@ -116,25 +116,26 @@
 - Slf4jLogger
 - io.javelin:javelin-parent
 - Config
-- AppServiceProvider.java
 - NatsQueue.java
 - AdultAgeRule
 - Session
 - .output
-- .headers
+- JacksonJsonServiceProvider.java
+- .status
 - Tracer
 - Installation Guide
 - Cache Valkey Module
 - db
 - SupportUtilitiesTest
 - dev.mjs
+- XFileDisk
 - depends_on
 - healthcheck
 - .of
-- NettyHttpServer
-- org.junit.jupiter.api.Test
+- EventDispatcher
+- InMemoryFileRecorder
 - services
-- Request
+- io.javelin.core.Request
 - app
 - nats
 - valkey
@@ -161,11 +162,11 @@
 - Cache
 - private
 - NettyHttpServerIntegrationTest
-- DefaultExceptionHandler
+- Security
 - queue
 - .resolve
 - .manager
-- CloseableResource
+- ContainerTest
 - ValkeyCache
 - .load
 - primary
@@ -180,12 +181,12 @@
 - AppProfile
 - database
 - Obj
-- Arr
+- DeployServiceCommand.java
 - Override
 - session
-- ApplicationTest
+- LimitedInputStream
 - ExecutionRecord
-- TestConfig
+- ObservabilityMiddleware
 - TestConfig
 - security
 - HealthRegistry
@@ -193,80 +194,74 @@
 - Scheduler Module
 - ConsoleKernel
 - security
-- Full Worked Example
 - cache
 - StubSession
 - cors
 - cache
+- Storage Module
 - StubSession
 - scheduler
 - StructuredLogger
 - scheduler
 - CronExpression
 - Config
-- ProviderRegistryTest
+- SecurityExampleController
 - UploadedFile
 - Cache
 - .middlewareServesHealthReadyAndMetrics
 - JdbcDatabaseServiceProvider
 - io.javelin.core.Response
-- ProviderVersion
-- ProviderInstallCommand
+- otel-collector
+- Mail Module
 - MailManager
 - SmtpTransport.java
 - YamlConfig
 - MetricsRegistry
 - InMemorySchedulerLock
 - CorePerformanceRegressionTest
-- .composerViewAndQueueDispatch
+- Exception Module
 - MigrateCommand
-- .run
+- Cache Module
 - .registersWorkspaceDefaultsAndLoadsValidationRulesOnBoot
 - Config Module
-- EventServiceProvider
+- tutorials/README.md
 - RecordingLogger
-- StartupProfile
+- .metricsResponse
 - aggregate-performance.py
 - errors
-- .get
-- tutorials/README.md
+- io.javelin.core.Env
+- Production deployment
 - mail
 - mail
-- RequiresAuthenticationMiddleware
+- .register
 - Provider Loader Module
 - Attachment
 - MailSubmissionLogger
 - observability
-- .loadDirectory
+- AiGenerateModuleCommand
 - CircularA
 - session
 - Observability Module
-- ProviderLoaderTest
-- ProfileConfig
+- DefaultJsonMapper
+- QueuedEvent
 - provider
-- profile.md
-- ProviderListCommand
-- WorkspaceAgeRule
-- Distributing providers
+- HTTP Netty Module
+- Javelin Docs
+- .initChannel
+- Status
 - cors
 - errors
 - observability
-- Sending mail
 - NoopTracer
 - .typedCacheAccessConvertsJsonBackToTheRequestedType
 - HTTP Common Module
 - server
 - Config
 - HTTP Undertow Module
-- MakeServiceCommand.java
 - SchedulerLock
 - NoopLogger
-- JavelinVersion
-- ProviderConflict
-- FileErrorPageResolver
 - com.fasterxml.jackson.databind.ObjectMapper
 - Database
-- io.javelin.core.AppProfile
 
 ## God Nodes (most connected - your core abstractions)
 1. `Application` - 85 edges
@@ -281,73 +276,73 @@
 10. `JobQueue` - 43 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Trusted proxy configuration` --references--> `JdkHttpServiceProvider`  [INFERRED]
-  docs/deployment.md → modules/javelin-http-jdk/src/main/java/io/javelin/http/jdk/JdkHttpServiceProvider.java
 - `Current MVP Boundaries` --references--> `ServiceProvider`  [INFERRED]
   agents.md → modules/javelin-core/src/main/java/io/javelin/core/ServiceProvider.java
-- `Router` --references--> `Router`  [INFERRED]
-  docs/modules/core.md → modules/javelin-core/src/main/java/io/javelin/core/Router.java
-- `Routes` --references--> `Router`  [INFERRED]
-  docs/modules/core.md → modules/javelin-core/src/main/java/io/javelin/core/Router.java
-- `Notes` --references--> `ServiceProvider`  [INFERRED]
-  docs/modules/core.md → modules/javelin-core/src/main/java/io/javelin/core/ServiceProvider.java
+- `Production validation` --references--> `ProductionValidator`  [INFERRED]
+  docs/modules/deployment.md → modules/javelin-deployment/src/main/java/io/javelin/deployment/ProductionValidator.java
+- `Endpoints` --references--> `ObservabilityServiceProvider`  [INFERRED]
+  docs/modules/observability.md → modules/javelin-observability/src/main/java/io/javelin/observability/ObservabilityServiceProvider.java
+- `Tracing` --references--> `Tracer`  [INFERRED]
+  docs/modules/observability.md → modules/javelin-observability/src/main/java/io/javelin/observability/Tracer.java
+- `Notes` --references--> `ValkeyCacheServiceProvider`  [INFERRED]
+  docs/modules/cache.md → modules/javelin-cache-valkey/src/main/java/io/javelin/cache/valkey/ValkeyCacheServiceProvider.java
 
 ## Import Cycles
 - None detected.
 
-## Communities (289 total, 121 thin omitted)
+## Communities (283 total, 115 thin omitted)
 
-### Community 0 - "Override"
-Cohesion: 0.12
-Nodes (9): ProviderSorter, ServiceProvider, ProviderSorterTest, CycleA, CycleB, FirstProvider, NeedsFirstProvider, SecondProvider (+1 more)
+### Community 0 - "Application"
+Cohesion: 0.05
+Nodes (25): JavelinConsole, ConfigServiceProvider, JavelinConsole, RouteListCommand, ServeCommand, Application, ProviderSorter, ServiceProvider (+17 more)
 
 ### Community 4 - "Override"
-Cohesion: 0.14
-Nodes (5): MigrationCommandTest, Config, Env, RecordingDatabase, RecordingQueryBuilder
+Cohesion: 0.16
+Nodes (4): Config, Env, RecordingDatabase, RecordingQueryBuilder
 
 ### Community 5 - "cli/ConsoleKernel.java"
 Cohesion: 0.06
-Nodes (11): BenchCommand, DeployNativeConfigCommand, DeployServiceCommand, DeployValidateCommand, DoctorCommand, MakeMiddlewareCommand, QueueStatusCommand, QueueWorkCommand (+3 more)
+Nodes (11): BenchCommand, DeployNativeConfigCommand, DeployValidateCommand, DoctorCommand, MakeMiddlewareCommand, QueueStatusCommand, QueueWorkCommand, ScheduleRunCommand (+3 more)
 
 ### Community 9 - "CommandContext"
 Cohesion: 0.05
-Nodes (18): AbstractCommand, CliException, CommandContext, AiChatCommand, AiExplainCommand, AiGenerateModuleCommand, AiInstallCommand, BuildCommand (+10 more)
+Nodes (18): AbstractCommand, CliException, CommandContext, AiChatCommand, AiExplainCommand, AiInstallCommand, BuildCommand, CacheClearCommand (+10 more)
 
 ### Community 11 - "Collection"
 Cohesion: 0.06
 Nodes (4): Collection, Group, Keyed, Partition
 
 ### Community 12 - "io.javelin.core.Request"
-Cohesion: 0.13
-Nodes (7): AutomationExampleController, BackendController, QueueExampleController, StorageExampleController, UserRegisteredEvent, InvoiceJob, SendEmailJob
+Cohesion: 0.18
+Nodes (4): AutomationExampleController, BackendController, QueueExampleController, UserRegisteredEvent
 
 ### Community 13 - ".text"
 Cohesion: 0.13
-Nodes (4): Router, ResolvedRoute, HttpKernelTest, RouterTest
+Nodes (4): Router, Routes, HttpKernelTest, RouterTest
 
 ### Community 15 - "StaticAssetResolver"
-Cohesion: 0.17
-Nodes (5): HttpAdapterConfig, StaticAssetResolver, ByteRange, EtagEntry, StaticCachePolicy
+Cohesion: 0.23
+Nodes (4): StaticAssetResolver, ByteRange, EtagEntry, StaticCachePolicy
 
 ### Community 17 - ".from"
-Cohesion: 0.17
+Cohesion: 0.22
 Nodes (3): LoggingConfig, LoggingConfigTest, MapConfig
 
 ### Community 18 - ".handle"
-Cohesion: 0.13
-Nodes (4): SecurityExampleController, RequestAttributesTest, CsrfMiddleware, SessionAuthMiddlewareTest
+Cohesion: 0.11
+Nodes (6): RequiresAuthenticationMiddleware, RequestAttributesTest, AuthorizationMiddlewareTest, CsrfMiddleware, CorsAndCsrfTest, SessionAuthMiddlewareTest
 
 ### Community 21 - "Javelin.java"
-Cohesion: 0.07
-Nodes (29): Adding to the hardcoded provider list, Integrating with Starter, Provider registration order, Registration order matters, ProviderLoader, HSTS and CSP, PasswordHasher, RateLimitMiddleware (+21 more)
+Cohesion: 0.05
+Nodes (28): AppServiceProvider, Main, Phase 2: Boot, Startup Time, Why startup is fast, Adding to the hardcoded provider list, Config-List Provider Loading, Integrating with Starter (+20 more)
 
-### Community 22 - "Response"
-Cohesion: 0.04
-Nodes (18): Layer 0 — Foundation, Layer 1 — Contracts, Layer 2 — Adapters, Layer 3 — Toolchain, Layer 4 — Aggregator, Module Dependency Graph, TrustedProxyResolver, Trusted proxy configuration (+10 more)
+### Community 22 - "Request"
+Cohesion: 0.05
+Nodes (16): HomeController, UserController, Layer 1 — Contracts, Cookies and sessions, DevProfileMiddleware, ExceptionHandler, HttpKernel, Middleware (+8 more)
 
 ### Community 25 - "Model"
-Cohesion: 0.08
-Nodes (7): Model overridable methods, Behavior, Configuration, Database Queue Module, Database, Model, SampleHydratedUser
+Cohesion: 0.11
+Nodes (5): Model overridable methods, Model, ModelTest, SampleHydratedUser, SampleUser
 
 ### Community 26 - "CLI Reference"
 Cohesion: 0.05
@@ -355,31 +350,39 @@ Nodes (42): ai:chat — Chat with AI, AI Commands, ai:explain — Explain code, 
 
 ### Community 28 - "Core Module"
 Cohesion: 0.12
-Nodes (17): Bearer authentication and authorization, Config, Core Module, DefaultExceptionHandler, Env, ExceptionHandler, File Uploads, HttpKernel (+9 more)
+Nodes (16): Config, Core Module, DefaultExceptionHandler, Env, ExceptionHandler, File Uploads, HttpKernel, HttpMethod (+8 more)
+
+### Community 30 - "ProviderRegistry"
+Cohesion: 0.06
+Nodes (11): ProviderInstallCommand, ProviderListCommand, JavelinVersion, ProviderConflict, ProviderManifest, ProviderRegistry, ProviderVersion, ProviderRegistryTest (+3 more)
 
 ### Community 31 - ".imageSupportDetectsAndReadsImageMetadata"
-Cohesion: 0.15
-Nodes (7): Example, Javelin Support, Public API, Image, Dimensions, Handle, Info
+Cohesion: 0.10
+Nodes (8): Example, Javelin Support, Public API, Arr, Image, Dimensions, Handle, Info
 
 ### Community 32 - ".instance"
-Cohesion: 0.16
-Nodes (5): ValidationRuleLoader, ValidationRuleLoaderTest, EmptyValidationConfig, TestConfig, TestEnv
+Cohesion: 0.08
+Nodes (14): Application profile, HTTP driver selection, Javelin, JavelinStarterServiceProvider, Starter Module, ValidationRuleLoader, WorkspaceDefaults, JavelinStarterServiceProvider (+6 more)
+
+### Community 34 - "JdkHttpServer.java"
+Cohesion: 0.12
+Nodes (3): JdkHttpServer, RequestRejected, UndertowHttpServer
 
 ### Community 35 - "io.javelin.core.ServiceProvider"
-Cohesion: 0.07
-Nodes (25): ConfigurableExceptionHandler, Configuration, Error pages, Exception Module, Service provider, CORS, Application profile, SecretsServiceProvider (+17 more)
+Cohesion: 0.06
+Nodes (31): Service provider, Cookie-backed sessions, CORS, CSRF, HSTS and CSP, PasswordHasher, RateLimitMiddleware, RequestSizeLimitMiddleware (+23 more)
 
 ### Community 36 - "MigrationRunner"
 Cohesion: 0.12
 Nodes (9): Backward compatibility, Database Migration Module, Dialects, MigrationRunner, MigrationDialect, MigrationRunner, MigrationFile, MigrationRecord (+1 more)
 
 ### Community 37 - "Build a secure web app and API"
-Cohesion: 0.14
-Nodes (6): Notes, 7. Secrets, CompositeSecretProvider, FileSecretProvider, SecretProvider, SecretProviderTest
+Cohesion: 0.09
+Nodes (13): Notes, 1. Enable the providers, 2. Build and start the demo, 4. Validation and error rendering, 5. JWT for the API, 6. CORS preflight, 7. Secrets, Build a secure web app and API (+5 more)
 
-### Community 39 - "HtmlResponse"
-Cohesion: 0.18
-Nodes (3): JsonResponse, ValidationErrors, ValidationErrorsTest
+### Community 39 - "Response"
+Cohesion: 0.07
+Nodes (6): DefaultExceptionHandler, HtmlResponse, JsonResponse, RedirectResponse, Response, ValidationErrors
 
 ### Community 40 - "Support Module"
 Cohesion: 0.05
@@ -387,43 +390,39 @@ Nodes (40): Ad-hoc rules, Ai, Arr, Collection, Conditional chaining and debuggin
 
 ### Community 42 - "Handle"
 Cohesion: 0.06
-Nodes (7): Ai, Handle, Message, Reply, Http, Handle, Response
+Nodes (9): 3. Browser login with CSRF, What happens on a bad CSRF token, Ai, Handle, Message, Reply, Http, Handle (+1 more)
 
 ### Community 44 - "app.yaml"
 Cohesion: 0.14
 Nodes (13): app, env, name, javelin, starter, json, fail_on_unknown_properties, indent_output (+5 more)
 
-### Community 46 - "XFileDisk"
-Cohesion: 0.09
-Nodes (5): InMemoryFileRecorder, StorageConfig, DiskConfig, StorageServiceProvider, XFileDisk
-
-### Community 48 - "Container"
-Cohesion: 0.14
-Nodes (10): Container, Binding, ContainerTest, Alpha, Ambiguous, Dependency, Failing, Service (+2 more)
+### Community 46 - "StorageServiceProvider"
+Cohesion: 0.21
+Nodes (3): StorageConfig, DiskConfig, StorageServiceProvider
 
 ### Community 49 - "Console Module"
 Cohesion: 0.11
 Nodes (16): AbstractCommand, CLI Commands, CliException, Command, CommandContext, Console Module, ConsoleKernel (cli package), ConsoleOutput (+8 more)
 
 ### Community 50 - "PasswordHashStrategy"
-Cohesion: 0.07
-Nodes (7): Password hashing, BcryptStrategy, PasswordHasher, PasswordHashStrategy, Pbdkdf2Strategy, PasswordHashStrategyTest, Security
+Cohesion: 0.11
+Nodes (6): Password hashing, BcryptStrategy, PasswordHasher, PasswordHashStrategy, Pbdkdf2Strategy, PasswordHashStrategyTest
 
 ### Community 51 - "docker-app.yaml"
 Cohesion: 0.11
 Nodes (18): app, env, name, javelin, starter, json, fail_on_unknown_properties, indent_output (+10 more)
 
 ### Community 52 - "with"
-Cohesion: 0.09
-Nodes (21): jobs, verify, name, on, pull_request, push, branches, branches (+13 more)
+Cohesion: 0.08
+Nodes (27): runs-on, steps, JAVELIN_NATS_URL, JAVELIN_RABBITMQ_URI, jobs, broker-tests, verify, name (+19 more)
 
 ### Community 53 - "Javelin Framework"
-Cohesion: 0.09
-Nodes (23): Architecture at a glance, Boot Flow, Build And Test, Cache And Queues, CLI, Database, Documentation, Example Routes (+15 more)
+Cohesion: 0.08
+Nodes (24): Architecture at a glance, Boot Flow, Build And Test, Cache And Queues, CLI, Database, Documentation, Example Routes (+16 more)
 
 ### Community 54 - "Config"
-Cohesion: 0.09
-Nodes (8): Service provider, CaffeineCacheConfig, Config, DatabaseConfig, Connection, DatabaseConfigTest, ValidationIssue, JacksonJsonConfig
+Cohesion: 0.10
+Nodes (8): CaffeineCacheConfig, Config, DatabaseConfig, Connection, DatabaseConfigTest, ExceptionConfig, HttpAdapterConfig, JacksonJsonConfig
 
 ### Community 55 - "Deployment"
 Cohesion: 0.20
@@ -431,7 +430,7 @@ Nodes (10): Caddy alternative, Deployment, Graceful Shutdown, Health Checks, Log
 
 ### Community 56 - "Disk"
 Cohesion: 0.11
-Nodes (5): Disk, StorageManager, StoredFile, Storage, StorageTest
+Nodes (5): Disk, DownloadPolicy, StorageManager, StoredFile, Storage
 
 ### Community 57 - "Route"
 Cohesion: 0.08
@@ -446,12 +445,12 @@ Cohesion: 0.25
 Nodes (3): QueryTimingConfig, SqlTimer, SqlTimerTest
 
 ### Community 60 - "HttpServerAdapter"
-Cohesion: 0.09
-Nodes (11): HttpServerAdapter, JdkHttpServiceProvider, Configuration, Configuration, ServeCommand, HttpServerAdapter, HttpServerDriverProvider, HttpServerDriverProviderTest (+3 more)
+Cohesion: 0.08
+Nodes (11): HTTP JDK Module, JdkHttpServiceProvider, Notes, Configuration, Configuration, HttpServerAdapter, HttpServerDriverProvider, HttpServerDriverProviderTest (+3 more)
 
 ### Community 61 - "Json"
-Cohesion: 0.15
-Nodes (9): Json, API, Backward compatibility, Configuration, JSON Jackson Module, Registration, Json, DefaultJsonMapper (+1 more)
+Cohesion: 0.20
+Nodes (7): Json, API, Backward compatibility, Configuration, JSON Jackson Module, Registration, JsonMapper
 
 ### Community 62 - "Override"
 Cohesion: 0.21
@@ -461,10 +460,6 @@ Nodes (3): MigrationDialectsTest, RecordingDatabase, QueryBuilder
 Cohesion: 0.12
 Nodes (15): driver, pebble, allow_override_core_operators, auto_escaping, cache, default_escaping_strategy, default_locale, greedy_match_method (+7 more)
 
-### Community 64 - "docs/README.md"
-Cohesion: 0.14
-Nodes (3): Javelin Docs, Module Index, Reading Order
-
 ### Community 65 - "Agent Notes"
 Cohesion: 0.13
 Nodes (14): Agent Notes, Architect Guidelines, Architecture Intent, Coding Principles, Current MVP Boundaries, Do, Do / Don’t, Don’t (+6 more)
@@ -472,6 +467,14 @@ Nodes (14): Agent Notes, Architect Guidelines, Architecture Intent, Coding Princ
 ### Community 66 - ".write"
 Cohesion: 0.11
 Nodes (4): GeneratorSupport, MakeControllerCommand, MakeModelCommand, MakeProviderCommand
+
+### Community 68 - ".handle"
+Cohesion: 0.17
+Nodes (5): Cookie, CookieAndSessionContractTest, SessionConfig, SessionMiddleware, SessionMiddlewareTest
+
+### Community 72 - "ValidationRule"
+Cohesion: 0.15
+Nodes (3): AbstractWorkspaceRule, WorkspaceAgeRule, ValidationRule
 
 ### Community 73 - "with"
 Cohesion: 0.10
@@ -486,8 +489,8 @@ Cohesion: 0.11
 Nodes (19): devDependencies, alpinejs@^3.13.0, esbuild@^0.24.0, tailwindcss@^4.0.0, @tailwindcss/cli@^4.0.0, name, private, scripts (+11 more)
 
 ### Community 76 - "Application Flow"
-Cohesion: 0.12
-Nodes (17): Application Flow, CLI Dispatch, Configuration Resolution, Console Command Lifecycle, Container Resolution, Content Negotiation on 404, Dev Command (Development), Error Handling (+9 more)
+Cohesion: 0.11
+Nodes (18): Application Flow, Boot Sequence, CLI Dispatch, Configuration Resolution, Console Command Lifecycle, Container Resolution, Content Negotiation on 404, Dev Command (Development) (+10 more)
 
 ### Community 77 - "io.javelin:javelin-starter"
 Cohesion: 0.17
@@ -498,56 +501,56 @@ Cohesion: 0.16
 Nodes (7): Cache Caffeine Module, Configuration, Developer API, CaffeineCache, Expiry<String, Entry>, Entry, CaffeineCacheTest
 
 ### Community 79 - "Logger"
-Cohesion: 0.15
+Cohesion: 0.14
 Nodes (8): Logging SLF4J Module, LoggingConfig, Notes, Slf4jLogger, Slf4jLogServiceProvider, StructuredLogger, Log, Logger
 
 ### Community 81 - "Module Authoring"
 Cohesion: 0.05
-Nodes (36): Adding Tests, Adding the module to the parent POM, `bind(A, B)` — reusable factory, Binding Strategies, Checklist for new modules, Config-Driven Modules, Config-List Provider Loading, Creating a New Interface (+28 more)
+Nodes (42): 1. Create the directory structure, 2. pom.xml, 3. Interface, 4. Implementation, 5. Service provider, 6. Optional middleware, 7. Tests, 8. Add to parent POM (+34 more)
 
 ### Community 82 - "nginx"
 Cohesion: 0.29
 Nodes (7): depends_on, image, ports, profiles, restart, volumes, nginx
 
-### Community 84 - "JobQueue"
-Cohesion: 0.21
-Nodes (4): JobQueue, Queue, QueueFacadeTest, SendEmailJob
+### Community 83 - "duration"
+Cohesion: 0.07
+Nodes (5): InvoiceJob, SendEmailJob, Json, EmailAddress, NatsQueueIntegrationTest
+
+### Community 84 - "otel-collector-config.yml"
+Cohesion: 0.11
+Nodes (18): verbosity, exporters, debug, endpoint, endpoint, protocols, traces, processors (+10 more)
 
 ### Community 87 - "environment"
-Cohesion: 0.14
-Nodes (14): environment, APP_ENV, CACHE_DRIVER, DATABASE_HOST, DATABASE_NAME, DATABASE_PASSWORD, DATABASE_PORT, DATABASE_USERNAME (+6 more)
+Cohesion: 0.12
+Nodes (16): environment, APP_ENV, CACHE_DRIVER, DATABASE_HOST, DATABASE_NAME, DATABASE_PASSWORD, DATABASE_PORT, DATABASE_USERNAME (+8 more)
 
 ### Community 88 - "Docker Compose"
-Cohesion: 0.10
-Nodes (16): AppServiceProvider, Docker Compose, Dockerfile, .dockerignore, Environment file, Full stack (with nginx reverse proxy and Redis), Minimal setup, nginx configuration (+8 more)
+Cohesion: 0.22
+Nodes (9): Docker Compose, Dockerfile, .dockerignore, Environment file, Full stack (with nginx reverse proxy and Redis), Minimal setup, nginx configuration, Running (+1 more)
 
-### Community 89 - "InMemoryQueue"
-Cohesion: 0.10
-Nodes (6): JobHandlerRegistry, Registration, QueueWorker, QueueWorkerConfig, QueueWorkerTest, InMemoryQueue
+### Community 89 - "JobQueue"
+Cohesion: 0.11
+Nodes (4): JobQueue, QueueWorker, QueueWorkerConfig, Queue
 
 ### Community 90 - "Database JDBC Module"
 Cohesion: 0.20
 Nodes (10): Connection configuration, Database JDBC Module, Database operations, JdbcDatabase, JdbcDatabaseServiceProvider, Migration YAML format, MigrationRunner, Named connections and timing (+2 more)
 
-### Community 92 - "Authenticated"
-Cohesion: 0.12
-Nodes (10): JWT adapter, Configuration, File recorder, Safety, Service provider, Storage Module, 3. Private downloads, Authenticated (+2 more)
+### Community 92 - "Files and caching"
+Cohesion: 0.20
+Nodes (8): 1. Disks and cache are configured explicitly, 2. Write and read files, 3. Private downloads, 4. S3 or MinIO, 5. Caching, Files and caching, Notes, AuthenticatedDownloadPolicy
 
 ### Community 94 - "locale"
 Cohesion: 0.08
 Nodes (8): GenerateCommandSupport, MakeMigrationCommand, MakeModuleCommand, MakeProviderCommand, NewCommand, FileGenerator, Names, TemplateEngine
-
-### Community 96 - "Application"
-Cohesion: 0.10
-Nodes (5): JavelinConsole, JavelinConsole, RouteListCommand, ServeCommand, Application
 
 ### Community 98 - "Quick Start"
 Cohesion: 0.17
 Nodes (12): 10. Full stack with Docker (optional), 1. Prerequisites, 2. Install the CLI, 3. Create an app, 4. Build the frontend assets, 5. Verify the workspace, 6. Run the app, 7. Add a route (+4 more)
 
 ### Community 100 - "DefaultEventDispatcher"
-Cohesion: 0.12
-Nodes (6): DefaultEventDispatcher, EventDispatcher, EventListener, Events, EventDispatcherTest, UserRegistered
+Cohesion: 0.26
+Nodes (4): DefaultEventDispatcher, EventListener, EventDispatcherTest, UserRegistered
 
 ### Community 101 - "private"
 Cohesion: 0.12
@@ -567,7 +570,7 @@ Nodes (4): JsonLogEncoder, RequestLoggingMiddleware, JsonLogEncoder, JsonLogEnco
 
 ### Community 108 - "io.javelin.core.Application"
 Cohesion: 0.05
-Nodes (11): Developer API, CaffeineCacheServiceProvider, JacksonJsonServiceProvider, MailServiceProvider, DbPoolStats, ObservabilityServiceProvider, PoolStats, NatsQueueServiceProviderTest (+3 more)
+Nodes (13): web, 1. Configure, ValkeyCacheServiceProvider, ValkeyCacheServiceProviderTest, EventServiceProvider, MailServiceProvider, DbPoolStats, ObservabilityServiceProvider (+5 more)
 
 ### Community 114 - ".sustainsLoopbackThroughputThroughTheJdkAdapter"
 Cohesion: 0.06
@@ -578,12 +581,12 @@ Cohesion: 0.10
 Nodes (5): NatsQueue, NatsQueueServiceProvider, Notes, Queue NATS Module, NatsQueue
 
 ### Community 125 - "Session"
-Cohesion: 0.05
-Nodes (12): Cookies and sessions, Cookie-backed sessions, Cookie, Session, SessionStore, CookieAndSessionContractTest, StubSession, InMemorySessionStore (+4 more)
+Cohesion: 0.08
+Nodes (5): Session, SessionStore, StubSession, InMemorySessionStore, MemorySession
 
-### Community 128 - ".headers"
-Cohesion: 0.13
-Nodes (7): HtmlResponse, JsonResponse, RedirectResponse, Response, Response instance methods, Response static factories, ResponseTest, StaticAssetResolverTest, CorsAndCsrfTest
+### Community 128 - ".status"
+Cohesion: 0.09
+Nodes (10): HtmlResponse, JsonResponse, RedirectResponse, Response, Response instance methods, Response static factories, DefaultExceptionHandlerTest, ResponseTest, ValidationErrorsTest, StaticAssetResolverTest (+2 more)
 
 ### Community 129 - "Tracer"
 Cohesion: 0.16
@@ -602,36 +605,32 @@ Cohesion: 0.25
 Nodes (8): environment, image, restart, volumes, POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_USER, db
 
 ### Community 133 - "SupportUtilitiesTest"
-Cohesion: 0.19
-Nodes (4): Html, SupportUtilitiesTest, Person, Profile
+Cohesion: 0.31
+Nodes (3): SupportUtilitiesTest, Person, Profile
 
 ### Community 134 - "dev.mjs"
 Cohesion: 0.25
 Nodes (3): bin, env, watchers
 
 ### Community 136 - "depends_on"
-Cohesion: 0.29
-Nodes (7): depends_on, condition, db, nats, valkey, condition, condition
+Cohesion: 0.22
+Nodes (9): depends_on, condition, db, nats, otel-collector, valkey, condition, condition (+1 more)
 
 ### Community 137 - "healthcheck"
 Cohesion: 0.57
 Nodes (7): healthcheck, interval, retries, test, timeout, healthcheck, healthcheck
 
 ### Community 138 - ".of"
-Cohesion: 0.11
-Nodes (12): Queue contracts, Configuration, Contracts, Developer API, Contracts (javelin-core), Queue Module, Reliability, Job (+4 more)
-
-### Community 140 - "org.junit.jupiter.api.Test"
-Cohesion: 0.11
-Nodes (6): CommandGenerationTest, AuthorizationMiddlewareTest, HttpTimeoutConfig, HttpTimeoutConfigTest, RequestLoggingMiddlewareTest, PebbleViewRendererTest
+Cohesion: 0.08
+Nodes (18): Queue contracts, Errors, Events Module, Queued listeners, Service provider, Configuration, Contracts, Developer API (+10 more)
 
 ### Community 141 - "services"
 Cohesion: 0.40
 Nodes (4): volumes, natsdata, pgdata, valkeydata
 
-### Community 142 - "Request"
-Cohesion: 0.07
-Nodes (7): UserController, web, Key Design Decisions, Request, MultipartData, PartDisposition, RequestInputTest
+### Community 142 - "io.javelin.core.Request"
+Cohesion: 0.08
+Nodes (5): StorageExampleController, ErrorPageResolver, FileErrorPageResolver, SessionAuthMiddleware, SessionPrincipalResolver
 
 ### Community 143 - "app"
 Cohesion: 0.29
@@ -646,28 +645,32 @@ Cohesion: 0.33
 Nodes (6): valkey, command, image, ports, restart, volumes
 
 ### Community 146 - "Architecture"
-Cohesion: 0.18
-Nodes (11): Architecture, Container (DI), Core Abstractions, Core owns contracts; adapters implement them, Guiding Principles, Middleware pipeline, Module Boundaries, Module Export Diagram (+3 more)
+Cohesion: 0.12
+Nodes (17): Architecture, Container (DI), Core Abstractions, Core owns contracts; adapters implement them, Guiding Principles, Key Design Decisions, Layer 0 — Foundation, Layer 2 — Adapters (+9 more)
 
 ### Community 147 - "PebbleViewExtensions"
 Cohesion: 0.06
-Nodes (17): JavelinViewExtension, HeadlineFilter, JavelinVersionFunction, Automatic escaping, Layouts, includes and components, Options and caching, Rendering, Service provider (+9 more)
+Nodes (16): JavelinViewExtension, HeadlineFilter, JavelinVersionFunction, Automatic escaping, Layouts, includes and components, Options and caching, Rendering, Service provider (+8 more)
 
 ### Community 148 - "ScheduleSpec"
 Cohesion: 0.18
 Nodes (5): Cron, Daily, Monthly, Weekly, ScheduleSpec
 
 ### Community 149 - "HtmlResponse"
-Cohesion: 0.21
-Nodes (4): HomeController, HtmlResponse, View, ViewTest
+Cohesion: 0.23
+Nodes (3): View, ViewRenderer, ViewTest
 
 ### Community 150 - ".handle"
-Cohesion: 0.21
-Nodes (4): Bearer authentication, BearerAuthMiddleware, BearerTokenResolver, BearerAuthMiddlewareTest
+Cohesion: 0.16
+Nodes (8): Bearer authentication and authorization, Middleware, Bearer authentication, JWT adapter, Authenticated, BearerAuthMiddleware, BearerTokenResolver, BearerAuthMiddlewareTest
+
+### Community 156 - "CapturingQueue"
+Cohesion: 0.23
+Nodes (3): QueueFacadeTest, CapturingQueue, SendEmailJob
 
 ### Community 157 - "RabbitMqQueue"
-Cohesion: 0.20
-Nodes (3): RabbitMqQueue, RabbitMqQueueIntegrationTest, ClaimedJob
+Cohesion: 0.18
+Nodes (4): RabbitMqQueue, Claim, RabbitMqQueueIntegrationTest, ClaimedJob
 
 ### Community 159 - "primary"
 Cohesion: 0.20
@@ -709,13 +712,17 @@ Nodes (19): dir, queue, driver, file, retry, stream, url, valkey (+11 more)
 Cohesion: 0.16
 Nodes (3): JwtTokenIssuer, JwtTokenResolver, JwtTokenResolverTest
 
+### Community 178 - "ContainerTest"
+Cohesion: 0.19
+Nodes (8): ContainerTest, Alpha, Ambiguous, CloseableResource, Dependency, Failing, Service, Zeta
+
 ### Community 179 - "ValkeyCache"
 Cohesion: 0.27
 Nodes (3): InMemoryCache, Cache, ValkeyCache
 
 ### Community 180 - ".load"
-Cohesion: 0.22
-Nodes (4): DotenvEnv, Entry, DotenvEnvTest, YamlConfigTest
+Cohesion: 0.31
+Nodes (3): DotenvEnv, Entry, DotenvEnvTest
 
 ### Community 181 - "primary"
 Cohesion: 0.20
@@ -726,36 +733,36 @@ Cohesion: 0.20
 Nodes (10): netty, io, root, log, channel, correlation_id_header, level, path (+2 more)
 
 ### Community 183 - "MigrationRunner"
-Cohesion: 0.22
-Nodes (3): MigrateCommand, MigrateRollbackCommand, MigrationRunner
+Cohesion: 0.18
+Nodes (4): MigrateCommand, MigrateRollbackCommand, MigrationCommandTest, MigrationRunner
 
 ### Community 185 - "io.javelin.core.Database"
-Cohesion: 0.11
+Cohesion: 0.12
 Nodes (4): DatabaseManager, JdbcDatabaseServiceProviderTest, DatabaseExecutionHistory, DatabaseSchedulerLock
 
 ### Community 186 - ".handle"
-Cohesion: 0.14
-Nodes (5): ConfigurableExceptionHandler, ErrorPageResolver, SensitiveDataRedactor, ConfigurableExceptionHandlerTest, SensitiveDataRedactorTest
+Cohesion: 0.16
+Nodes (4): ConfigurableExceptionHandler, SensitiveDataRedactor, ConfigurableExceptionHandlerTest, SensitiveDataRedactorTest
 
 ### Community 187 - "Production Performance Tuning"
 Cohesion: 0.22
 Nodes (9): Connection pool (HikariCP), JMX monitoring, JVM flags, Native image (GraalVM), Production Performance Tuning, Rate limiting, Request size limit, Template caching (+1 more)
 
 ### Community 188 - "QueryBuilder"
-Cohesion: 0.10
-Nodes (11): Core interfaces you can implement, QueryBuilder, ModelTest, CastedArticle, EditableUser, RecordingDatabase, RecordingQueryBuilder, SampleUser (+3 more)
+Cohesion: 0.15
+Nodes (4): CastedArticle, EditableUser, RecordingDatabase, RecordingQueryBuilder
 
 ### Community 189 - "Queue Adapters"
 Cohesion: 0.13
 Nodes (13): Broker-backed integration tests, Choosing an adapter, File (`javelin-queue-file`), NATS JetStream (`javelin-queue-nats`), Queue Adapters, RabbitMQ (`javelin-queue-rabbitmq`), Valkey / Redis (`javelin-queue-valkey`), 1. Configure the queue (+5 more)
 
 ### Community 190 - "DefaultValidator"
-Cohesion: 0.18
+Cohesion: 0.20
 Nodes (8): Relationship to `javelin-support`, Service provider, Supported rules, Validation Module, Validator, DefaultValidator, Validator, DefaultValidatorTest
 
 ### Community 191 - "AppProfile"
-Cohesion: 0.16
-Nodes (8): Application Profile, Programmatic use, Selecting the profile, What changes, AppProfile, DEV, PROD, ChannelInitializer<SocketChannel>
+Cohesion: 0.25
+Nodes (7): Application Profile, Programmatic use, Selecting the profile, What changes, AppProfile, DEV, PROD
 
 ### Community 192 - "database"
 Cohesion: 0.25
@@ -765,41 +772,29 @@ Nodes (8): database, connections, default, migrations_dir, query, log_all, slow_
 Cohesion: 0.33
 Nodes (6): session, cookie_name, http_only, same_site, secure, ttl_seconds
 
-### Community 197 - "ApplicationTest"
-Cohesion: 0.15
-Nodes (6): ApplicationTest, BaseProvider, DependentProvider, FirstResource, RecordingProvider, SecondResource
-
 ### Community 198 - "ExecutionRecord"
 Cohesion: 0.18
 Nodes (4): DemoScheduleJob, ExecutionHistory, ExecutionRecord, InMemoryExecutionHistory
-
-### Community 199 - "TestConfig"
-Cohesion: 0.24
-Nodes (3): BillingProvider, CoreProvider, TestConfig
 
 ### Community 201 - "security"
 Cohesion: 0.14
 Nodes (14): enabled, audience, issuer, secret, ttl_seconds, bcrypt_cost, hash, security (+6 more)
 
 ### Community 202 - "HealthRegistry"
-Cohesion: 0.24
+Cohesion: 0.23
 Nodes (3): Health, HealthIndicator, HealthRegistry
 
 ### Community 204 - "Scheduler Module"
-Cohesion: 0.18
-Nodes (10): Application, Container, Container, Worker, Configuration, Developer API, Dispatching to queues, Reliability (+2 more)
+Cohesion: 0.20
+Nodes (9): Container, Container, Worker, Configuration, Developer API, Dispatching to queues, Reliability, Scheduler Module (+1 more)
 
 ### Community 205 - "ConsoleKernel"
-Cohesion: 0.12
-Nodes (9): CommandRegistry, AI Commands, Architecture, Build, Core Commands, Javelin CLI, Native Image, CommandRegistry (+1 more)
+Cohesion: 0.08
+Nodes (10): CommandRegistry, AI Commands, Architecture, Build, Core Commands, Javelin CLI, Native Image, CommandRegistry (+2 more)
 
 ### Community 206 - "security"
 Cohesion: 0.15
 Nodes (13): enabled, audience, issuer, secret, ttl_seconds, bcrypt_cost, hash, security (+5 more)
-
-### Community 207 - "Full Worked Example"
-Cohesion: 0.20
-Nodes (10): 1. Create the directory structure, 2. pom.xml, 3. Interface, 4. Implementation, 5. Service provider, 6. Optional middleware, 7. Tests, 8. Add to parent POM (+2 more)
 
 ### Community 208 - "cache"
 Cohesion: 0.33
@@ -813,9 +808,9 @@ Nodes (4): cors, allow_credentials, allowed_origins, max_age_seconds
 Cohesion: 0.40
 Nodes (5): cache, caffeine, driver, default_ttl_seconds, maximum_size
 
-### Community 215 - "StubSession"
-Cohesion: 0.17
-Nodes (3): SessionAuthMiddleware, SessionPrincipalResolver, StubSession
+### Community 214 - "Storage Module"
+Cohesion: 0.29
+Nodes (5): Configuration, Developer API, File recorder, Service provider, Storage Module
 
 ### Community 216 - "scheduler"
 Cohesion: 0.25
@@ -830,56 +825,68 @@ Cohesion: 0.25
 Nodes (8): scheduler, enabled, history, lock, lock_ttl_seconds, owner, poll_interval_ms, timezone
 
 ### Community 222 - "UploadedFile"
-Cohesion: 0.12
-Nodes (3): UploadedFile, RequestMultipartTest, File
-
-### Community 224 - ".middlewareServesHealthReadyAndMetrics"
-Cohesion: 0.23
-Nodes (3): ObservabilityConfig, ObservabilityTest, TestConfig
+Cohesion: 0.07
+Nodes (5): MultipartData, PartDisposition, UploadedFile, RequestMultipartTest, File
 
 ### Community 225 - "JdbcDatabaseServiceProvider"
 Cohesion: 0.20
 Nodes (3): JdbcDatabaseServiceProvider, NoopLogger, MigrationDialects
 
 ### Community 226 - "io.javelin.core.Response"
-Cohesion: 0.10
-Nodes (6): RequestLoggingMiddleware, ObservabilityMiddleware, RuntimeSnapshot, CorsConfig, CorsMiddleware, SecureHeadersMiddleware
+Cohesion: 0.12
+Nodes (4): RequestLoggingMiddleware, RequestLoggingMiddlewareTest, CorsConfig, CorsMiddleware
+
+### Community 227 - "otel-collector"
+Cohesion: 0.33
+Nodes (6): command, image, ports, restart, volumes, otel-collector
+
+### Community 228 - "Mail Module"
+Cohesion: 0.33
+Nodes (6): Address validation, Configuration, Developer API, Mail Module, Queued delivery and failures, Test transport
 
 ### Community 229 - "MailManager"
-Cohesion: 0.24
+Cohesion: 0.26
 Nodes (3): MailManager, MailTransport, Mail
 
 ### Community 230 - "SmtpTransport.java"
 Cohesion: 0.12
 Nodes (3): SmtpConfig, SmtpTransport, Authenticator
 
-### Community 234 - "CorePerformanceRegressionTest"
-Cohesion: 0.32
-Nodes (6): CorePerformanceRegressionTest, DeepService, FactoryService, LeafService, MiddleService, SingletonService
+### Community 231 - "YamlConfig"
+Cohesion: 0.17
+Nodes (4): YamlConfig, TypeReference<>, TypeReference<>, YamlConfigTest
 
-### Community 237 - ".run"
-Cohesion: 0.19
-Nodes (6): Main, Boot Sequence, Phase 1: Entry Point, Phase 2: Boot, Phase 3: Dispatch, Javelin
+### Community 234 - "CorePerformanceRegressionTest"
+Cohesion: 0.27
+Nodes (7): CorePerformanceRegressionTest, DeepService, FactoryService, InstanceService, LeafService, MiddleService, SingletonService
+
+### Community 235 - "Exception Module"
+Cohesion: 0.40
+Nodes (5): ConfigurableExceptionHandler, Configuration, Error pages, Exception Module, Service provider
+
+### Community 237 - "Cache Module"
+Cohesion: 0.50
+Nodes (4): Cache, Cache Module, CacheServiceProvider, Notes
 
 ### Community 238 - ".registersWorkspaceDefaultsAndLoadsValidationRulesOnBoot"
-Cohesion: 0.19
+Cohesion: 0.33
 Nodes (3): JavelinStarterServiceProviderTest, TestConfig, TestEnv
 
 ### Community 239 - "Config Module"
-Cohesion: 0.17
-Nodes (9): Config interface methods, Config Module, ConfigServiceProvider, DotenvEnv, Environment expression resolution, Notes, Secret providers, YamlConfig (+1 more)
+Cohesion: 0.25
+Nodes (8): Config interface methods, Config Module, ConfigServiceProvider, DotenvEnv, Environment expression resolution, Notes, Secret providers, YamlConfig
 
-### Community 241 - "EventServiceProvider"
-Cohesion: 0.14
-Nodes (13): Developer API, Errors, Events Module, Queued listeners, Service provider, 1. Configure, 2. Schedule tasks, 3. Dispatch events (+5 more)
+### Community 241 - "tutorials/README.md"
+Cohesion: 0.12
+Nodes (11): 1. Compose and send, 2. Plain text, attachments and inline images, 3. Production SMTP, 4. Reliability and safety, Sending mail, Tutorials, 2. Schedule tasks, 3. Dispatch events (+3 more)
 
 ### Community 245 - "errors"
 Cohesion: 0.50
 Nodes (4): errors, pages_dir, redact, redact_keys
 
-### Community 247 - "tutorials/README.md"
-Cohesion: 0.12
-Nodes (14): 1. Disks and cache are configured explicitly, 2. Write and read files, 4. S3 or MinIO, 5. Caching, Files and caching, Notes, 1. Observe the application, 2. Validate configuration (+6 more)
+### Community 247 - "Production deployment"
+Cohesion: 0.13
+Nodes (13): 1. Observe the application, 2. Validate configuration, 3. Package and run, 4. Linux service, 5. Benchmark before release, 6. CI/CD and native images, Production deployment, 1. Generate a provider (+5 more)
 
 ### Community 248 - "mail"
 Cohesion: 0.25
@@ -889,25 +896,17 @@ Nodes (8): mail, driver, from, retry, test, backoff_ms, max_attempts, dir
 Cohesion: 0.25
 Nodes (8): mail, driver, from, retry, test, backoff_ms, max_attempts, dir
 
-### Community 250 - "RequiresAuthenticationMiddleware"
-Cohesion: 0.10
-Nodes (15): CSRF, Session authentication, 1. Enable the providers, 2. Build and start the demo, 3. Browser login with CSRF, 4. Validation and error rendering, 5. JWT for the API, 6. CORS preflight (+7 more)
-
 ### Community 251 - "Provider Loader Module"
-Cohesion: 0.29
-Nodes (6): Configuration, Diagnostics, Distribution, Manifest, Provider Loader Module, Service provider
+Cohesion: 0.17
+Nodes (7): Configuration, Diagnostics, Distribution, Manifest, Provider Loader Module, Service provider, ProviderRegistryServiceProvider
 
 ### Community 253 - "MailSubmissionLogger"
-Cohesion: 0.15
-Nodes (9): Address validation, Configuration, Developer API, Logging, Mail Module, Queued delivery and failures, Test transport, MailMessage (+1 more)
+Cohesion: 0.19
+Nodes (4): Logging, MailMessage, MailSubmissionLogger, MailTest
 
 ### Community 255 - "observability"
 Cohesion: 0.33
 Nodes (6): observability, enabled, health_path, metrics_path, ready_path, tracing
-
-### Community 256 - ".loadDirectory"
-Cohesion: 0.24
-Nodes (3): EnvSecretProvider, TypeReference<>, TypeReference<>
 
 ### Community 258 - "session"
 Cohesion: 0.33
@@ -917,21 +916,21 @@ Nodes (6): session, cookie_name, http_only, same_site, secure, ttl_seconds
 Cohesion: 0.33
 Nodes (5): Endpoints, Health checks, Metrics, Observability Module, Tracing
 
-### Community 260 - "ProviderLoaderTest"
-Cohesion: 0.32
-Nodes (4): ProviderLoaderTest, BaseLoadedProvider, DependentLoadedProvider, LoadedOrder
-
 ### Community 262 - "provider"
 Cohesion: 0.40
 Nodes (5): provider, directory, disabled, enabled, strict
 
-### Community 263 - "profile.md"
-Cohesion: 0.33
+### Community 263 - "HTTP Netty Module"
+Cohesion: 0.67
 Nodes (3): Behavior, HTTP Netty Module, Programmatic use
 
-### Community 266 - "Distributing providers"
-Cohesion: 0.29
-Nodes (6): 1. Generate a provider, 2. Enable or disable it, 3. Inspect and diagnose, 4. Install a versioned provider JAR, 5. CLI used by a distributed app, Distributing providers
+### Community 264 - "Javelin Docs"
+Cohesion: 0.67
+Nodes (3): Javelin Docs, Module Index, Reading Order
+
+### Community 266 - "Status"
+Cohesion: 0.67
+Nodes (3): Status, DRAFT, PUBLISHED
 
 ### Community 267 - "cors"
 Cohesion: 0.50
@@ -945,17 +944,13 @@ Nodes (4): errors, pages_dir, redact, redact_keys
 Cohesion: 0.33
 Nodes (6): observability, enabled, health_path, metrics_path, ready_path, tracing
 
-### Community 270 - "Sending mail"
-Cohesion: 0.33
-Nodes (5): 1. Compose and send, 2. Plain text, attachments and inline images, 3. Production SMTP, 4. Reliability and safety, Sending mail
-
 ### Community 273 - ".typedCacheAccessConvertsJsonBackToTheRequestedType"
 Cohesion: 0.19
 Nodes (6): Model, Model instance methods, Model static methods, ValkeyCacheTest, Cache, User
 
 ### Community 275 - "HTTP Common Module"
-Cohesion: 0.17
-Nodes (10): HTTP Common Module, HttpAdapterConfig, HttpDriverConfig, StaticAssetResolver, StaticCachePolicy, HTTP JDK Module, JdkHttpServer, Notes (+2 more)
+Cohesion: 0.20
+Nodes (8): HTTP Common Module, HttpAdapterConfig, HttpDriverConfig, StaticAssetResolver, StaticCachePolicy, TrustedProxyResolver, HttpTimeoutConfig, EtagStats
 
 ### Community 276 - "server"
 Cohesion: 0.50
@@ -966,28 +961,28 @@ Cohesion: 0.50
 Nodes (3): Behavior, HTTP Undertow Module, Programmatic use
 
 ### Community 286 - "Database"
-Cohesion: 0.67
-Nodes (3): Database, QueryBuilder, TransactionCallback
+Cohesion: 0.11
+Nodes (9): Core interfaces you can implement, Database, QueryBuilder, TransactionCallback, Behavior, Configuration, Database Queue Module, Database (+1 more)
 
 ## Knowledge Gaps
 - **12 isolated node(s):** `io.javelin:javelin-parent`, `DRAFT`, `PUBLISHED`, `DEV`, `PROD` (+7 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1133 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **121 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1148 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **115 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Config` connect `Config` to `.instance`, `io.javelin.core.ServiceProvider`, `Override`, `io.javelin.core.AppProfile`, `ProfileConfig`, `YamlConfig`, `MapConfig`, `MapConfig`, `map`, `.registersWorkspaceDefaultsAndLoadsValidationRulesOnBoot`, `.from`, `list`, `MigrationCommandTest.java`, `RecordingLogger`, `HttpServerAdapter`, `linkedhashmap`, `Env`?**
-  _High betweenness centrality (0.033) - this node is a cross-community bridge._
+- **Why does `Application` connect `Application` to `.instance`, `io.javelin.core.ServiceProvider`, `cli/ConsoleKernel.java`, `CommandContext`, `io.javelin.core.Application`, `map`, `Scheduler Module`, `.registersWorkspaceDefaultsAndLoadsValidationRulesOnBoot`, `Container`, `map`, `Javelin.java`, `Config`, `MigrationRunner`, `.register`, `HttpServerAdapter`, `optional`, `.output`, `AppProfile`?**
+  _High betweenness centrality (0.038) - this node is a cross-community bridge._
 - **What connects `io.javelin:javelin-parent`, `DRAFT`, `PUBLISHED` to the rest of the system?**
   _12 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `Override` be split into smaller, more focused modules?**
-  _Cohesion score 0.12162162162162163 - nodes in this community are weakly interconnected._
-- **Why does `Request` connect `Request` to `locale`, `ProfileConfig`, `NettyHttpServer`, `io.javelin.core.Request`, `.text`, `org.junit.jupiter.api.Test`, `.handle`, `HtmlResponse`, `Response`, `.handle`, `com.fasterxml.jackson.databind.ObjectMapper`, `path`, `io.javelin.core.ServiceProvider`, `HtmlResponse`, `map`, `DefaultExceptionHandler`, `Route`, `list`, `NettyHttpServerIntegrationTest.java`, `MigrationCommandTest.java`, `UploadedFile`, `io.javelin.core.Response`, `Session`?**
-  _High betweenness centrality (0.027) - this node is a cross-community bridge._
-- **Should `locale` be split into smaller, more focused modules?**
-  _Cohesion score 0.08923076923076922 - nodes in this community are weakly interconnected._
-- **Why does `Response` connect `Response` to `.headers`, `locale`, `NettyHttpServer`, `org.junit.jupiter.api.Test`, `.text`, `Request`, `.handle`, `HtmlResponse`, `.handle`, `path`, `JdkHttpServer.java`, `HtmlResponse`, `NettyHttpServer`, `map`, `DefaultExceptionHandler`, `NettyHttpServer.java`, `list`, `NettyHttpServerIntegrationTest.java`, `MigrationCommandTest.java`, `io.javelin.core.Response`, `Session`?**
-  _High betweenness centrality (0.025) - this node is a cross-community bridge._
-- **Should `Override` be split into smaller, more focused modules?**
-  _Cohesion score 0.13675213675213677 - nodes in this community are weakly interconnected._
+- **Should `Application` be split into smaller, more focused modules?**
+  _Cohesion score 0.047497446373850866 - nodes in this community are weakly interconnected._
+- **Why does `ServiceProvider` connect `Application` to `.instance`, `Agent Notes`, `io.javelin.core.ServiceProvider`, `HttpServerAdapter`, `Module Authoring`, `Javelin.java`, `Request`, `Production deployment`, `Javelin Framework`, `Provider Loader Module`, `Core Module`, `Database`?**
+  _High betweenness centrality (0.033) - this node is a cross-community bridge._
+- **Should `cli/ConsoleKernel.java` be split into smaller, more focused modules?**
+  _Cohesion score 0.05501165501165501 - nodes in this community are weakly interconnected._
+- **Why does `Request` connect `Request` to `.status`, `io.javelin.core.Response`, `io.javelin.core.ServiceProvider`, `.handle`, `Response`, `io.javelin.core.Request`, `.text`, `map`, `.handle`, `duration`, `UploadedFile`, `NettyHttpServerIntegrationTest.java`, `.handle`, `Route`, `com.fasterxml.jackson.databind.ObjectMapper`, `map`?**
+  _High betweenness centrality (0.031) - this node is a cross-community bridge._
+- **Should `CommandContext` be split into smaller, more focused modules?**
+  _Cohesion score 0.053313587560162905 - nodes in this community are weakly interconnected._

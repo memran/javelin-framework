@@ -70,11 +70,11 @@ Javelin is not Spring Boot. Keep behavior explicit, modular, and cheap to start.
 
 ## Next Useful Work
 
-- Run the broker-backed queue tests in CI with RabbitMQ and NATS service containers.
-- Add an OTel collector to the demo Compose stack and verify exported spans live.
-- Replace RabbitMQ `basicGet` polling with lease-aware consumer handling.
-- Add TTL/size bounds to the static ETag cache and expose its hit rate through metrics.
-- Read native-image extras from an explicit app config file instead of repeated CLI flags.
+- Wire a Prometheus exporter so request counters, pool stats and ETag hit rate can be scraped.
+- Persist RabbitMQ failed jobs instead of the in-memory list.
+- Honor `later()` delays on NATS with a durable delayed-delivery subject.
+- Add a CI job that boots the demo Compose stack and checks `/health`, `/ready` and `/demo/tracing`.
+- Add a failed-job inspection CLI for the database, file and Valkey adapters.
 
 ## Do / Don’t
 

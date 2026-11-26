@@ -2,7 +2,6 @@ package app.providers;
 
 import io.javelin.core.Application;
 import io.javelin.core.ServiceProvider;
-import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.exporter.otlp.trace.OtlpGrpcSpanExporter;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
@@ -25,8 +24,9 @@ public final class TracingProvider implements ServiceProvider {
         SdkTracerProvider tracerProvider = SdkTracerProvider.builder()
                 .addSpanProcessor(BatchSpanProcessor.builder(exporter).build())
                 .build();
-        GlobalOpenTelemetry.set(OpenTelemetrySdk.builder()
+        // buildAndRegisterGlobal() installs GlobalOpenTelemetry exactly once.
+        OpenTelemetrySdk.builder()
                 .setTracerProvider(tracerProvider)
-                .buildAndRegisterGlobal());
+                .buildAndRegisterGlobal();
     }
 }

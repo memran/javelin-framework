@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /** RabbitMQ adapter. Delayed jobs use a TTL queue with dead-lettering to the main queue. */
 public final class RabbitMqQueue implements JobQueue {
@@ -27,7 +30,12 @@ public final class RabbitMqQueue implements JobQueue {
     private final Connection connection;
     private final Channel channel;
     private final List<Job> failedJobs = new ArrayList<>();
-    private final Map<String, Job> claimedJobs = new java.util.concurrent.ConcurrentHashMap<>();
+    private final Map<String, Claim> claimedJobs = new java.util.concurrent.ConcurrentHashMap<>();
+    private final ScheduledExecutorService leases = Executors.newSingleThreadScheduledExecutor(task -> {
+        Thread thread = new Thread(task, "javelin-rabbitmq-lease");
+        thread.setDaemon(true);
+        return thread;
+    });
 
     public RabbitMqQueue(String uri) {
         try {
@@ -76,18 +84,35 @@ public final class RabbitMqQueue implements JobQueue {
                 return Optional.empty();
             }
             Job job = Json.parse(new String(response.getBody(), StandardCharsets.UTF_8), Job.class);
-            String token = String.valueOf(response.getEnvelope().getDeliveryTag());
-            claimedJobs.put(token, job);
+            long tag = response.getEnvelope().getDeliveryTag();
+            String token = String.valueOf(tag);
+            claimedJobs.put(token, new Claim(job, tag));
+            leases.schedule(() -> expire(token), Math.max(1, lease.toMillis()), TimeUnit.MILLISECONDS);
             return Optional.of(new ClaimedJob(job.id(), job, token));
         } catch (Exception exception) {
             throw new IllegalStateException("Unable to claim job", exception);
         }
     }
 
+    /** Requeues a claimed job when its lease expires before ack or fail. */
+    private void expire(String token) {
+        Claim expired = claimedJobs.remove(token);
+        if (expired == null) {
+            return;
+        }
+        try {
+            channel.basicNack(expired.deliveryTag(), false, true);
+        } catch (Exception exception) {
+            // The channel is already closed; the broker requeues unacked messages.
+        }
+    }
+
     @Override
     public void ack(String id, String leaseToken) {
         try {
-            channel.basicAck(Long.parseLong(leaseToken), false);
+            Claim claim = claimedJobs.remove(leaseToken);
+            long tag = claim == null ? Long.parseLong(leaseToken) : claim.deliveryTag();
+            channel.basicAck(tag, false);
         } catch (Exception exception) {
             throw new IllegalStateException("Unable to acknowledge job " + id, exception);
         }
@@ -95,7 +120,8 @@ public final class RabbitMqQueue implements JobQueue {
 
     @Override
     public void fail(String id, String leaseToken, String error, Duration retryDelay) {
-        Job claimed = claimedJobs.remove(leaseToken);
+        Claim claim = claimedJobs.remove(leaseToken);
+        Job claimed = claim == null ? null : claim.job();
         try {
             if (retryDelay.isZero() || retryDelay.isNegative()) {
                 synchronized (failedJobs) {
@@ -110,7 +136,8 @@ public final class RabbitMqQueue implements JobQueue {
                         : claimed.withAttempts(claimed.attempts() + 1);
                 publish(DELAY, retry, String.valueOf(Math.max(1, retryDelay.toMillis())));
             }
-            channel.basicAck(Long.parseLong(leaseToken), false);
+            long tag = claim == null ? Long.parseLong(leaseToken) : claim.deliveryTag();
+            channel.basicAck(tag, false);
         } catch (Exception exception) {
             throw new IllegalStateException("Unable to fail job " + id, exception);
         }
@@ -151,8 +178,12 @@ public final class RabbitMqQueue implements JobQueue {
         // Workers consume through JobHandlerRegistry.
     }
 
+    private record Claim(Job job, long deliveryTag) {
+    }
+
     @Override
     public void close() {
+        leases.shutdownNow();
         try {
             channel.close();
             connection.close();

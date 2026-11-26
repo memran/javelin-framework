@@ -38,3 +38,28 @@ jobs:
             modules/javelin-deployment/target/performance-*.json
             target/performance-report.json
           if-no-files-found: warn
+
+  broker-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+      - name: Start brokers
+        run: |
+          docker run -d --name javelin-nats -p 4222:4222 nats:2-alpine -js
+          docker run -d --name javelin-rabbit -p 5672:5672 rabbitmq:3-alpine
+          for i in $(seq 1 30); do
+            if docker exec javelin-rabbit rabbitmq-diagnostics -q ping >/dev/null 2>&1; then break; fi
+            sleep 1
+          done
+          docker exec javelin-rabbit rabbitmqctl await_startup
+      - name: Run broker-backed tests
+        env:
+          JAVELIN_NATS_URL: nats://localhost:4222
+          JAVELIN_RABBITMQ_URI: amqp://guest:guest@localhost:5672/%2F
+        run: mvn -B -pl :javelin-queue-rabbitmq,:javelin-queue-nats -am test

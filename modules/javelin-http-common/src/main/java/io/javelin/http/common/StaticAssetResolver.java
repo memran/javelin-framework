@@ -10,6 +10,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.security.MessageDigest;
+import java.time.Duration;
+import java.time.Instant;
 import java.security.NoSuchAlgorithmException;
 import java.util.HexFormat;
 import java.util.LinkedHashMap;
@@ -18,16 +20,20 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 
 /** Resolves static files under a fixed public root, with caching, conditional and range support. */
 public final class StaticAssetResolver {
     private static final ByteRange UNSATISFIABLE = new ByteRange(-1, -1);
     private static final int MAX_ETAG_ENTRIES = 1024;
+    private static final Duration ETAG_TTL = Duration.ofMinutes(1);
 
     private final Path rootDirectory;
     private final StaticCachePolicy cachePolicy;
     private final Map<Path, EtagEntry> etagCache = new ConcurrentHashMap<>();
+    private final AtomicLong etagHits = new AtomicLong();
+    private final AtomicLong etagMisses = new AtomicLong();
 
     public StaticAssetResolver(Path rootDirectory) {
         this(rootDirectory, StaticCachePolicy.DEFAULT);
@@ -36,6 +42,17 @@ public final class StaticAssetResolver {
     public StaticAssetResolver(Path rootDirectory, StaticCachePolicy cachePolicy) {
         this.rootDirectory = rootDirectory.toAbsolutePath().normalize();
         this.cachePolicy = Objects.requireNonNull(cachePolicy, "cachePolicy");
+    }
+
+    public record EtagStats(long hits, long misses) {
+        public double hitRate() {
+            return hits + misses == 0 ? 0 : (double) hits / (hits + misses);
+        }
+    }
+
+    /** Hit/miss counters for the cached content digests, for metrics wiring. */
+    public EtagStats etagStats() {
+        return new EtagStats(etagHits.get(), etagMisses.get());
     }
 
     public Optional<Response> resolve(String method, String requestPath) {
@@ -163,14 +180,17 @@ public final class StaticAssetResolver {
         long size = Files.size(path);
         FileTime modified = Files.getLastModifiedTime(path);
         EtagEntry cached = etagCache.get(path);
-        if (cached != null && cached.size() == size && cached.modified().equals(modified)) {
+        if (cached != null && cached.size() == size && cached.modified().equals(modified)
+                && Instant.now().isBefore(cached.expiresAt())) {
+            etagHits.incrementAndGet();
             return cached.etag();
         }
+        etagMisses.incrementAndGet();
         String etag = digest(path);
         if (etagCache.size() >= MAX_ETAG_ENTRIES) {
             etagCache.clear();
         }
-        etagCache.put(path, new EtagEntry(size, modified, etag));
+        etagCache.put(path, new EtagEntry(size, modified, etag, Instant.now().plus(ETAG_TTL)));
         return etag;
     }
 
@@ -191,7 +211,7 @@ public final class StaticAssetResolver {
         }
     }
 
-    private record EtagEntry(long size, FileTime modified, String etag) {
+    private record EtagEntry(long size, FileTime modified, String etag, Instant expiresAt) {
     }
 
     private String contentTypeOf(Path path) throws IOException {

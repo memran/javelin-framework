@@ -294,9 +294,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-console/src/main/java/io/javelin/cli/commands/NewCommand.java": {
-    "mtime": 1795681097.737111,
-    "seen": 1795681611.6116333,
-    "ast_hash": "8fe95f728f7f7971d4c5bca726aa7f42",
+    "mtime": 1795730151.5644712,
+    "seen": 1795730679.381626,
+    "ast_hash": "92a814ecadf0cbdb0d1e4818b7a96e0c",
     "semantic_hash": ""
   },
   "modules/javelin-console/src/main/java/io/javelin/cli/commands/QueueStatusCommand.java": {
@@ -432,9 +432,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-console/src/test/java/io/javelin/cli/CommandGenerationTest.java": {
-    "mtime": 1795725656.7887435,
-    "seen": 1795725778.5064175,
-    "ast_hash": "23c6c876fe959b9725d8087104ef9141",
+    "mtime": 1795730171.4266524,
+    "seen": 1795730679.3816571,
+    "ast_hash": "9fdfdd799195b0606aea36f49debeb24",
     "semantic_hash": ""
   },
   "modules/javelin-console/src/test/java/io/javelin/cli/commands/MigrationCommandTest.java": {
@@ -1014,9 +1014,9 @@
     "semantic_hash": ""
   },
   "agents.md": {
-    "mtime": 1795725698.744107,
-    "seen": 1795725778.5068057,
-    "ast_hash": "79d24b8369a480c5e5b9e4de7b754001",
+    "mtime": 1795730599.8229938,
+    "seen": 1795730679.3820667,
+    "ast_hash": "5bc8b2973fc30209533d7801b5f0974c",
     "semantic_hash": ""
   },
   "docs/README.md": {
@@ -1152,9 +1152,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-http-common/src/main/java/io/javelin/http/common/StaticAssetResolver.java": {
-    "mtime": 1795724295.5381284,
-    "seen": 1795725778.5065687,
-    "ast_hash": "d51507a1398e6cc118765fc34cb4627d",
+    "mtime": 1795729958.9454825,
+    "seen": 1795730679.38181,
+    "ast_hash": "1c58de8ab4f0c89f4d21d493fc7dfc37",
     "semantic_hash": ""
   },
   "modules/javelin-http-common/src/main/java/io/javelin/http/common/TrustedProxyResolver.java": {
@@ -1164,9 +1164,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-http-common/src/test/java/io/javelin/http/common/StaticAssetResolverTest.java": {
-    "mtime": 1795724319.3910067,
-    "seen": 1795725778.5065746,
-    "ast_hash": "84eed82edcd7361f43238bbe0a50ca96",
+    "mtime": 1795729969.763628,
+    "seen": 1795730679.3818154,
+    "ast_hash": "d2a08fc0cd87550413261ce7a62ce28e",
     "semantic_hash": ""
   },
   "modules/javelin-http-common/src/test/java/io/javelin/http/common/TrustedProxyResolverTest.java": {
@@ -1236,9 +1236,9 @@
     "semantic_hash": ""
   },
   "docs/modules/http-common.md": {
-    "mtime": 1795725028.109063,
-    "seen": 1795725778.5068278,
-    "ast_hash": "12d0e9df682638e714c49dbe0155c7ea",
+    "mtime": 1795729980.3283832,
+    "seen": 1795730679.3820913,
+    "ast_hash": "d72e858e0bdd998089153fe22e8e41f5",
     "semantic_hash": ""
   },
   "docs/modules/http-netty.md": {
@@ -1368,9 +1368,9 @@
     "semantic_hash": ""
   },
   "demo-app/docker-compose.yml": {
-    "mtime": 1795721600.4029086,
-    "seen": 1795721819.022397,
-    "ast_hash": "2f0abe984b57ec1b5396705e25c70664",
+    "mtime": 1795730114.4244869,
+    "seen": 1795730679.381532,
+    "ast_hash": "8f96678e7174eb6322bab26ddf27c0d0",
     "semantic_hash": ""
   },
   "demo-app/package.json": {
@@ -2268,9 +2268,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-queue-rabbitmq/src/main/java/io/javelin/queue/rabbitmq/RabbitMqQueue.java": {
-    "mtime": 1795722131.7736502,
-    "seen": 1795722318.5573108,
-    "ast_hash": "d8ba92fc23e2fe6cbb6aa290d420d7c3",
+    "mtime": 1795730061.4876428,
+    "seen": 1795730679.3819215,
+    "ast_hash": "567755c1bd8aeecd51985e39c1da62e2",
     "semantic_hash": ""
   },
   "modules/javelin-queue-rabbitmq/src/main/java/io/javelin/queue/rabbitmq/RabbitMqQueueServiceProvider.java": {
@@ -2748,9 +2748,9 @@
     "semantic_hash": ""
   },
   ".github/workflows/ci.yml": {
-    "mtime": 1795724451.542104,
-    "seen": 1795725778.506261,
-    "ast_hash": "2dd46b167861e2be0e0548808497b699",
+    "mtime": 1795730386.5116346,
+    "seen": 1795730679.3814843,
+    "ast_hash": "b2ba894ba544de4999d5a54b8b42b7df",
     "semantic_hash": ""
   },
   ".github/workflows/release.yml": {
@@ -2796,9 +2796,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-deployment/src/main/java/io/javelin/deployment/GraalvmConfigGenerator.java": {
-    "mtime": 1795724359.0031888,
-    "seen": 1795725778.5065312,
-    "ast_hash": "a84fd5bf30d3937b51da2f4e158ed42c",
+    "mtime": 1795729806.7838173,
+    "seen": 1795730679.3817716,
+    "ast_hash": "98cc0c75c14aee602f14d8e99edaf7de",
     "semantic_hash": ""
   },
   "modules/javelin-deployment/src/main/java/io/javelin/deployment/ProductionValidator.java": {
@@ -2820,9 +2820,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-deployment/src/test/java/io/javelin/deployment/DeploymentTest.java": {
-    "mtime": 1795724404.0693948,
-    "seen": 1795725778.5065362,
-    "ast_hash": "9527d3a8ae1c9ae2a17835b8a441fb0d",
+    "mtime": 1795729860.797694,
+    "seen": 1795730679.381776,
+    "ast_hash": "5322ad146a24520e6d401857f6cb43b7",
     "semantic_hash": ""
   },
   "modules/javelin-observability/pom.xml": {
@@ -2934,21 +2934,21 @@
     "semantic_hash": ""
   },
   "docs/modules/deployment.md": {
-    "mtime": 1795724470.619458,
-    "seen": 1795725778.5068247,
-    "ast_hash": "4c6080051b6d5e37cfc90333b5fd296b",
+    "mtime": 1795730199.2961156,
+    "seen": 1795730679.3820877,
+    "ast_hash": "e60667466d5aa752428fbcad8ed6d8dc",
     "semantic_hash": ""
   },
   "docs/modules/observability.md": {
-    "mtime": 1795725261.0570095,
-    "seen": 1795725778.5068355,
-    "ast_hash": "93cd8a0ebb64102fc84d08536a5ee973",
+    "mtime": 1795730185.3245268,
+    "seen": 1795730679.3821,
+    "ast_hash": "560aa67b428b44ae5aed312bd0775bed",
     "semantic_hash": ""
   },
   "docs/tutorials/production-deployment.md": {
-    "mtime": 1795724479.096813,
-    "seen": 1795725778.506857,
-    "ast_hash": "ade16ac1ec8c39925784c748a41cfec4",
+    "mtime": 1795730211.4397793,
+    "seen": 1795730679.382123,
+    "ast_hash": "abccff714363db22243b2337e761aa6a",
     "semantic_hash": ""
   },
   "modules/javelin-deployment/src/test/java/io/javelin/deployment/perf/CorePerformanceRegressionTest.java": {
@@ -2970,9 +2970,9 @@
     "semantic_hash": ""
   },
   "demo-app/app/providers/TracingProvider.java": {
-    "mtime": 1795725252.2513413,
-    "seen": 1795725778.5062935,
-    "ast_hash": "9de2d70b6ea9d63afa9c607d9be85cab",
+    "mtime": 1795730503.6626647,
+    "seen": 1795730679.3815198,
+    "ast_hash": "801ac9c4fe21810ddfd197652dca0561",
     "semantic_hash": ""
   },
   "demo-app/resources/META-INF/native-image/demo/reflect-config.json": {
@@ -3006,15 +3006,27 @@
     "semantic_hash": ""
   },
   "modules/javelin-queue-rabbitmq/src/test/java/io/javelin/queue/rabbitmq/RabbitMqQueueIntegrationTest.java": {
-    "mtime": 1795725431.3162315,
-    "seen": 1795725778.5066752,
-    "ast_hash": "375ece273540762c234299fbd234f19b",
+    "mtime": 1795730073.1769965,
+    "seen": 1795730679.3819242,
+    "ast_hash": "ca07ffd11a7b3d9575fc89f8c0cee888",
     "semantic_hash": ""
   },
   "scripts/aggregate-performance.py": {
     "mtime": 1795724438.6196842,
     "seen": 1795725778.5068033,
     "ast_hash": "0b821199c53d21000a3acb8848370cd9",
+    "semantic_hash": ""
+  },
+  "demo-app/otel-collector-config.yml": {
+    "mtime": 1795730086.0516634,
+    "seen": 1795730679.3815336,
+    "ast_hash": "4ade887307c96d6631361837e7b1169b",
+    "semantic_hash": ""
+  },
+  "demo-app/config/native-image.txt": {
+    "mtime": 1795729848.7521956,
+    "seen": 1795730679.3820677,
+    "ast_hash": "649197b3bfd47362fededeb2a75f0e8f",
     "semantic_hash": ""
   }
 }
