@@ -1,7 +1,7 @@
 # Graph Report - javelin-framework  (2026-11-27)
 
 ## Corpus Check
-- 494 files · ~116,313 words
+- 494 files · ~116,347 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 57 file(s) not represented in the graph (top: .stub 41, (none) 9, .xml 2)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `fda41792`
+- Built from commit: `d6432718`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -279,8 +279,6 @@
 10. `JobQueue` - 43 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Current MVP Boundaries` --references--> `ServiceProvider`  [INFERRED]
-  agents.md → modules/javelin-core/src/main/java/io/javelin/core/ServiceProvider.java
 - `Router` --references--> `Router`  [INFERRED]
   docs/modules/core.md → modules/javelin-core/src/main/java/io/javelin/core/Router.java
 - `Routes` --references--> `Router`  [INFERRED]
@@ -289,6 +287,8 @@
   docs/modules/core.md → modules/javelin-core/src/main/java/io/javelin/core/ServiceProvider.java
 - `RequestLoggingMiddleware` --references--> `JsonLogEncoder`  [INFERRED]
   docs/modules/log-slf4j.md → modules/javelin-log-slf4j/src/main/java/io/javelin/log/slf4j/JsonLogEncoder.java
+- `Notes` --references--> `ValkeyCacheServiceProvider`  [INFERRED]
+  docs/modules/cache.md → modules/javelin-cache-valkey/src/main/java/io/javelin/cache/valkey/ValkeyCacheServiceProvider.java
 
 ## Import Cycles
 - None detected.
@@ -968,7 +968,7 @@ Cohesion: 0.40
 Nodes (5): Content Negotiation on 404, Error Handling, HTTP Request Lifecycle, HttpKernel Dispatch (Step 4 detailed), Middleware Pipeline Walkthrough
 
 ## Knowledge Gaps
-- **12 isolated node(s):** `io.javelin:javelin-parent`, `DRAFT`, `PUBLISHED`, `DELETE`, `GET` (+7 more)
+- **12 isolated node(s):** `io.javelin:javelin-parent`, `DRAFT`, `PUBLISHED`, `DEV`, `PROD` (+7 more)
   These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1120 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **118 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -976,16 +976,16 @@ Nodes (5): Content Negotiation on 404, Error Handling, HTTP Request Lifecycle, H
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `ServiceProvider` connect `Override` to `Application`, `Agent Notes`, `ProviderLoaderTest`, `ApplicationTest`, `Distributing providers`, `Scheduler Module`, `Module Authoring`, `ViewRenderer`, `Javelin.java`, `Javelin Framework`, `Model`, `Core Module`, `HttpServerDriverProvider.java`?**
-  _High betweenness centrality (0.034) - this node is a cross-community bridge._
+  _High betweenness centrality (0.038) - this node is a cross-community bridge._
 - **What connects `io.javelin:javelin-parent`, `DRAFT`, `PUBLISHED` to the rest of the system?**
   _12 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Override` be split into smaller, more focused modules?**
   _Cohesion score 0.11806543385490754 - nodes in this community are weakly interconnected._
-- **Why does `Collection` connect `Collection` to `arraylist`, `SupportUtilitiesTest`?**
-  _High betweenness centrality (0.029) - this node is a cross-community bridge._
+- **Why does `Application` connect `Application` to `Override`, `Override`, `cli/ConsoleKernel.java`, `ProviderLoaderTest`, `.has`, `ProfileConfig`, `CommandContext`, `Javelin.java`, `ViewRenderer`, `Core Module`, `path`, `.instance`, `map`, `Container`, `Config`, `HttpServerAdapter`, `HttpServerDriverProvider.java`, `ApplicationTest`, `Scheduler Module`, `Env`, `io.javelin.core.Application`, `.registersWorkspaceDefaultsAndLoadsValidationRulesOnBoot`, `.register`, `.output`?**
+  _High betweenness centrality (0.030) - this node is a cross-community bridge._
 - **Should `arraylist` be split into smaller, more focused modules?**
   _Cohesion score 0.054426705370101594 - nodes in this community are weakly interconnected._
-- **Why does `Application` connect `Application` to `Override`, `Override`, `cli/ConsoleKernel.java`, `ProviderLoaderTest`, `.has`, `ProfileConfig`, `CommandContext`, `Javelin.java`, `ViewRenderer`, `Core Module`, `path`, `.instance`, `map`, `Container`, `Config`, `HttpServerAdapter`, `HttpServerDriverProvider.java`, `ApplicationTest`, `Scheduler Module`, `Env`, `io.javelin.core.Application`, `.registersWorkspaceDefaultsAndLoadsValidationRulesOnBoot`, `.register`, `.output`?**
-  _High betweenness centrality (0.029) - this node is a cross-community bridge._
+- **Why does `Request` connect `Request` to `org.junit.jupiter.api.Test`, `arraylist`, `ProfileConfig`, `io.javelin.core.Request`, `.text`, `MultipartData`, `.handle`, `HTTP Common Module`, `Middleware`, `HtmlResponse`, `map`, `Route`, `objects`, `NettyHttpServerIntegrationTest.java`, `.handle`, `UploadedFile`, `.login`, `Session`, `map`?**
+  _High betweenness centrality (0.026) - this node is a cross-community bridge._
 - **Should `Override` be split into smaller, more focused modules?**
   _Cohesion score 0.13675213675213677 - nodes in this community are weakly interconnected._

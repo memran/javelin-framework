@@ -469,7 +469,7 @@ String dbUrl = env.get("DATABASE_URL", "jdbc:h2:mem:default");
 
 ## Database
 
-`Database` is the data access contract.
+`Database` is the data access contract. Raw SQL is optional: the default `execute(sql)` method throws `UnsupportedOperationException` and only the JDBC adapter implements it. Use `table(...)` and `transaction(...)` for portable code.
 
 ```java
 QueryBuilder query = database.table("users");
@@ -482,7 +482,7 @@ database.close();
 ```
 
 - `database.table(name)` -- returns a `QueryBuilder` for the given table.
-- `database.execute(sql)` -- executes raw SQL (used by migration runner).
+- `database.execute(sql)` -- executes raw SQL in the JDBC adapter only (used by the migration runner); other adapters throw `UnsupportedOperationException`.
 - `database.transaction(callback)` -- wraps operations in a transaction.
 - `database.close()` -- releases the connection pool.
 
