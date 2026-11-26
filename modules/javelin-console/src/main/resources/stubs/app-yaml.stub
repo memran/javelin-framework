@@ -85,7 +85,7 @@ queue:
   valkey:
     url: ${VALKEY_URL:redis://valkey:6379}
   rabbitmq:
-    uri: ${RABBITMQ_URI:amqp://guest:guest@localhost:5672/}
+    uri: ${RABBITMQ_URI:amqp://guest:guest@localhost:5672/%2F}
   stream: ${NATS_STREAM:JAVELIN}
 
 json:

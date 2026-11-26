@@ -70,11 +70,11 @@ Javelin is not Spring Boot. Keep behavior explicit, modular, and cheap to start.
 
 ## Next Useful Work
 
-- Cache static-asset ETags by size and last-modified time so unchanged files are not re-digested on every request.
-- Add an OTel SDK/exporter example to the demo app and verify exported spans end to end.
-- Extend GraalVM metadata with demo-app-specific providers, DTOs and templates.
-- Add broker-backed RabbitMQ/NATS integration tests for failure, replay and delayed delivery.
-- Make static-asset precedence configurable and publish aggregated performance history in CI.
+- Run the broker-backed queue tests in CI with RabbitMQ and NATS service containers.
+- Add an OTel collector to the demo Compose stack and verify exported spans live.
+- Replace RabbitMQ `basicGet` polling with lease-aware consumer handling.
+- Add TTL/size bounds to the static ETag cache and expose its hit rate through metrics.
+- Read native-image extras from an explicit app config file instead of repeated CLI flags.
 
 ## Do / Don’t
 

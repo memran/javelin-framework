@@ -361,6 +361,7 @@ final class CommandGenerationTest {
                 "driver: ${QUEUE_DRIVER:file}",
                 "url: ${NATS_URL:nats://localhost:4222}",
                 "stream: ${NATS_STREAM:JAVELIN}",
+                "uri: ${RABBITMQ_URI:amqp://guest:guest@localhost:5672/%2F}",
                 "poll_interval_ms: 500",
                 "lease_seconds: 60",
                 "backoff: exponential",

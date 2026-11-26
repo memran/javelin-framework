@@ -30,7 +30,7 @@ Lettuce-backed sorted sets hold pending jobs (score = run time) and processing j
 queue:
   driver: rabbitmq
   rabbitmq:
-    uri: amqp://guest:guest@localhost:5672/
+    uri: amqp://guest:guest@localhost:5672/%2F
 ```
 
 The main queue is `javelin.jobs`. Delayed jobs use a per-message TTL on `javelin.jobs.delay` with dead-lettering back to the main queue. Failed jobs are held in memory by the adapter instance; use the database adapter when failed-job durability across restarts matters.
@@ -45,6 +45,22 @@ queue:
 ```
 
 The original push-consumer adapter. Handlers are registered through `Queue.subscribe(subject, handler, retryPolicy)` and retries are configured on the JetStream consumer. `later()` publishes immediately because JetStream push consumers have no native scheduled delivery; use the database or file adapter for durable delays. `fail()`, `failedJobs()`, `replay()` and `pendingCount()` are no-ops: unacknowledged messages are retained by JetStream, and there is no separate failed-job store.
+
+## Broker-backed integration tests
+
+The RabbitMQ and NATS modules include opt-in integration tests. They are skipped in a normal `mvn verify` and run only when a broker URL is provided:
+
+```bash
+docker run --rm -d -p 5672:5672 rabbitmq:3-alpine
+docker run --rm -d -p 4222:4222 nats:2-alpine -js
+
+JAVELIN_RABBITMQ_URI=amqp://guest:guest@localhost:5672/%2F \
+  mvn -pl :javelin-queue-rabbitmq test
+JAVELIN_NATS_URL=nats://localhost:4222 \
+  mvn -pl :javelin-queue-nats test
+```
+
+The RabbitMQ test covers dispatch/claim/ack, delayed delivery, failure recording and replay. The NATS test covers push delivery, immediate `later()` publishing and the absence of polling/failed-job APIs.
 
 ## Choosing an adapter
 
