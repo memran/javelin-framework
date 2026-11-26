@@ -8,9 +8,11 @@ import app.controllers.SecurityExampleController;
 import app.controllers.StorageExampleController;
 import app.controllers.UserController;
 import io.javelin.core.Application;
+import io.javelin.core.Response;
 import io.javelin.core.security.BearerAuthMiddleware;
 import io.javelin.core.security.BearerTokenResolver;
 import io.javelin.core.security.RequiresAuthenticationMiddleware;
+import io.javelin.observability.Observability;
 import static io.javelin.core.Routes.add;
 import static io.javelin.core.Routes.get;
 import static io.javelin.core.Routes.group;
@@ -58,5 +60,9 @@ public final class web {
         add(app.router(), get("/demo/automation/schedule", automation::schedule));
         add(app.router(), get("/demo/automation/events", automation::event));
         add(app.router(), get("/demo/automation/mail", automation::mail));
+
+        // Runnable example for docs/modules/observability.md
+        add(app.router(), get("/demo/tracing", request -> Response.text(
+                Observability.tracer().span("demo.tracing", () -> "span recorded"))));
     }
 }

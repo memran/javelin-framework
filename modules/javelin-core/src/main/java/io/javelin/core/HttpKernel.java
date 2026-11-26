@@ -10,31 +10,46 @@ public final class HttpKernel {
     private final Router router;
     private final ExceptionHandler exceptionHandler;
     private final Function<Request, Optional<Response>> staticFallback;
+    private final boolean staticFirst;
 
     public HttpKernel(Router router, ExceptionHandler exceptionHandler) {
-        this(router, exceptionHandler, request -> Optional.empty());
+        this(router, exceptionHandler, request -> Optional.empty(), true);
     }
 
-    private HttpKernel(Router router, ExceptionHandler exceptionHandler, Function<Request, Optional<Response>> staticFallback) {
+    private HttpKernel(Router router, ExceptionHandler exceptionHandler,
+                       Function<Request, Optional<Response>> staticFallback, boolean staticFirst) {
         this.router = router;
         this.exceptionHandler = exceptionHandler;
         this.staticFallback = staticFallback;
+        this.staticFirst = staticFirst;
     }
 
     public HttpKernel withStaticFallback(Function<Request, Optional<Response>> fallback) {
-        return new HttpKernel(router, exceptionHandler, fallback);
+        return new HttpKernel(router, exceptionHandler, fallback, staticFirst);
+    }
+
+    /** Tries static assets only after routing, so a matching route wins over a same-path file. */
+    public HttpKernel staticAfterRoutes() {
+        return new HttpKernel(router, exceptionHandler, staticFallback, false);
     }
 
     public Response handle(Request request) {
         try {
-            Optional<Response> staticResponse = staticFallback.apply(request);
-            if (staticResponse.isPresent()) {
-                Response response = staticResponse.get();
-                return dispatch(new ArrayList<>(router.globalMiddleware()), 0, request, routed -> response);
+            if (staticFirst) {
+                Optional<Response> staticResponse = staticFallback.apply(request);
+                if (staticResponse.isPresent()) {
+                    return staticResponse(staticResponse.get(), request);
+                }
             }
             Router.ResolvedRoute resolved = router.resolve(request.method(), request.path())
                     .orElse(null);
             if (resolved == null) {
+                if (!staticFirst) {
+                    Optional<Response> staticResponse = staticFallback.apply(request);
+                    if (staticResponse.isPresent()) {
+                        return staticResponse(staticResponse.get(), request);
+                    }
+                }
                 List<HttpMethod> allowed = router.allowedMethods(request.path());
                 if (!allowed.isEmpty()) {
                     String allow = allowed.stream().map(HttpMethod::name).collect(Collectors.joining(", "));
@@ -59,6 +74,10 @@ public final class HttpKernel {
         } catch (Exception exception) {
             return exceptionHandler.handle(exception, request);
         }
+    }
+
+    private Response staticResponse(Response response, Request request) throws Exception {
+        return dispatch(new ArrayList<>(router.globalMiddleware()), 0, request, ignored -> response);
     }
 
     private Response dispatch(List<Middleware> middleware, int index, Request request, RouteHandler handler) throws Exception {

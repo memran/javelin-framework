@@ -405,7 +405,7 @@ Response response = kernel.handle(request);
 ```
 
 - `new HttpKernel(router, exceptionHandler)` -- constructs the kernel with a router and error handler.
-- `kernel.withStaticFallback(resolver)` -- returns a kernel that first consults `resolver` (a `Function<Request, Optional<Response>>`) and runs any match through global middleware before returning it. Adapters use this for static assets. Static matches take precedence over routes: a file at the same path as a route wins, and only global middleware applies to it — route-level middleware on that path is skipped. Name static files so they cannot shadow authenticated routes.
+- `kernel.withStaticFallback(resolver)` -- returns a kernel that first consults `resolver` (a `Function<Request, Optional<Response>>`) and runs any match through global middleware before returning it. Adapters use this for static assets. By default static matches take precedence over routes: a file at the same path as a route wins, and only global middleware applies to it — route-level middleware on that path is skipped. Set `server.static_after_routes: true` to try routing first; call `kernel.staticAfterRoutes()` directly when building a kernel by hand. Name static files so they cannot shadow authenticated routes.
 - `kernel.handle(request)` -- dispatches the request through middleware, routing, and the matched handler.
 - When no route matches the method but the path exists for other methods, the kernel returns 405 with an `Allow` header listing those methods (including `HEAD` when `GET` is registered). An `OPTIONS` request to such a path returns 204 with the same `Allow` header. Otherwise it returns 404.
 

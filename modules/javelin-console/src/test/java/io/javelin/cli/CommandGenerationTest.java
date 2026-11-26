@@ -264,6 +264,7 @@ final class CommandGenerationTest {
         assertTrue(appYaml.contains("max_pool_size: 10"));
         assertTrue(appYaml.contains("slow_ms: 100"));
         assertTrue(appYaml.contains("static_cache_seconds: 3600"));
+        assertTrue(appYaml.contains("static_after_routes: false"));
         assertTrue(appYaml.contains("request_timeout_seconds: 30"));
         assertTrue(appYaml.contains("idle_timeout_seconds: 60"));
         assertTrue(appYaml.contains("172.16.0.0/12"));

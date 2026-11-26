@@ -8,6 +8,7 @@ server:
   static_dir: public
   static_cache_seconds: 3600
   static_cache_immutable: false
+  static_after_routes: false
   request_timeout_seconds: 30
   idle_timeout_seconds: 60
 

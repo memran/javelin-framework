@@ -8,6 +8,10 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 final class HttpKernelTest {
+    private static Request request(String path) {
+        return new Request(HttpMethod.GET, path, Map.of(), Map.of(), Map.of(), new byte[0], "127.0.0.1");
+    }
+
     @Test
     void staticFallbackPassesThroughGlobalMiddleware() {
         Router router = new Router();
@@ -24,6 +28,18 @@ final class HttpKernelTest {
 
         assertEquals(200, response.status());
         assertEquals("yes", response.headers().get("X-Middleware"));
+    }
+
+    @Test
+    void staticFallbackAfterRoutingLetsMatchingRoutesWin() {
+        Router router = new Router();
+        router.get("/asset.txt", request -> Response.text("route"));
+        HttpKernel kernel = new HttpKernel(router, new DefaultExceptionHandler())
+                .staticAfterRoutes()
+                .withStaticFallback(request -> Optional.of(Response.text("static")));
+
+        assertEquals("route", new String(kernel.handle(request("/asset.txt")).body()));
+        assertEquals("static", new String(kernel.handle(request("/other.txt")).body()));
     }
 
     @Test

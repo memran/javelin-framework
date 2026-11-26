@@ -61,6 +61,7 @@
         <mysql.version>9.2.0</mysql.version>
         <mariadb.version>3.5.3</mariadb.version>
         <sqlite.version>3.49.1.0</sqlite.version>
+        <opentelemetry.version>1.44.1</opentelemetry.version>
     </properties>
 
     <dependencyManagement>
@@ -90,6 +91,26 @@
                 <artifactId>junit-jupiter</artifactId>
                 <version>${junit.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.opentelemetry</groupId>
+                <artifactId>opentelemetry-api</artifactId>
+                <version>${opentelemetry.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.opentelemetry</groupId>
+                <artifactId>opentelemetry-sdk</artifactId>
+                <version>${opentelemetry.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.opentelemetry</groupId>
+                <artifactId>opentelemetry-sdk-testing</artifactId>
+                <version>${opentelemetry.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.opentelemetry</groupId>
+                <artifactId>opentelemetry-exporter-otlp</artifactId>
+                <version>${opentelemetry.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

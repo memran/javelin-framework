@@ -5,6 +5,7 @@ app:
 server:
   host: 127.0.0.1
   port: 8080
+  static_after_routes: false
 
 database:
   default: primary
@@ -144,7 +145,7 @@ observability:
   health_path: /health
   ready_path: /ready
   metrics_path: /metrics
-  tracing: none
+  tracing: ${TRACING_DRIVER:none}
 
 provider:
   directory: modules
@@ -154,6 +155,7 @@ provider:
 
 providers:
   - app.providers.AppServiceProvider
+  - app.providers.TracingProvider
   - io.javelin.json.jackson.JacksonJsonServiceProvider
   - io.javelin.exception.ExceptionHandlerServiceProvider
   - io.javelin.security.SessionServiceProvider

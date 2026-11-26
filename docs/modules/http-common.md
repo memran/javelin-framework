@@ -69,6 +69,7 @@ Reads the shared adapter settings:
 | `security.max_request_bytes` | `1048576` |
 | `server.static_cache_seconds` | `3600` |
 | `server.static_cache_immutable` | `false` |
+| `server.static_after_routes` | `false` |
 | `server.request_timeout_seconds` | `30` |
 | `server.idle_timeout_seconds` | `60` |
 
