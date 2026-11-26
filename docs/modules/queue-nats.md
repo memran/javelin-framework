@@ -66,6 +66,6 @@ The `Queue` singleton is resolved lazily, so listing the provider does not conne
 
 ## Notes
 
-- The CLI `queue:work` / `queue:status` commands are still placeholders; wire your own consumer entry point around `Queue.subscribe(...)`.
-- No server is started by the framework — use the generated `docker-compose.yml` (NATS with `-js`) or an external NATS server with JetStream enabled.
+- The CLI `queue:work` / `queue:status` commands are implemented for the polling adapters (file, database, Valkey and RabbitMQ). `NatsQueue.claim()` and `pendingCount()` are no-ops because NATS uses push subscriptions, so register handlers with `Queue.subscribe(...)` for this driver.
+- No server is started by the framework — use the generated `docker-compose.yml` (NATS with `-js`) or an external NATS server with JetStream enabled. The generated `queue.url` points at `nats://nats:4222` inside Compose; override `NATS_URL` for an external server.
 - Unit tests cover job serialization, retry validation and provider selection without requiring a server.

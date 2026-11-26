@@ -74,6 +74,11 @@ public final class Route {
         return !parameterNames.isEmpty();
     }
 
+    /** Two routes with different parameter names can still compile to the same matcher. */
+    boolean hasSamePattern(Route other) {
+        return pattern.pattern().equals(other.pattern.pattern());
+    }
+
     public List<String> parameterNames() {
         return parameterNames;
     }

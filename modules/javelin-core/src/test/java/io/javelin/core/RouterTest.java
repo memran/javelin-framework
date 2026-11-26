@@ -151,6 +151,30 @@ final class RouterTest {
     }
 
     @Test
+    void rejectsDifferentParameterNamesWithTheSameCompiledPattern() {
+        Router router = new Router();
+        router.get("/users/{id}", request -> Response.text("first"));
+
+        IllegalArgumentException error = assertThrows(IllegalArgumentException.class,
+                () -> router.get("/users/{userId}", request -> Response.text("second")));
+
+        assertTrue(error.getMessage().contains("Duplicate route registration"));
+        assertEquals(1, router.routes().size());
+    }
+
+    @Test
+    void allowsDifferentConstraintsOnTheSameParameterPath() {
+        Router router = new Router();
+        router.get("/users/{id:[0-9]+}", request -> Response.text("digits"));
+        router.get("/users/{slug:[a-z]+}", request -> Response.text("letters"));
+
+        assertEquals(2, router.routes().size());
+        assertEquals("digits", new String(new HttpKernel(router, new DefaultExceptionHandler())
+                .handle(new Request(HttpMethod.GET, "/users/42", Map.of(), Map.of(), Map.of(), new byte[0], "127.0.0.1"))
+                .body(), java.nio.charset.StandardCharsets.UTF_8));
+    }
+
+    @Test
     void reportsAllowedMethodsIncludingHeadForGetRoutes() {
         Router router = new Router();
         router.get("/users/{id}", request -> Response.text("get"));

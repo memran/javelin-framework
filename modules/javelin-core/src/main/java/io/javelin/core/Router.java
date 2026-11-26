@@ -124,7 +124,7 @@ public final class Router {
     private boolean hasConflict(Route route) {
         if (route.hasParameters()) {
             return patternRoutes.getOrDefault(route.method(), List.of()).stream()
-                    .anyMatch(existing -> existing.path().equals(route.path()));
+                    .anyMatch(existing -> existing.hasSamePattern(route));
         }
         return staticRoutes.getOrDefault(route.method(), Map.of()).containsKey(route.path());
     }

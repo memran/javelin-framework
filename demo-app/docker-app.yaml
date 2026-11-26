@@ -61,7 +61,6 @@ storage:
 queue:
   driver: ${QUEUE_DRIVER:valkey}
   url: ${NATS_URL:nats://nats:4222}
-  jetstream: ${NATS_JETSTREAM:true}
   stream: ${NATS_STREAM:JAVELIN}
   worker:
     enabled: true

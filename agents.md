@@ -70,11 +70,11 @@ Javelin is not Spring Boot. Keep behavior explicit, modular, and cheap to start.
 
 ## Next Useful Work
 
-- Add migration runner and migration file generator.
-- Add multipart upload parsing and static assets.
-- Add trusted proxy handling before using forwarded headers.
-- Add validation primitives.
-- Add integration tests for the JDK HTTP adapter.
+- Stream large static assets for range/conditional requests and accept weak `W/` ETags.
+- Document the OTel SDK/exporter requirement and narrow the GraalVM metadata claim to starter coverage.
+- Align RabbitMQ/NATS failed-job behavior with docs (unused durable queue, adapter table, replay API).
+- Make container constructor selection deterministic and handle reflective runtime failures.
+- Document static-asset-vs-route precedence in the kernel, and broaden generated-config-vs-docs drift tests.
 
 ## Do / Don’t
 

@@ -18,7 +18,6 @@ services:
       VALKEY_URL: redis://valkey:6379
       QUEUE_DRIVER: nats
       NATS_URL: nats://nats:4222
-      NATS_JETSTREAM: "true"
       NATS_STREAM: JAVELIN
     # Frontend proxy is opt-in: docker compose --profile nginx up --build
     # (or --profile caddy). The app itself stays available on 8080.

@@ -206,6 +206,7 @@ final class CommandGenerationTest {
         assertTrue(compose.contains("NATS_URL: nats://nats:4222"));
         assertTrue(compose.contains("\"-js\""));
         assertTrue(compose.contains("NATS_STREAM: JAVELIN"));
+        assertFalse(compose.contains("NATS_JETSTREAM"));
         assertTrue(compose.contains("profiles: [\"nginx\"]"));
         assertTrue(compose.contains("profiles: [\"caddy\"]"));
         assertTrue(compose.contains("./nginx.conf:/etc/nginx/conf.d/default.conf:ro"));
@@ -264,7 +265,8 @@ final class CommandGenerationTest {
         assertTrue(appYaml.contains("http-driver: netty"));
         assertTrue(appYaml.contains("driver: ${CACHE_DRIVER:memory}"));
         assertTrue(appYaml.contains("url: ${VALKEY_URL:}"));
-        assertTrue(appYaml.contains("jetstream: ${NATS_JETSTREAM:false}"));
+        assertTrue(appYaml.contains("url: ${NATS_URL:nats://localhost:4222}"));
+        assertFalse(appYaml.contains("jetstream:"));
         assertTrue(appYaml.contains("ValkeyCacheServiceProvider"));
         assertTrue(appYaml.contains("NatsQueueServiceProvider"));
         assertTrue(appYaml.contains("ExceptionHandlerServiceProvider"));

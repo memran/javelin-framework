@@ -432,9 +432,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-console/src/test/java/io/javelin/cli/CommandGenerationTest.java": {
-    "mtime": 1795710475.89677,
-    "seen": 1795710968.704668,
-    "ast_hash": "168234cee5593082a0f241afb9a21820",
+    "mtime": 1795721747.5391278,
+    "seen": 1795721819.022518,
+    "ast_hash": "8589b443c036a53f597769a04a16d871",
     "semantic_hash": ""
   },
   "modules/javelin-console/src/test/java/io/javelin/cli/commands/MigrationCommandTest.java": {
@@ -588,9 +588,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-core/src/main/java/io/javelin/core/Route.java": {
-    "mtime": 1795506751.889205,
-    "seen": 1795507678.2738786,
-    "ast_hash": "4b2c01a924b762d23e1d2b79c06b5fc8",
+    "mtime": 1795721564.1871502,
+    "seen": 1795721819.022556,
+    "ast_hash": "b1d02e87f5395bf9fbdfca14eed51d98",
     "semantic_hash": ""
   },
   "modules/javelin-core/src/main/java/io/javelin/core/RouteHandler.java": {
@@ -600,9 +600,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-core/src/main/java/io/javelin/core/Router.java": {
-    "mtime": 1795506783.786461,
-    "seen": 1795507678.2738805,
-    "ast_hash": "bca0fefca8177525e3f5cc5005af1529",
+    "mtime": 1795721570.6224408,
+    "seen": 1795721819.0225582,
+    "ast_hash": "87d519dd20c2614d55604e436cccfd1a",
     "semantic_hash": ""
   },
   "modules/javelin-core/src/main/java/io/javelin/core/Routes.java": {
@@ -678,9 +678,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-core/src/test/java/io/javelin/core/RouterTest.java": {
-    "mtime": 1795506813.7966223,
-    "seen": 1795507678.2739162,
-    "ast_hash": "4d0fee5e98f9ed50f10af8484a615174",
+    "mtime": 1795721578.116398,
+    "seen": 1795721819.0225997,
+    "ast_hash": "11567a69c7c8385b2e7315eeac45b75c",
     "semantic_hash": ""
   },
   "modules/javelin-core/src/test/java/io/javelin/core/ViewTest.java": {
@@ -1014,9 +1014,9 @@
     "semantic_hash": ""
   },
   "agents.md": {
-    "mtime": 1795452505.433248,
-    "seen": 1795452651.013531,
-    "ast_hash": "be39b61e9cd6671736500f9fcf94c221",
+    "mtime": 1795721638.2748778,
+    "seen": 1795721819.0229242,
+    "ast_hash": "6144061b20c26c7cf1cde4221ee42e40",
     "semantic_hash": ""
   },
   "docs/README.md": {
@@ -1044,9 +1044,9 @@
     "semantic_hash": ""
   },
   "docs/deployment.md": {
-    "mtime": 1795720940.8652341,
-    "seen": 1795721033.043151,
-    "ast_hash": "05a22b4ddd1ed342fb6d715dd43db056",
+    "mtime": 1795721753.3024428,
+    "seen": 1795721819.0229313,
+    "ast_hash": "197d46d900a8f8c6017cf0e34bc406e6",
     "semantic_hash": ""
   },
   "docs/module-authoring.md": {
@@ -1362,15 +1362,15 @@
     "semantic_hash": ""
   },
   "demo-app/docker-app.yaml": {
-    "mtime": 1795710404.7008004,
-    "seen": 1795710968.7045472,
-    "ast_hash": "d9b7a142cf8e012e178ccffe60c96194",
+    "mtime": 1795721600.4029086,
+    "seen": 1795721819.0223956,
+    "ast_hash": "a2d94ae7fdee0ac7e78e2e801446c65e",
     "semantic_hash": ""
   },
   "demo-app/docker-compose.yml": {
-    "mtime": 1795507345.1177332,
-    "seen": 1795507678.2737293,
-    "ast_hash": "11911004772d37387a603a85781be333",
+    "mtime": 1795721600.4029086,
+    "seen": 1795721819.022397,
+    "ast_hash": "2f0abe984b57ec1b5396705e25c70664",
     "semantic_hash": ""
   },
   "demo-app/package.json": {
@@ -1494,9 +1494,9 @@
     "semantic_hash": ""
   },
   "docs/modules/queue-nats.md": {
-    "mtime": 1795467482.8669636,
-    "seen": 1795467625.7332277,
-    "ast_hash": "ee9ca7c77a2e359bcd724c9380396c3f",
+    "mtime": 1795721629.8839788,
+    "seen": 1795721819.0229623,
+    "ast_hash": "4b262179aff36f7412e517810e29accb",
     "semantic_hash": ""
   },
   "demo-app/app/controllers/BackendController.java": {
@@ -2748,9 +2748,9 @@
     "semantic_hash": ""
   },
   ".github/workflows/ci.yml": {
-    "mtime": 1795710492.883986,
-    "seen": 1795710968.7045038,
-    "ast_hash": "bcc589e4622a0edeb9000f0d0bbc097f",
+    "mtime": 1795721645.075108,
+    "seen": 1795721819.0223515,
+    "ast_hash": "1741599d9825bb7affe5a351c814353d",
     "semantic_hash": ""
   },
   ".github/workflows/release.yml": {
@@ -2934,9 +2934,9 @@
     "semantic_hash": ""
   },
   "docs/modules/deployment.md": {
-    "mtime": 1795720935.529454,
-    "seen": 1795721033.0431643,
-    "ast_hash": "8c7199a66358bdea12ae6396bd08081e",
+    "mtime": 1795721653.6287487,
+    "seen": 1795721819.0229445,
+    "ast_hash": "cfca0c2eb3f034a9afbfd4ba289e3478",
     "semantic_hash": ""
   },
   "docs/modules/observability.md": {

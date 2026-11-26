@@ -65,6 +65,7 @@ storage:
 
 queue:
   driver: ${QUEUE_DRIVER:file}
+  url: ${NATS_URL:nats://localhost:4222}
   worker:
     enabled: true
     concurrency: 4
@@ -84,7 +85,6 @@ queue:
     url: ${VALKEY_URL:redis://valkey:6379}
   rabbitmq:
     uri: ${RABBITMQ_URI:amqp://guest:guest@localhost:5672/}
-  jetstream: ${NATS_JETSTREAM:false}
   stream: ${NATS_STREAM:JAVELIN}
 
 json:
