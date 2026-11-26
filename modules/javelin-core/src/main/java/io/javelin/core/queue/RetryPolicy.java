@@ -16,4 +16,9 @@ public record RetryPolicy(int maxAttempts, Duration backoff) {
             throw new IllegalArgumentException("backoff must not be negative");
         }
     }
+
+    /** Delay before the given attempt (1-based). Constant for this policy. */
+    public Duration backoffFor(int attempt) {
+        return backoff;
+    }
 }

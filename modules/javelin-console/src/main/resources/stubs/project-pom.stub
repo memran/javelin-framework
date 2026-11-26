@@ -73,6 +73,37 @@
             <artifactId>javelin-queue-nats</artifactId>
             <version>${javelin.version}</version>
         </dependency>
+        <!-- Broker-free queue plus optional backends. -->
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-queue</artifactId>
+            <version>${javelin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-queue-file</artifactId>
+            <version>${javelin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-queue-database</artifactId>
+            <version>${javelin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-queue-valkey</artifactId>
+            <version>${javelin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-queue-rabbitmq</artifactId>
+            <version>${javelin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-queue-nats</artifactId>
+            <version>${javelin.version}</version>
+        </dependency>
         <!-- Add workspace-specific application libraries below this line. -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>

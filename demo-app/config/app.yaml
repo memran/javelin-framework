@@ -43,6 +43,22 @@ cache:
     maximum_size: 10000
     default_ttl_seconds: 0
 
+queue:
+  driver: file
+  worker:
+    enabled: true
+    concurrency: 2
+    poll_interval_ms: 500
+    lease_seconds: 60
+    timeout_seconds: 300
+    shutdown_seconds: 10
+  retry:
+    backoff: exponential
+    initial_ms: 1000
+    max_ms: 60000
+  file:
+    dir: storage/queues/file
+
 storage:
   default: public
   disks:
@@ -118,6 +134,8 @@ providers:
   - io.javelin.config.SecretsServiceProvider
   - io.javelin.storage.StorageServiceProvider
   - io.javelin.cache.caffeine.CaffeineCacheServiceProvider
+  - io.javelin.queue.QueueServiceProvider
+  - io.javelin.queue.file.FileQueueServiceProvider
 
 javelin:
   starter:

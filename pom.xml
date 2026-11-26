@@ -30,6 +30,11 @@
         <module>modules/javelin-cache</module>
         <module>modules/javelin-cache-valkey</module>
         <module>modules/javelin-cache-caffeine</module>
+        <module>modules/javelin-queue</module>
+        <module>modules/javelin-queue-rabbitmq</module>
+        <module>modules/javelin-queue-valkey</module>
+        <module>modules/javelin-queue-file</module>
+        <module>modules/javelin-queue-database</module>
         <module>modules/javelin-queue-nats</module>
         <module>modules/javelin-starter</module>
         <module>demo-app</module>

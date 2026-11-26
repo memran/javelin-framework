@@ -64,8 +64,26 @@ storage:
       domain: /files/
 
 queue:
-  driver: ${QUEUE_DRIVER:none}
-  url: ${NATS_URL:}
+  driver: ${QUEUE_DRIVER:file}
+  worker:
+    enabled: true
+    concurrency: 4
+    poll_interval_ms: 500
+    lease_seconds: 60
+    timeout_seconds: 300
+    shutdown_seconds: 10
+  retry:
+    backoff: exponential
+    initial_ms: 1000
+    max_ms: 60000
+  database:
+    lease_seconds: 60
+  file:
+    dir: storage/queues/file
+  valkey:
+    url: ${VALKEY_URL:redis://valkey:6379}
+  rabbitmq:
+    uri: ${RABBITMQ_URI:amqp://guest:guest@localhost:5672/}
   jetstream: ${NATS_JETSTREAM:false}
   stream: ${NATS_STREAM:JAVELIN}
 
@@ -145,6 +163,11 @@ providers:
   - io.javelin.storage.StorageServiceProvider
   - io.javelin.cache.caffeine.CaffeineCacheServiceProvider
   - io.javelin.cache.valkey.ValkeyCacheServiceProvider
+  - io.javelin.queue.QueueServiceProvider
+  - io.javelin.queue.file.FileQueueServiceProvider
+  - io.javelin.queue.database.DatabaseQueueServiceProvider
+  - io.javelin.queue.valkey.ValkeyQueueServiceProvider
+  - io.javelin.queue.rabbitmq.RabbitMqQueueServiceProvider
   - io.javelin.queue.nats.NatsQueueServiceProvider
 
 javelin:

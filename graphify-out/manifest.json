@@ -18,9 +18,9 @@
     "semantic_hash": ""
   },
   "demo-app/app/providers/AppServiceProvider.java": {
-    "mtime": 1795504283.2047715,
-    "seen": 1795504743.241583,
-    "ast_hash": "470823a1a98a05aca724c0c68c21d6ca",
+    "mtime": 1795677521.2883444,
+    "seen": 1795678109.774014,
+    "ast_hash": "ddfb6510714983d22728e62798da3874",
     "semantic_hash": ""
   },
   "demo-app/app/validation/AdultAgeRule.java": {
@@ -36,9 +36,9 @@
     "semantic_hash": ""
   },
   "demo-app/config/app.yaml": {
-    "mtime": 1795559603.5980074,
-    "seen": 1795560321.691337,
-    "ast_hash": "84bf859be3dce02426ec8027bcb32de3",
+    "mtime": 1795677281.3028893,
+    "seen": 1795678109.7740247,
+    "ast_hash": "7887b2fafbff0905c49877ee62d34d9f",
     "semantic_hash": ""
   },
   "demo-app/config/view.yml": {
@@ -48,15 +48,15 @@
     "semantic_hash": ""
   },
   "demo-app/pom.xml": {
-    "mtime": 1795560225.1465871,
-    "seen": 1795560321.691345,
-    "ast_hash": "572dc69877267663e3dc970442a100c0",
+    "mtime": 1795677371.1147873,
+    "seen": 1795678109.7740352,
+    "ast_hash": "176da1e1d6ab677c2169de3c31b5e965",
     "semantic_hash": ""
   },
   "demo-app/routes/web.java": {
-    "mtime": 1795559888.7110052,
-    "seen": 1795560321.6913471,
-    "ast_hash": "8701da649f5e1ac575f3b966d918dbbb",
+    "mtime": 1795677580.1821582,
+    "seen": 1795678109.7740395,
+    "ast_hash": "9b03360656c9e2c53912e41a6d5b3e3b",
     "semantic_hash": ""
   },
   "install.ps1": {
@@ -132,9 +132,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-console/pom.xml": {
-    "mtime": 1777643728.205537,
-    "seen": 1795452651.0134025,
-    "ast_hash": "7e17c81feda7558493220c5d33ec7126",
+    "mtime": 1795676922.6456592,
+    "seen": 1795678109.7740958,
+    "ast_hash": "e04fd0248b0662c220b1053369ab4cdd",
     "semantic_hash": ""
   },
   "modules/javelin-console/src/main/java/io/javelin/cli/AbstractCommand.java": {
@@ -300,15 +300,15 @@
     "semantic_hash": ""
   },
   "modules/javelin-console/src/main/java/io/javelin/cli/commands/QueueStatusCommand.java": {
-    "mtime": 1777240177.9329712,
-    "seen": 1795452651.013426,
-    "ast_hash": "8bff84edadf5b20cfe7e956372f049bb",
+    "mtime": 1795676950.0639062,
+    "seen": 1795678109.7741387,
+    "ast_hash": "aa9cce6108578a43ec95111f5d8a258c",
     "semantic_hash": ""
   },
   "modules/javelin-console/src/main/java/io/javelin/cli/commands/QueueWorkCommand.java": {
-    "mtime": 1777240177.9056072,
-    "seen": 1795452651.013427,
-    "ast_hash": "cf8e65e61783e360ef4045f2802f6822",
+    "mtime": 1795676937.2525845,
+    "seen": 1795678109.77414,
+    "ast_hash": "0766ae996f05994e0ab7e136d2a89af5",
     "semantic_hash": ""
   },
   "modules/javelin-console/src/main/java/io/javelin/cli/commands/RoutesListCommand.java": {
@@ -432,9 +432,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-console/src/test/java/io/javelin/cli/CommandGenerationTest.java": {
-    "mtime": 1795560249.9651296,
-    "seen": 1795560321.69145,
-    "ast_hash": "302b31e8c5c8206739d82653f14f6cd8",
+    "mtime": 1795677398.1679025,
+    "seen": 1795678109.774168,
+    "ast_hash": "ea8fac2b892a29d7d26550a85c620657",
     "semantic_hash": ""
   },
   "modules/javelin-console/src/test/java/io/javelin/cli/commands/MigrationCommandTest.java": {
@@ -804,9 +804,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-starter/pom.xml": {
-    "mtime": 1795558922.9042745,
-    "seen": 1795560321.691662,
-    "ast_hash": "339c2862b5ef486ff06b5e586df7fd03",
+    "mtime": 1795676820.5707114,
+    "seen": 1795678109.7744162,
+    "ast_hash": "3ffa5f7e41a003765e19ef8434a1f719",
     "semantic_hash": ""
   },
   "modules/javelin-starter/src/main/java/io/javelin/starter/Javelin.java": {
@@ -1002,15 +1002,15 @@
     "semantic_hash": ""
   },
   "pom.xml": {
-    "mtime": 1795558911.1938,
-    "seen": 1795560321.6917224,
-    "ast_hash": "42053bbf5e39f8fef1f3246edd17a6f9",
+    "mtime": 1795676806.9299126,
+    "seen": 1795678109.7744799,
+    "ast_hash": "53d78b765f764a566ec95e54aecdc574",
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1795559840.0929687,
-    "seen": 1795560321.6917238,
-    "ast_hash": "b276ec99c00b4cfea4d4446fffad5240",
+    "mtime": 1795678090.7569897,
+    "seen": 1795678109.7744808,
+    "ast_hash": "11c647d2892cc81e89ab4b7f4b141a7f",
     "semantic_hash": ""
   },
   "agents.md": {
@@ -1020,9 +1020,9 @@
     "semantic_hash": ""
   },
   "docs/README.md": {
-    "mtime": 1795559794.0887642,
-    "seen": 1795560321.6917284,
-    "ast_hash": "bf5a337605696b25644b0ae938ac65c7",
+    "mtime": 1795677669.8071084,
+    "seen": 1795678109.7744849,
+    "ast_hash": "a6121e3633f4ed5c3a5e4a3b2d4e4330",
     "semantic_hash": ""
   },
   "docs/application-flow.md": {
@@ -1362,9 +1362,9 @@
     "semantic_hash": ""
   },
   "demo-app/docker-app.yaml": {
-    "mtime": 1795559659.0491397,
-    "seen": 1795560321.6913402,
-    "ast_hash": "c2885aa576250b5f2399ec81560316c1",
+    "mtime": 1795677358.2887323,
+    "seen": 1795678109.7740295,
+    "ast_hash": "c113a5461bc15d758ec33cd6478f0f1e",
     "semantic_hash": ""
   },
   "demo-app/docker-compose.yml": {
@@ -1452,27 +1452,27 @@
     "semantic_hash": ""
   },
   "modules/javelin-core/src/main/java/io/javelin/core/queue/RetryPolicy.java": {
-    "mtime": 1795467041.847809,
-    "seen": 1795467625.733084,
-    "ast_hash": "b4d7793aebf77e5cecc4288efca3b37e",
+    "mtime": 1795675744.7883873,
+    "seen": 1795678109.7742302,
+    "ast_hash": "8affbd2123f59f370e534122a4dcba6d",
     "semantic_hash": ""
   },
   "modules/javelin-queue-nats/pom.xml": {
-    "mtime": 1795467165.1652074,
-    "seen": 1795467625.7331443,
-    "ast_hash": "83af8bd1205da59bf7575270c0a4645a",
+    "mtime": 1795677182.914193,
+    "seen": 1795678109.774358,
+    "ast_hash": "af5a17d867430f77257c072317dd6159",
     "semantic_hash": ""
   },
   "modules/javelin-queue-nats/src/main/java/io/javelin/queue/nats/NatsQueue.java": {
-    "mtime": 1795504762.1654854,
-    "seen": 1795504795.7744942,
-    "ast_hash": "f47e9fba26a49d988ec82ab9364ddb96",
+    "mtime": 1795677158.2464864,
+    "seen": 1795678109.7743592,
+    "ast_hash": "91aeb24dee6c8ca85191dc27cead1dd7",
     "semantic_hash": ""
   },
   "modules/javelin-queue-nats/src/main/java/io/javelin/queue/nats/NatsQueueServiceProvider.java": {
-    "mtime": 1795467194.0408804,
-    "seen": 1795467625.7331462,
-    "ast_hash": "f5bad74284e64055de9fba723bcb455c",
+    "mtime": 1795677220.9033618,
+    "seen": 1795678109.7743604,
+    "ast_hash": "c006adc7a2e6dab5150fc7cf5f9d3a23",
     "semantic_hash": ""
   },
   "modules/javelin-queue-nats/src/test/java/io/javelin/queue/nats/JobTest.java": {
@@ -2052,9 +2052,9 @@
     "semantic_hash": ""
   },
   "docs/tutorials/README.md": {
-    "mtime": 1795559915.496449,
-    "seen": 1795560321.6917648,
-    "ast_hash": "4e84f702e8f176bf0c55e73028c397d9",
+    "mtime": 1795677684.0649602,
+    "seen": 1795678109.7745268,
+    "ast_hash": "243eeb05d7b140cee15d754ab04219f2",
     "semantic_hash": ""
   },
   "docs/tutorials/secure-web-app.md": {
@@ -2177,12 +2177,6 @@
     "ast_hash": "973cb16a315fcea3c4c378944df5ef2b",
     "semantic_hash": ""
   },
-  "demo-app/storage/app/publicpublic/uploads/upload-sample.txt": {
-    "mtime": 1795560305.0881138,
-    "seen": 1795560321.6917274,
-    "ast_hash": "051918db80adb56d00485daf7dd82d37",
-    "semantic_hash": ""
-  },
   "docs/modules/cache-caffeine.md": {
     "mtime": 1795559783.0677571,
     "seen": 1795560321.6917365,
@@ -2199,6 +2193,186 @@
     "mtime": 1795559904.4890814,
     "seen": 1795560321.691766,
     "ast_hash": "771633c8cf2ea913c77ccecd947eef83",
+    "semantic_hash": ""
+  },
+  "demo-app/app/controllers/QueueExampleController.java": {
+    "mtime": 1795677537.066349,
+    "seen": 1795678109.7739973,
+    "ast_hash": "0fcefac5b6f2340f89172bc1753d73b1",
+    "semantic_hash": ""
+  },
+  "demo-app/app/jobs/InvoiceJob.java": {
+    "mtime": 1795677493.3188632,
+    "seen": 1795678109.774009,
+    "ast_hash": "acbb709b4589451cbfa35c59821dc6d2",
+    "semantic_hash": ""
+  },
+  "demo-app/app/jobs/SendEmailJob.java": {
+    "mtime": 1795677480.376916,
+    "seen": 1795678109.774012,
+    "ast_hash": "1df58e9ae7ac0ccab172469c44ae90e3",
+    "semantic_hash": ""
+  },
+  "modules/javelin-queue-database/pom.xml": {
+    "mtime": 1795675979.2139568,
+    "seen": 1795678109.77435,
+    "ast_hash": "30000c7414fd5e0949265ea1b2348e66",
+    "semantic_hash": ""
+  },
+  "modules/javelin-queue-database/src/main/java/io/javelin/queue/database/DatabaseQueue.java": {
+    "mtime": 1795676006.967616,
+    "seen": 1795678109.774351,
+    "ast_hash": "03e7671d0b114ed788936a7ad37b9ce7",
+    "semantic_hash": ""
+  },
+  "modules/javelin-queue-database/src/main/java/io/javelin/queue/database/DatabaseQueueServiceProvider.java": {
+    "mtime": 1795676025.3210332,
+    "seen": 1795678109.7743518,
+    "ast_hash": "ce6f6f3e8c1cff1ba1e14afcf7e7780c",
+    "semantic_hash": ""
+  },
+  "modules/javelin-queue-database/src/test/java/io/javelin/queue/database/DatabaseQueueTest.java": {
+    "mtime": 1795676251.6755984,
+    "seen": 1795678109.7743528,
+    "ast_hash": "17a6e8c7a67b6986614b9ec387f617f6",
+    "semantic_hash": ""
+  },
+  "modules/javelin-queue-file/pom.xml": {
+    "mtime": 1795676296.5743291,
+    "seen": 1795678109.7743537,
+    "ast_hash": "fa8ba4c63cb35db66180bebff20fee97",
+    "semantic_hash": ""
+  },
+  "modules/javelin-queue-file/src/main/java/io/javelin/queue/file/FileQueue.java": {
+    "mtime": 1795676511.4601178,
+    "seen": 1795678109.774355,
+    "ast_hash": "963061ac50d6074ebac0180c4e8a37df",
+    "semantic_hash": ""
+  },
+  "modules/javelin-queue-file/src/main/java/io/javelin/queue/file/FileQueueServiceProvider.java": {
+    "mtime": 1795676343.36698,
+    "seen": 1795678109.774356,
+    "ast_hash": "1fc04af580a55a3b125beb318a227779",
+    "semantic_hash": ""
+  },
+  "modules/javelin-queue-file/src/test/java/io/javelin/queue/file/FileQueueTest.java": {
+    "mtime": 1795676390.00178,
+    "seen": 1795678109.774357,
+    "ast_hash": "e0081b766c4fb670f96b553dddde36ae",
+    "semantic_hash": ""
+  },
+  "modules/javelin-queue-rabbitmq/pom.xml": {
+    "mtime": 1795676726.3417702,
+    "seen": 1795678109.774364,
+    "ast_hash": "f4ae3ce0a85ff8507cb73fb11ebc1796",
+    "semantic_hash": ""
+  },
+  "modules/javelin-queue-rabbitmq/src/main/java/io/javelin/queue/rabbitmq/RabbitMqQueue.java": {
+    "mtime": 1795676855.4159465,
+    "seen": 1795678109.7743652,
+    "ast_hash": "de4a027fd1b418afc836ee0699111d49",
+    "semantic_hash": ""
+  },
+  "modules/javelin-queue-rabbitmq/src/main/java/io/javelin/queue/rabbitmq/RabbitMqQueueServiceProvider.java": {
+    "mtime": 1795676793.4830167,
+    "seen": 1795678109.7743661,
+    "ast_hash": "8d00fe5a6228e09df6b00948cf152af4",
+    "semantic_hash": ""
+  },
+  "modules/javelin-queue-valkey/pom.xml": {
+    "mtime": 1795676546.3556767,
+    "seen": 1795678109.7743673,
+    "ast_hash": "c86cfd3ef6627f07731e83fdb9e32caf",
+    "semantic_hash": ""
+  },
+  "modules/javelin-queue-valkey/src/main/java/io/javelin/queue/valkey/ValkeyQueue.java": {
+    "mtime": 1795676690.9564216,
+    "seen": 1795678109.774368,
+    "ast_hash": "73c7d10566961df912473bf47a91f4c8",
+    "semantic_hash": ""
+  },
+  "modules/javelin-queue-valkey/src/main/java/io/javelin/queue/valkey/ValkeyQueueServiceProvider.java": {
+    "mtime": 1795676589.2019045,
+    "seen": 1795678109.7743692,
+    "ast_hash": "7cc57e173e42b39c5b5e615854b82e38",
+    "semantic_hash": ""
+  },
+  "modules/javelin-queue/pom.xml": {
+    "mtime": 1795675761.6986394,
+    "seen": 1795678109.7743702,
+    "ast_hash": "ed66c5ee4fb240c06c5985fed147bca0",
+    "semantic_hash": ""
+  },
+  "modules/javelin-queue/src/main/java/io/javelin/queue/JobHandlerRegistry.java": {
+    "mtime": 1795675793.5411372,
+    "seen": 1795678109.7743711,
+    "ast_hash": "8d4f8ab16faa7a979bc9ec61ef98b339",
+    "semantic_hash": ""
+  },
+  "modules/javelin-queue/src/main/java/io/javelin/queue/JobQueue.java": {
+    "mtime": 1795675780.455604,
+    "seen": 1795678109.774372,
+    "ast_hash": "7aed546d2fb50e32d6a6fe132ffbcd16",
+    "semantic_hash": ""
+  },
+  "modules/javelin-queue/src/main/java/io/javelin/queue/QueueServiceProvider.java": {
+    "mtime": 1795675891.9615276,
+    "seen": 1795678109.7743728,
+    "ast_hash": "db2efa07e74ea568357adc818f6e8c0f",
+    "semantic_hash": ""
+  },
+  "modules/javelin-queue/src/main/java/io/javelin/queue/QueueWorker.java": {
+    "mtime": 1795675861.1086183,
+    "seen": 1795678109.7743738,
+    "ast_hash": "d5faaf41e4f24f7e4aaffdadc913b533",
+    "semantic_hash": ""
+  },
+  "modules/javelin-queue/src/main/java/io/javelin/queue/QueueWorkerConfig.java": {
+    "mtime": 1795675823.3788815,
+    "seen": 1795678109.774375,
+    "ast_hash": "cd3b6c2fdecd4b7585e1a90484680353",
+    "semantic_hash": ""
+  },
+  "modules/javelin-queue/src/main/java/io/javelin/queues/Queue.java": {
+    "mtime": 1795677923.4386578,
+    "seen": 1795678109.7743757,
+    "ast_hash": "900b296ac30117e415016e8b80a75f29",
+    "semantic_hash": ""
+  },
+  "modules/javelin-queue/src/test/java/io/javelin/queue/QueueFacadeTest.java": {
+    "mtime": 1795677989.2654996,
+    "seen": 1795678109.7743766,
+    "ast_hash": "ce7ff4a78f43e8d9e41621cf80bebd6f",
+    "semantic_hash": ""
+  },
+  "modules/javelin-queue/src/test/java/io/javelin/queue/QueueWorkerTest.java": {
+    "mtime": 1795676968.6148376,
+    "seen": 1795678109.7743776,
+    "ast_hash": "a700b92414459e52e22567231684a8d1",
+    "semantic_hash": ""
+  },
+  "docs/modules/queue-adapters.md": {
+    "mtime": 1795677635.2725177,
+    "seen": 1795678109.774514,
+    "ast_hash": "48730e556edf48484f602e0c2c963d6c",
+    "semantic_hash": ""
+  },
+  "docs/modules/queue-database.md": {
+    "mtime": 1795677617.8117836,
+    "seen": 1795678109.7745147,
+    "ast_hash": "8b6131169b82fa7f3f1e4e5b15d22919",
+    "semantic_hash": ""
+  },
+  "docs/modules/queue.md": {
+    "mtime": 1795677599.6164055,
+    "seen": 1795678109.7745173,
+    "ast_hash": "01571ac7c5f34766800ffe9691c43ef4",
+    "semantic_hash": ""
+  },
+  "docs/tutorials/background-jobs.md": {
+    "mtime": 1795677653.610162,
+    "seen": 1795678109.774528,
+    "ast_hash": "cb38501e7d72d6a638edd22c26d8210c",
     "semantic_hash": ""
   }
 }

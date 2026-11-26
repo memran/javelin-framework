@@ -2,6 +2,7 @@ package routes;
 
 import app.controllers.BackendController;
 import app.controllers.HomeController;
+import app.controllers.QueueExampleController;
 import app.controllers.SecurityExampleController;
 import app.controllers.StorageExampleController;
 import app.controllers.UserController;
@@ -24,6 +25,7 @@ public final class web {
         BackendController backends = app.make(BackendController.class);
         SecurityExampleController security = app.make(SecurityExampleController.class);
         StorageExampleController files = app.make(StorageExampleController.class);
+        QueueExampleController jobs = app.make(QueueExampleController.class);
 
         add(app.router(), get("/", home::index));
         add(app.router(), get("/health", home::health));
@@ -48,5 +50,8 @@ public final class web {
         add(app.router(), post("/demo/files", files::upload));
         add(app.router(), get("/demo/files/download", files::download));
         add(app.router(), get("/demo/cache", files::cache));
+        add(app.router(), get("/demo/queue/dispatch", jobs::dispatch));
+        add(app.router(), get("/demo/queue/later", jobs::later));
+        add(app.router(), get("/demo/queue/status", jobs::status));
     }
 }

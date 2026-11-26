@@ -34,7 +34,10 @@ This folder documents the public API of each Javelin module with small usage exa
 - [Cache Valkey](modules/cache-valkey.md) — Lettuce-backed Valkey cache provider and config keys
 - [Cache Caffeine](modules/cache-caffeine.md) — fast bounded local cache, per-entry TTL, static facade
 - [Storage](modules/storage.md) — named disks, x-file-storage adapters, uploads, private downloads, S3/MinIO
-- [Queue NATS](modules/queue-nats.md) — Job/RetryPolicy contracts, JetStream publish/subscribe and provider config
+- [Queue](modules/queue.md) — JobQueue contract, handler registry, worker, dispatch/later facade, retry and shutdown
+- [Queue Database](modules/queue-database.md) — broker-free durable queue using the existing database
+- [Queue Adapters](modules/queue-adapters.md) — file, Valkey/Redis, RabbitMQ and NATS backends
+- [Queue NATS](modules/queue-nats.md) — JetStream publish/subscribe and provider config
 - [Support](modules/support.md) — Collection, Input, Validation, ValidationRule, Str, Arr, File, Image, Http, Ai, Date, Obj, Html, Security
 
 ## Reading Order

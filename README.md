@@ -2,7 +2,7 @@
 
 Javelin is a lightweight, modular Java web framework inspired by MarwaPHP-style service providers. It stays explicit, small, and close to the JDK: no annotation scanning, no hidden global state, no ORM-style abstraction, and no Spring-style magic.
 
-This repository is the first production-oriented MVP phase. It includes a deterministic boot flow, a small DI container, provider-based wiring, three pluggable HTTP drivers (Netty by default, JDK and Undertow alternatives), routing with named routes, middleware and bearer-token security, YAML + `.env` config, SLF4J logging, Pebble views, HikariCP-backed JDBC with YAML migrations, an in-memory and a Valkey-backed cache, a NATS JetStream queue with job retries, a Picocli CLI with project generators, static assets, and a runnable demo app.
+This repository is the first production-oriented MVP phase. It includes a deterministic boot flow, a small DI container, provider-based wiring, three pluggable HTTP drivers (Netty by default, JDK and Undertow alternatives), routing with named routes, middleware and bearer-token security, YAML + `.env` config, SLF4J logging, Pebble views, HikariCP-backed JDBC with YAML migrations, in-memory, Caffeine and Valkey-backed caches, a durable queue with file/database/Valkey/RabbitMQ/NATS adapters, a Picocli CLI with project generators, static assets, and a runnable demo app.
 
 ## Why Javelin
 
@@ -36,7 +36,7 @@ It is deliberately *not* Spring Boot and deliberately *not* an ORM. If you need 
 - **Views** — Pebble templates with layouts, includes, blocks, reusable macros, shared globals, automatic escaping and configurable caching; a `View` facade for convenient rendering.
 - **JSON and web responses** — a configurable Jackson mapper behind `Json`/`JsonResponse`, HTML/JSON/redirect/file/stream responses, secure static assets, cookies, opt-in sessions, and 422 validation-error rendering for both HTML and JSON clients.
 - **Caching** — a small `Cache` contract with an in-memory TTL implementation and a Lettuce-backed Valkey adapter for distributed caching.
-- **Queues** — a `Job` / `RetryPolicy` contract with a NATS JetStream adapter, push consumers, and retry with attempt tracking.
+- **Queues** — a `JobQueue` contract with immediate and delayed dispatch, a background worker with bounded concurrency, timeouts and exponential backoff, atomic leases, failed-job replay, and adapters for file, database, Valkey/Redis, RabbitMQ and NATS — no broker required by default.
 - **CLI and generators** — Picocli commands to scaffold apps, controllers, models, migrations, and validation rules. Generated projects include Docker Compose, a multi-stage Dockerfile, Tailwind CSS, Alpine.js, npm/bun scripts with auto-detection, build scripts, and opt-in Nginx/Caddy proxy configs.
 - **Support helpers** — small, stateless facades for strings, arrays, dates, files, images, HTTP client, AI client, objects, validation, HTML, and security.
 
@@ -83,7 +83,10 @@ Core owns the contracts; adapters implement them; the starter wires defaults; ap
 - `modules/javelin-cache-valkey` - Lettuce-backed Valkey cache adapter
 - `modules/javelin-cache-caffeine` - bounded Caffeine cache with per-entry TTL and static facade
 - `modules/javelin-storage` - named disks backed by x-file-storage (local, S3, MinIO)
+- `modules/javelin-queue` - JobQueue contract, handler registry, worker and dispatch/later facade
 - `modules/javelin-queue-nats` - NATS JetStream queue adapter with job retries
+- `modules/javelin-queue-database` - durable broker-free JDBC queue with leases and failed-job replay
+- `modules/javelin-queue-file`, `javelin-queue-valkey`, `javelin-queue-rabbitmq` - additional queue backends
 - `modules/javelin-starter` - batteries-included bootstrap
 - `demo-app` - runnable demo application and Docker stack
 
@@ -318,13 +321,22 @@ queue.subscribe("emails.welcome", job -> sendWelcome(job.payload(Map.class)), Re
 queue.publish(Job.of("emails.welcome", Map.of("userId", 42)));
 ```
 
+The static queue facade supports typed jobs and delays:
+
+```java
+import io.javelin.queues.Queue;
+
+Queue.dispatch(new SendEmailJob(userId));
+Queue.later(new InvoiceJob(id), Duration.ofMinutes(5));
+```
+
 - `javelin-cache` provides an in-memory TTL cache; `javelin-cache-caffeine` is the bounded default and `javelin-cache-valkey` uses Lettuce against Valkey/Redis. The static facade is `import io.javelin.caches.Cache;`:
 
 ```java
 io.javelin.caches.Cache.put("users_count", 100, Duration.ofMinutes(5));
 ```
 
-- `javelin-queue-nats` publishes to NATS JetStream and consumes with retries and attempt tracking.
+- `javelin-queue-database` is the durable broker-free default option; `javelin-queue-file` needs no service at all, and `javelin-queue-valkey` / `javelin-queue-rabbitmq` / `javelin-queue-nats` are opt-in. See [Queue](docs/modules/queue.md).
 
 ## Storage
 

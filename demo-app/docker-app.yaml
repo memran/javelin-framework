@@ -59,10 +59,25 @@ storage:
       domain: /files/
 
 queue:
-  driver: ${QUEUE_DRIVER:nats}
+  driver: ${QUEUE_DRIVER:valkey}
   url: ${NATS_URL:nats://nats:4222}
   jetstream: ${NATS_JETSTREAM:true}
   stream: ${NATS_STREAM:JAVELIN}
+  worker:
+    enabled: true
+    concurrency: 4
+    poll_interval_ms: 500
+    lease_seconds: 60
+    timeout_seconds: 300
+    shutdown_seconds: 10
+  retry:
+    backoff: exponential
+    initial_ms: 1000
+    max_ms: 60000
+  valkey:
+    url: ${VALKEY_URL:redis://valkey:6379}
+  file:
+    dir: storage/queues/file
 
 json:
   indent_output: false
@@ -136,6 +151,11 @@ providers:
   - io.javelin.storage.StorageServiceProvider
   - io.javelin.cache.caffeine.CaffeineCacheServiceProvider
   - io.javelin.cache.valkey.ValkeyCacheServiceProvider
+  - io.javelin.queue.QueueServiceProvider
+  - io.javelin.queue.file.FileQueueServiceProvider
+  - io.javelin.queue.database.DatabaseQueueServiceProvider
+  - io.javelin.queue.valkey.ValkeyQueueServiceProvider
+  - io.javelin.queue.rabbitmq.RabbitMqQueueServiceProvider
   - io.javelin.queue.nats.NatsQueueServiceProvider
 
 javelin:

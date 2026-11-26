@@ -104,6 +104,31 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-queue</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-queue-database</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-queue-file</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-queue-valkey</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.javelin</groupId>
+            <artifactId>javelin-queue-rabbitmq</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>

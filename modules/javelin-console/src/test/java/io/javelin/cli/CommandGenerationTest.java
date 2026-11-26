@@ -230,6 +230,10 @@ final class CommandGenerationTest {
         assertTrue(appYaml.contains("disks:"));
         assertTrue(appYaml.contains("StorageServiceProvider"));
         assertTrue(appYaml.contains("CaffeineCacheServiceProvider"));
+        assertTrue(appYaml.contains("driver: ${QUEUE_DRIVER:file}"));
+        assertTrue(appYaml.contains("worker:"));
+        assertTrue(appYaml.contains("backoff: exponential"));
+        assertTrue(appYaml.contains("QueueServiceProvider"));
         assertEquals(1, appYaml.split("(?m)^storage:", -1).length - 1);
         assertTrue(appYaml.contains("request_logging: true"));
         assertTrue(appYaml.contains("correlation_id_header: X-Correlation-ID"));
@@ -247,6 +251,8 @@ final class CommandGenerationTest {
         assertTrue(generatedPom.contains("javelin-cache-caffeine"));
         assertTrue(generatedPom.contains("javelin-storage"));
         assertTrue(generatedPom.contains("META-INF/*.SF"));
+        assertTrue(generatedPom.contains("javelin-queue"));
+        assertTrue(generatedPom.contains("javelin-queue-file"));
         assertTrue(generatedPom.contains("<include>errors/**</include>"));
         assertTrue(Files.exists(project.resolve("logback.xml")));
         assertTrue(Files.exists(project.resolve("logback-prod.xml")));

@@ -5,6 +5,7 @@ import io.javelin.core.queue.Job;
 import io.javelin.core.queue.JobHandler;
 import io.javelin.core.queue.Queue;
 import io.javelin.core.queue.RetryPolicy;
+import io.javelin.queue.JobQueue;
 import io.nats.client.Connection;
 import io.nats.client.JetStream;
 import io.nats.client.JetStreamApiException;
@@ -20,7 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 /** JetStream-backed queue. Subjects are namespaced under the configured prefix. */
-public final class NatsQueue implements Queue {
+public final class NatsQueue implements JobQueue {
     private final Connection connection;
     private final JetStream jetStream;
     private final String stream;
@@ -111,6 +112,48 @@ public final class NatsQueue implements Queue {
         } catch (Exception exception) {
             throw new IllegalStateException("Unable to subscribe to " + subject, exception);
         }
+    }
+
+    @Override
+    public void dispatch(Job job) {
+        publish(job);
+    }
+
+    @Override
+    public void later(Job job, java.time.Duration delay) {
+        // JetStream push consumers have no native scheduled delivery; publish immediately.
+        publish(job);
+    }
+
+    @Override
+    public java.util.Optional<ClaimedJob> claim(String workerId, java.time.Duration lease) {
+        // NATS pushes jobs to subscribers; there is nothing to poll.
+        return java.util.Optional.empty();
+    }
+
+    @Override
+    public void ack(String id, String leaseToken) {
+        // Acknowledged in the push subscriber.
+    }
+
+    @Override
+    public void fail(String id, String leaseToken, String error, java.time.Duration retryDelay) {
+        // Retries are handled by JetStream consumer configuration.
+    }
+
+    @Override
+    public java.util.List<Job> failedJobs() {
+        return java.util.List.of();
+    }
+
+    @Override
+    public void replay(String failedId) {
+        // JetStream retains unacknowledged messages; no separate failed store.
+    }
+
+    @Override
+    public long pendingCount() {
+        return 0;
     }
 
     @Override

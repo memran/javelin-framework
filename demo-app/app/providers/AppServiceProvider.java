@@ -3,6 +3,8 @@ package app.providers;
 import app.views.JavelinViewExtension;
 import io.javelin.core.Application;
 import io.javelin.core.ServiceProvider;
+import io.javelin.core.queue.RetryPolicy;
+import io.javelin.queue.JobHandlerRegistry;
 import io.javelin.core.queue.Job;
 import io.javelin.core.queue.Queue;
 import io.javelin.core.queue.RetryPolicy;
@@ -27,6 +29,20 @@ public final class AppServiceProvider implements ServiceProvider {
     @Override
     public void boot(Application app) {
         web.register(app);
+
+        if (app.has(JobHandlerRegistry.class)) {
+            JobHandlerRegistry handlers = app.make(JobHandlerRegistry.class);
+            handlers.register("send.email", job -> {
+                Path marker = Path.of("storage", "queue", "send-email.txt");
+                Files.createDirectories(marker.getParent());
+                Files.writeString(marker, job.payload() + "\n", StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+            }, new RetryPolicy(3, java.time.Duration.ofSeconds(1)));
+            handlers.register("invoice.due", job -> {
+                Path marker = Path.of("storage", "queue", "invoice-due.txt");
+                Files.createDirectories(marker.getParent());
+                Files.writeString(marker, job.payload() + "\n", StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+            }, new RetryPolicy(3, java.time.Duration.ofSeconds(1)));
+        }
         if (!app.has(Queue.class)) {
             return;
         }
