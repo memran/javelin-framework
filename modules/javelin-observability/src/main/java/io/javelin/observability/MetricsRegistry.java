@@ -2,6 +2,7 @@ package io.javelin.observability;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.LongAdder;
@@ -31,6 +32,11 @@ public final class MetricsRegistry {
     public Number gauge(String name) {
         AtomicReference<Number> gauge = gauges.get(name);
         return gauge == null ? null : gauge.get();
+    }
+
+    /** Names registered as counters, for exposition without guessing their type. */
+    public Set<String> counterNames() {
+        return Set.copyOf(counters.keySet());
     }
 
     public Map<String, Object> snapshot() {

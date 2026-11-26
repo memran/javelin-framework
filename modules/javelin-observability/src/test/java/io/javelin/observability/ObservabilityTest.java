@@ -50,6 +50,21 @@ final class ObservabilityTest {
     }
 
     @Test
+    void metricsEndpointServesTypedPrometheusText() throws Exception {
+        Application app = new Application(new TestConfig(), key -> Optional.empty());
+        ObservabilityMiddleware middleware = new ObservabilityMiddleware(app,
+                new ObservabilityConfig(true, "/health", "/ready", "/metrics", "none"),
+                new MetricsRegistry(), new HealthRegistry());
+        Request request = new Request(HttpMethod.GET, "/metrics",
+                Map.of("Accept", List.of("text/plain")), Map.of(), Map.of(), new byte[0], "127.0.0.1");
+
+        Response response = middleware.handle(request, ignored -> Response.text("ok"));
+
+        assertEquals("text/plain; version=0.0.4; charset=utf-8", response.headers().get("Content-Type"));
+        assertTrue(body(response).contains("# TYPE javelin_http_requests counter"));
+    }
+
+    @Test
     void failingReadinessReturns503() throws Exception {
         Application app = new Application(new TestConfig(), key -> Optional.empty());
         HealthRegistry health = new HealthRegistry();

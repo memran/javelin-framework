@@ -70,7 +70,7 @@ Javelin is not Spring Boot. Keep behavior explicit, modular, and cheap to start.
 
 ## Next Useful Work
 
-- Harden the existing Prometheus-compatible `/metrics` text view (naming, HELP/TYPE lines, MIME type) and register custom gauges such as ETag hit rate.
+- Export metrics over OTLP through the demo's OTel SDK so the collector receives metrics alongside traces.
 - Persist RabbitMQ failed jobs instead of the in-memory list.
 - Honor `later()` delays on NATS with a durable delayed-delivery subject.
 - Add a CI job that boots the demo Compose stack and checks `/health`, `/ready` and `/demo/tracing`.

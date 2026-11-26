@@ -1014,9 +1014,9 @@
     "semantic_hash": ""
   },
   "agents.md": {
-    "mtime": 1795730799.975224,
-    "seen": 1795730812.925199,
-    "ast_hash": "f56d40578a01f024533df4ec760c1a67",
+    "mtime": 1795731301.0441945,
+    "seen": 1795731318.0344276,
+    "ast_hash": "727b621706595d8079fd89ec3bc36e5a",
     "semantic_hash": ""
   },
   "docs/README.md": {
@@ -2862,9 +2862,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-observability/src/main/java/io/javelin/observability/MetricsRegistry.java": {
-    "mtime": 1795709371.5744624,
-    "seen": 1795710968.704882,
-    "ast_hash": "f7010d6b9b3bbfb8cc3fbeea80c21988",
+    "mtime": 1795731083.377396,
+    "seen": 1795731318.0342405,
+    "ast_hash": "da249a94fbb407e2e71842b3b4910abd",
     "semantic_hash": ""
   },
   "modules/javelin-observability/src/main/java/io/javelin/observability/NoopTracer.java": {
@@ -2886,9 +2886,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-observability/src/main/java/io/javelin/observability/ObservabilityMiddleware.java": {
-    "mtime": 1795709651.4429777,
-    "seen": 1795710968.7048857,
-    "ast_hash": "d05c5c4a5e5b48885f24de9b160bbf89",
+    "mtime": 1795731115.2218592,
+    "seen": 1795731318.0342462,
+    "ast_hash": "412d96f77453bc55a8f7e9f24e6f7cd7",
     "semantic_hash": ""
   },
   "modules/javelin-observability/src/main/java/io/javelin/observability/ObservabilityServiceProvider.java": {
@@ -2928,9 +2928,9 @@
     "semantic_hash": ""
   },
   "modules/javelin-observability/src/test/java/io/javelin/observability/ObservabilityTest.java": {
-    "mtime": 1795710218.3005104,
-    "seen": 1795710968.7048922,
-    "ast_hash": "5f6abbf35c5a765864d52f5a56cd3b85",
+    "mtime": 1795731140.0914347,
+    "seen": 1795731318.0342565,
+    "ast_hash": "6342c492e1725e046c614a33c2ef184c",
     "semantic_hash": ""
   },
   "docs/modules/deployment.md": {
@@ -2940,9 +2940,9 @@
     "semantic_hash": ""
   },
   "docs/modules/observability.md": {
-    "mtime": 1795730185.3245268,
-    "seen": 1795730679.3821,
-    "ast_hash": "560aa67b428b44ae5aed312bd0775bed",
+    "mtime": 1795731178.614404,
+    "seen": 1795731318.034459,
+    "ast_hash": "ad6fe6698442cc73040ee3bae968d3d6",
     "semantic_hash": ""
   },
   "docs/tutorials/production-deployment.md": {
@@ -3027,6 +3027,18 @@
     "mtime": 1795729848.7521956,
     "seen": 1795730679.3820677,
     "ast_hash": "649197b3bfd47362fededeb2a75f0e8f",
+    "semantic_hash": ""
+  },
+  "modules/javelin-observability/src/main/java/io/javelin/observability/PrometheusText.java": {
+    "mtime": 1795731095.3246596,
+    "seen": 1795731318.0342515,
+    "ast_hash": "5ad851703e12504d8b4096e3d2c6a56f",
+    "semantic_hash": ""
+  },
+  "modules/javelin-observability/src/test/java/io/javelin/observability/PrometheusTextTest.java": {
+    "mtime": 1795731129.9162126,
+    "seen": 1795731318.0342588,
+    "ast_hash": "aec60fcf05503d2fe65cedc84ad84009",
     "semantic_hash": ""
   }
 }

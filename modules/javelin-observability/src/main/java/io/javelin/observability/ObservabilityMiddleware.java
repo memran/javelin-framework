@@ -8,6 +8,7 @@ import io.javelin.core.Middleware;
 import io.javelin.core.Request;
 import io.javelin.core.Response;
 
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -76,19 +77,13 @@ public final class ObservabilityMiddleware implements Middleware {
                 .map(value -> value.contains("text/plain"))
                 .orElse(false);
         if (plainText) {
-            return Response.text(prometheus(body));
+            String text = PrometheusText.render(cast(body.get("metrics")), metrics.counterNames(),
+                    cast(body.get("runtime")), cast(body.get("startup")), cast(body.get("pools")));
+            return new Response(200,
+                    Map.of("Content-Type", "text/plain; version=0.0.4; charset=utf-8"),
+                    text.getBytes(StandardCharsets.UTF_8));
         }
         return Json.ok(body);
-    }
-
-    private static String prometheus(Map<String, Object> body) {
-        StringBuilder text = new StringBuilder();
-        Map<String, Object> values = cast(body.get("metrics"));
-        values.forEach((name, value) -> text.append(name).append(' ').append(value).append('\n'));
-        Map<String, Object> runtime = cast(body.get("runtime"));
-        runtime.forEach((name, value) -> text.append("javelin_").append(name)
-                .append(' ').append(value).append('\n'));
-        return text.toString();
     }
 
     @SuppressWarnings("unchecked")

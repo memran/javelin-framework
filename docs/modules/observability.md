@@ -14,7 +14,7 @@ Registered automatically by `ObservabilityServiceProvider`:
 | `GET /ready` | readiness status; `503` when not ready |
 | `GET /metrics` | JSON metrics, runtime, startup timings and DB pool stats |
 
-With `Accept: text/plain`, `/metrics` returns a Prometheus-style text view. Paths are configurable:
+With `Accept: text/plain`, `/metrics` returns a Prometheus-compatible text exposition (`Content-Type: text/plain; version=0.0.4; charset=utf-8`). Paths are configurable:
 
 ```yaml
 observability:
@@ -35,6 +35,8 @@ Observability.metrics().gauge("queue.depth", 12);
 ```
 
 Every request increments `http.requests` and `http.response.<status>`. The metrics endpoint also reports JVM heap/non-heap, thread counts, virtual-thread scheduler parallelism, startup milestones and HikariCP active/idle/max connections per configured database.
+
+The text view normalizes names to `javelin_<name>` (dots become underscores), emits `HELP` and `TYPE` lines from the registry's counter/gauge types, prefixes runtime and startup values with `javelin_runtime_` / `javelin_startup_`, and labels pool gauges as `javelin_db_pool_active{pool="primary"}`. Non-numeric values such as `started_at` stay in the JSON view and are omitted from text. Register application gauges with `Observability.metrics().gauge("static.etag.hit_rate", resolver.etagStats().hitRate())`; they appear as `javelin_static_etag_hit_rate`. No Prometheus client library is required.
 
 ## Health checks
 
